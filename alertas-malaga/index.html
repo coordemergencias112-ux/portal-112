@@ -83,6 +83,15 @@
   .historial-row{ display:grid; grid-template-columns:90px 1fr auto; gap:10px; align-items:center; padding:7px 10px; border-radius:var(--radius-sm); background:var(--surface-alt); font-size:.78rem; }
   .historial-row .fecha{ color:var(--ink-faint); font-size:.72rem; white-space:nowrap; }
   .historial-row .badge{ font-size:.66rem; font-weight:700; padding:2px 8px; border-radius:999px; color:#fff; white-space:nowrap; }
+  .aviso-chip{ display:inline-block; font-size:.68rem; padding:1px 8px; border-radius:999px; margin:2px 4px 0 0; border:1px solid var(--border); }
+  .aviso-chip.activo{ background:var(--danger-soft); color:var(--danger); border-color:transparent; font-weight:700; }
+  .aviso-chip.proximo{ background:var(--surface); color:var(--ink-faint); }
+  .saih-section h3{ font-size:.85rem; margin:16px 0 8px; color:var(--ink-soft); }
+  .saih-section h3:first-child{ margin-top:0; }
+  .saih-row{ display:grid; grid-template-columns:1fr auto auto; align-items:center; gap:10px; padding:8px 10px; border-radius:var(--radius-sm); background:var(--surface-alt); font-size:.8rem; margin-bottom:6px; }
+  .saih-row .nombre{ display:flex; align-items:center; gap:8px; }
+  .saih-row .valor{ color:var(--ink-soft); white-space:nowrap; font-size:.75rem; }
+  .saih-row .badge{ font-size:.66rem; font-weight:700; padding:2px 8px; border-radius:999px; color:#fff; white-space:nowrap; }
   .prevision-grid{ display:grid; grid-template-columns:1fr; gap:14px; }
   @media (min-width:640px){ .prevision-grid{ grid-template-columns:1fr 1fr; } }
   .prevision-punto h3{ font-size:.85rem; margin:0 0 10px; color:var(--ink-soft); }
@@ -125,7 +134,12 @@
 
     <div class="card">
       <h2>⚠️ Avisos AEMET — por zona</h2>
-      <p class="desc">Nivel de aviso vigente en las 6 zonas oficiales de aviso de la provincia.</p>
+      <p class="desc">AEMET suele publicar los avisos con horas de adelanto. Filtra por si están vigentes ahora mismo o son próximos.</p>
+      <div class="pill-group" id="avisoFilters">
+        <button class="pill active" data-estado="todos">Todos</button>
+        <button class="pill" data-estado="activo">Activos ahora</button>
+        <button class="pill" data-estado="proximo">Próximos</button>
+      </div>
       <div class="zona-list" id="zonaList"><div class="empty">Cargando avisos…</div></div>
     </div>
 
@@ -137,6 +151,7 @@
         <label><input type="checkbox" data-layer="sismos" checked> 🌍 Sismos</label>
         <label><input type="checkbox" data-layer="radar"> 🌧️ Radar de lluvia</label>
         <label><input type="checkbox" data-layer="incendios" checked> 🔥 Incendios activos</label>
+        <label><input type="checkbox" data-layer="saih" checked> 🌊 SAIH Hidrosur</label>
       </div>
       <div id="map"></div>
       <div class="legend">
@@ -146,6 +161,7 @@
         <span><span class="dot" style="background:var(--nivel-rojo)"></span>Rojo</span>
         <span>🔥 Foco activo (satélite, últimas 24h)</span>
         <span id="firmsStatus" class="unavailable" style="display:none">— incendios: fuente no configurada todavía</span>
+        <span>🌊 Río · 💧 Pluviómetro · 🏞️ Embalse</span>
       </div>
     </div>
 
@@ -156,13 +172,26 @@
     </div>
 
     <div class="card full">
+      <h2>🌊 SAIH Hidrosur — ríos, embalses y lluvia</h2>
+      <p class="desc" id="saihDesc">Red de estaciones de la Junta de Andalucía en la provincia de Málaga.</p>
+      <div class="saih-section">
+        <h3>Ríos</h3>
+        <div id="saihRios"><div class="empty">Cargando ríos…</div></div>
+        <h3>Embalses</h3>
+        <div id="saihEmbalses"><div class="empty">Cargando embalses…</div></div>
+        <h3>Pluviómetros con lluvia registrada</h3>
+        <div id="saihLluvia"><div class="empty">Cargando pluviómetros…</div></div>
+      </div>
+    </div>
+
+    <div class="card full">
       <h2>🕓 Historial de avisos (últimos 7 días)</h2>
       <p class="desc">Avisos amarillos, naranjas o rojos emitidos en cualquier zona de la provincia.</p>
       <div class="historial-list" id="historialList"><div class="empty">Cargando historial…</div></div>
     </div>
   </div>
 
-  <footer>Coordinación de Emergencias 112 · Fuentes: IGN (sismos), AEMET OpenData (avisos y previsión), RainViewer (radar) y NASA FIRMS (incendios)</footer>
+  <footer>Coordinación de Emergencias 112 · Fuentes: IGN (sismos), AEMET OpenData (avisos y previsión), RainViewer (radar), NASA FIRMS (incendios) y SAIH Hidrosur (ríos, embalses y lluvia)</footer>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
@@ -173,6 +202,8 @@
   const NIVEL_COLOR = { verde:'var(--nivel-verde)', amarillo:'var(--nivel-amarillo)', naranja:'var(--nivel-naranja)', rojo:'var(--nivel-rojo)' };
   const NIVEL_COLOR_HEX = { verde:'#1f9d55', amarillo:'#c9820a', naranja:'#d9711a', rojo:'#c8402f' };
   const NIVEL_LABEL = { verde:'Sin aviso', amarillo:'Amarillo', naranja:'Naranja', rojo:'Rojo' };
+  const SAIH_COLOR = { rojo:'#c8402f', naranja:'#d9711a', amarillo:'#c9820a', vigilancia:'#6b7fd7', verde:'#1f9d55', sin_datos:'#8a94a3' };
+  const SAIH_LABEL = { rojo:'Alerta', naranja:'Prealerta', amarillo:'Aviso', vigilancia:'Vigilancia', verde:'Normal', sin_datos:'Sin datos' };
 
   // ---------- Sismos (IGN, en vivo, igual que el visor completo) ----------
   const IGN_URLS = [
@@ -282,6 +313,7 @@
     layers.sismos = L.layerGroup().addTo(map);
     layers.radar = L.layerGroup(); // arranca oculta (mucha info a la vez)
     layers.incendios = L.layerGroup().addTo(map);
+    layers.saih = L.layerGroup().addTo(map);
 
     document.getElementById('layerToggles').addEventListener('change', (e) => {
       const cb = e.target.closest('input[data-layer]');
@@ -292,16 +324,33 @@
     });
   }
 
+  let avisosData = {};
+  let avisoFiltro = 'todos'; // 'todos' | 'activo' | 'proximo'
+
   function renderZonas(avisos){
+    avisosData = avisos || {};
+    applyAvisoFiltro();
+  }
+
+  function applyAvisoFiltro(){
+    const entries = Object.entries(avisosData);
     const list = document.getElementById('zonaList');
-    const entries = Object.entries(avisos);
-    list.innerHTML = entries.map(([code, z]) => `
+
+    const filtrar = (items) => avisoFiltro === 'todos' ? items : items.filter(a => a.estado_tiempo === avisoFiltro);
+
+    list.innerHTML = entries.map(([code, z]) => {
+      const items = filtrar(z.avisos || []);
+      const chips = items.map(a =>
+        `<span class="aviso-chip ${a.estado_tiempo}">${a.fenomeno}${a.estado_tiempo === 'proximo' ? ' · próximo' : ''}</span>`
+      ).join('');
+      return `
       <div class="zona-row">
         <span class="status-dot" style="background:${NIVEL_COLOR_HEX[z.nivel]||'#8a94a3'}"></span>
         <span class="nombre">${z.nombre}</span>
         <span class="badge" style="background:${(z.nivel==='verde')?'var(--surface)':NIVEL_COLOR[z.nivel]};color:${(z.nivel==='verde')?'var(--ink-faint)':'#fff'};border:1px solid var(--border)">${NIVEL_LABEL[z.nivel]||z.nivel}</span>
-        <span class="detalle">${z.avisos && z.avisos.length ? z.avisos.map(a=>a.fenomeno).join(', ') : ''}</span>
-      </div>`).join('');
+        <span class="detalle">${chips}</span>
+      </div>`;
+    }).join('');
 
     if (!layers.avisos) return;
     layers.avisos.clearLayers();
@@ -312,11 +361,20 @@
       const poly = L.polygon(geo.points, {
         color: '#ffffff', weight: 1, fillColor: color, fillOpacity: z.nivel==='verde' ? 0.25 : 0.6
       });
-      const detalle = (z.avisos||[]).map(a => `${a.fenomeno} (${NIVEL_LABEL[a.nivel]||a.nivel})`).join('<br>') || 'Sin avisos activos';
-      poly.bindPopup(`<b>${z.nombre}</b><br>Nivel: ${NIVEL_LABEL[z.nivel]||z.nivel}<br>${detalle}`);
+      const items = filtrar(z.avisos || []);
+      const detalle = items.map(a => `${a.fenomeno} (${NIVEL_LABEL[a.nivel]||a.nivel}${a.estado_tiempo === 'proximo' ? ', próximo' : ', activo'})`).join('<br>') || 'Sin avisos para este filtro';
+      poly.bindPopup(`<b>${z.nombre}</b><br>Nivel actual: ${NIVEL_LABEL[z.nivel]||z.nivel}<br>${detalle}`);
       poly.addTo(layers.avisos);
     });
   }
+
+  document.getElementById('avisoFilters').addEventListener('click', (e) => {
+    const btn = e.target.closest('.pill');
+    if (!btn) return;
+    avisoFiltro = btn.dataset.estado;
+    document.querySelectorAll('#avisoFilters .pill').forEach(p => p.classList.toggle('active', p === btn));
+    applyAvisoFiltro();
+  });
 
   // ---------- Radar de lluvia (RainViewer, público, sin API key) ----------
   async function loadRadar(){
@@ -352,6 +410,76 @@
       });
     } catch (e) {
       document.getElementById('firmsStatus').style.display = '';
+    }
+  }
+
+  // ---------- SAIH Hidrosur (ríos, embalses, lluvia) ----------
+  function tendenciaArrow(t){
+    if (t === '1') return '↑';
+    if (t === '2') return '↓';
+    if (t === '0') return '→';
+    return '';
+  }
+
+  function saihBadge(estado){
+    const color = SAIH_COLOR[estado] || '#8a94a3';
+    const label = SAIH_LABEL[estado] || estado;
+    return `<span class="badge" style="background:${color}">${label}</span>`;
+  }
+
+  function renderSaih(data){
+    const rios = data.rios || [], embalses = data.embalses || [], lluvia = (data.lluvia || []).filter(l => l.precip > 0);
+
+    document.getElementById('saihRios').innerHTML = rios.length ? rios.map(r => `
+      <div class="saih-row">
+        <span class="nombre">🌊 ${r.nombre.replace(/\s*\(MA\)\s*$/, '')}</span>
+        <span class="valor">${r.nivel_rio != null ? r.nivel_rio.toFixed(2)+' m' : '—'} ${tendenciaArrow(r.tendencia)} · ${r.caudal != null ? r.caudal.toFixed(2)+' m³/s' : '—'}</span>
+        ${saihBadge(r.estado)}
+      </div>`).join('') : '<div class="empty">Sin datos de ríos.</div>';
+
+    document.getElementById('saihEmbalses').innerHTML = embalses.length ? embalses.map(e => `
+      <div class="saih-row">
+        <span class="nombre">🏞️ ${e.nombre.replace(/\s*\(MA\)\s*$/, '')}</span>
+        <span class="valor">${e.porcentaje != null ? e.porcentaje.toFixed(1)+'%' : '—'} ${e.volumen != null ? '· '+e.volumen.toFixed(1)+' hm³' : ''}</span>
+        <span></span>
+      </div>`).join('') : '<div class="empty">Sin datos de embalses.</div>';
+
+    document.getElementById('saihLluvia').innerHTML = lluvia.length ? lluvia.map(l => `
+      <div class="saih-row">
+        <span class="nombre">💧 ${l.nombre.replace(/\s*\(MA\)\s*$/, '')}</span>
+        <span class="valor">${l.precip.toFixed(1)} mm ${l.precipacum != null ? '· acum. '+l.precipacum.toFixed(1)+' mm' : ''}</span>
+        ${saihBadge(l.estado)}
+      </div>`).join('') : '<div class="empty">Ningún pluviómetro de la provincia registra lluvia ahora mismo.</div>';
+
+    if (data.data_timestamp) {
+      document.getElementById('saihDesc').textContent =
+        'Red de estaciones de la Junta de Andalucía · dato de la estación: ' + new Date(data.data_timestamp).toLocaleString('es-ES');
+    }
+
+    if (!layers.saih) return;
+    layers.saih.clearLayers();
+    const addMarker = (s, icon, color, detalle) => {
+      if (!isFinite(s.lat) || !isFinite(s.lon)) return;
+      L.circleMarker([s.lat, s.lon], { radius: 6, color: '#fff', weight: 1.5, fillColor: color, fillOpacity: 0.85 })
+        .bindPopup(`${icon} <b>${s.nombre.replace(/\s*\(MA\)\s*$/, '')}</b><br>${detalle}`)
+        .addTo(layers.saih);
+    };
+    rios.forEach(r => addMarker(r, '🌊', SAIH_COLOR[r.estado] || '#8a94a3',
+      `Nivel: ${r.nivel_rio != null ? r.nivel_rio.toFixed(2)+' m' : '—'} · Caudal: ${r.caudal != null ? r.caudal.toFixed(2)+' m³/s' : '—'}<br>Estado: ${SAIH_LABEL[r.estado]||r.estado}`));
+    embalses.forEach(e => addMarker(e, '🏞️', '#2f6fed',
+      `Volumen: ${e.porcentaje != null ? e.porcentaje.toFixed(1)+'%' : '—'} ${e.volumen != null ? '('+e.volumen.toFixed(1)+' hm³)' : ''}`));
+    (data.lluvia || []).forEach(l => addMarker(l, '💧', SAIH_COLOR[l.estado] || '#8a94a3',
+      `Precipitación: ${l.precip != null ? l.precip.toFixed(1)+' mm' : '—'} · Acumulada: ${l.precipacum != null ? l.precipacum.toFixed(1)+' mm' : '—'}`));
+  }
+
+  async function loadSaih(){
+    try {
+      const res = await fetch('data/saih.json', { cache: 'no-store' });
+      const data = await res.json();
+      renderSaih(data);
+    } catch (e) {
+      ['saihRios','saihEmbalses','saihLluvia'].forEach(id =>
+        document.getElementById(id).innerHTML = '<div class="empty">Sin datos disponibles.</div>');
     }
   }
 
@@ -405,7 +533,7 @@
       renderHistorial(data.historial);
       const dt = new Date(data.generated_at);
       document.getElementById('updatedLine').textContent =
-        'Sismos y radar: en vivo · Avisos, previsión e incendios actualizados: ' + dt.toLocaleString('es-ES');
+        'Sismos y radar: en vivo · Avisos, previsión, incendios y SAIH actualizados: ' + dt.toLocaleString('es-ES');
     } catch (e) {
       document.getElementById('updatedLine').textContent = 'No se pudieron cargar los avisos/previsión AEMET.';
       document.getElementById('zonaList').innerHTML = '<div class="empty">Sin datos disponibles.</div>';
@@ -419,6 +547,7 @@
   loadAemetData();
   loadRadar();
   loadIncendios();
+  loadSaih();
 })();
 </script>
 </body>
