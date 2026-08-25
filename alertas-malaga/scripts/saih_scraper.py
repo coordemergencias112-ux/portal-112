@@ -22,6 +22,7 @@ import urllib.request
 from datetime import datetime, timezone
 
 URL = "https://www.redhidrosurmedioambiente.es/saih"
+URL_PRECIPITACION = "https://www.redhidrosurmedioambiente.es/saih/resumen/precipitacion"
 PROVINCIA = "Málaga"
 
 # Estaciones que la propia web trata como "aforo" (río) aunque su campo
@@ -148,6 +149,40 @@ def evaluar_lluvia(precip):
     return "verde", {}
 
 
+def fetch_precipitacion_detalle():
+    """Descarga la tabla 'Resumen precipitación' (todas las provincias),
+    que trae 6 franjas horarias por estación (última hora, hora anterior,
+    acumulado 12h, acumulado 24h, acumulado hoy, acumulado ayer) - datos
+    que NO están en el bloque <script> de la página principal. Devuelve un
+    dict {estacion_id: {...}} para unir por id con la lista de pluviómetros
+    ya obtenida de la página principal (que es la que trae coordenadas)."""
+    try:
+        html = _get(URL_PRECIPITACION).decode("utf-8", "replace")
+    except Exception as e:  # noqa: BLE001
+        print(f"AVISO: no se pudo descargar el detalle de precipitación: {e}", file=sys.stderr)
+        return {}
+
+    filas = re.findall(r"<tr[^>]*>(.*?)</tr>", html, re.S)
+    detalle = {}
+    for fila in filas:
+        celdas = re.findall(r"<td[^>]*>(.*?)</td>", fila, re.S)
+        if len(celdas) < 9:
+            continue
+        limpio = [re.sub(r"<[^>]+>", "", c).strip() for c in celdas]
+        estacion_id = limpio[0].strip()
+        if not estacion_id.isdigit():
+            continue
+        detalle[estacion_id] = {
+            "ultima_hora": to_float(limpio[3]),
+            "hora_anterior": to_float(limpio[4]),
+            "acum_12h": to_float(limpio[5]),
+            "acum_24h": to_float(limpio[6]),
+            "acum_hoy": to_float(limpio[7]),
+            "acum_ayer": to_float(limpio[8]),
+        }
+    return detalle
+
+
 def main():
     out_dir = os.path.join(os.path.dirname(__file__), "..", "data")
     os.makedirs(out_dir, exist_ok=True)
@@ -175,6 +210,9 @@ def main():
 
     malaga = [s for s in stations if s["provincia"] == PROVINCIA]
 
+    print("Descargando detalle de precipitación (franjas horarias)...")
+    detalle_precip = fetch_precipitacion_detalle()
+
     rios, embalses, lluvia = [], [], []
     for s in malaga:
         cat = categoria_de(s["tipo"], s["estacion"])
@@ -198,9 +236,17 @@ def main():
                               "nivel": to_float(s["nivel"])})
         elif cat == "lluvia":
             precip = to_float(s["precip"])
+            precipacum = to_float(s["precipacum"])
             estado, info = evaluar_lluvia(precip)
-            lluvia.append({**base, "precip": precip, "precipacum": to_float(s["precipacum"]),
-                            "estado": estado, "info": info})
+            # Franjas horarias: si la tabla de detalle trae la estación, se usan esos
+            # valores (más completos); si no, se rellenan las dos franjas equivalentes
+            # con lo que ya tenemos del bloque principal, y el resto queda sin dato.
+            franjas = detalle_precip.get(s["estacion"])
+            if franjas is None:
+                franjas = {"ultima_hora": precip, "hora_anterior": None, "acum_12h": None,
+                           "acum_24h": None, "acum_hoy": precipacum, "acum_ayer": None}
+            lluvia.append({**base, "precip": precip, "precipacum": precipacum,
+                            "estado": estado, "info": info, **franjas})
         # cat == "otro" (EDAR, bombeos...) se descarta: no aporta a un panel de riesgo hidrológico
 
     orden_estado = {"rojo": 0, "naranja": 1, "amarillo": 2, "vigilancia": 3, "verde": 4, "sin_datos": 5}
