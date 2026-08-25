@@ -17,11 +17,16 @@ import csv
 import io
 import json
 import os
+import re
 import sys
 import urllib.request
 from datetime import datetime, timezone
 
-MAP_KEY = os.environ.get("FIRMS_MAP_KEY", "").strip()
+# .strip() solo quita espacios en los extremos; algunos gestores de
+# secretos (o un copia/pega con salto de línea de por medio) pueden dejar
+# espacios/control chars EN MEDIO de la key, lo que rompe la URL. Los
+# quitamos todos: una FIRMS_MAP_KEY real no lleva espacios.
+MAP_KEY = re.sub(r"\s+", "", os.environ.get("FIRMS_MAP_KEY", ""))
 
 # Bounding box aproximado de la provincia de Málaga: west,south,east,north
 BBOX = "-5.55,36.28,-3.90,37.30"

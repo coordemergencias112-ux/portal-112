@@ -26,7 +26,7 @@ import urllib.request
 import urllib.parse
 from datetime import datetime, timezone
 
-API_KEY = os.environ.get("AEMET_API_KEY", "").strip()
+API_KEY = re.sub(r"\s+", "", os.environ.get("AEMET_API_KEY", ""))
 BASE = "https://opendata.aemet.es/opendata/api"
 
 # Zonas oficiales de aviso AEMET para la provincia de Málaga
