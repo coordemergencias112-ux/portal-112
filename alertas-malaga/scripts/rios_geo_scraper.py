@@ -46,7 +46,10 @@ def normaliza(nombre):
     s = unicodedata.normalize("NFKD", nombre).encode("ascii", "ignore").decode()
     s = re.sub(r"\([^)]*\)", "", s)  # quita paréntesis: "(ARCHIDONA)", "(MA)"
     s = re.sub(r"^\s*(rio|r[íi]o|arroyo)\s+", "", s.strip(), flags=re.I)
-    return s.strip().upper()
+    s = s.strip().upper()
+    if s == "AZUD DE PAREDONES":  # estación del propio Guadalhorce (Álora), ver saih_scraper.py
+        return "GUADALHORCE"
+    return s
 
 
 def rios_objetivo():

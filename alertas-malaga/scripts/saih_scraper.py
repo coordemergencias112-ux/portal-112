@@ -97,7 +97,12 @@ def normaliza_rio(nombre):
     s = unicodedata.normalize("NFKD", nombre).encode("ascii", "ignore").decode()
     s = re.sub(r"\([^)]*\)", "", s)
     s = re.sub(r"^\s*(rio|r[íi]o|arroyo)\s+", "", s.strip(), flags=re.I)
-    return s.strip().upper()
+    s = s.strip().upper()
+    # El "Azud de Paredones" (Álora) es una estación del propio río Guadalhorce,
+    # aunque su nombre no lo diga - lo confirma la propia cuenta de SAIH Hidrosur.
+    if s == "AZUD DE PAREDONES":
+        return "GUADALHORCE"
+    return s
 
 
 def categoria_de(tipo, estacion_id):
