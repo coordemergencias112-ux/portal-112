@@ -75,6 +75,14 @@
   .zona-row .badge{ font-size:.68rem; font-weight:700; padding:2px 9px; border-radius:999px; }
   .zona-row .nombre{ font-size:.85rem; font-weight:600; flex:1; }
   .zona-row .detalle{ font-size:.72rem; color:var(--ink-faint); }
+  .layer-toggles{ display:flex; gap:14px; flex-wrap:wrap; margin:0 0 12px; font-size:.8rem; color:var(--ink-soft); }
+  .layer-toggles label{ display:flex; align-items:center; gap:6px; cursor:pointer; }
+  .layer-toggles input{ accent-color:var(--accent); width:15px; height:15px; }
+  .layer-toggles .unavailable{ color:var(--ink-faint); font-style:italic; }
+  .historial-list{ display:flex; flex-direction:column; gap:6px; max-height:280px; overflow-y:auto; }
+  .historial-row{ display:grid; grid-template-columns:90px 1fr auto; gap:10px; align-items:center; padding:7px 10px; border-radius:var(--radius-sm); background:var(--surface-alt); font-size:.78rem; }
+  .historial-row .fecha{ color:var(--ink-faint); font-size:.72rem; white-space:nowrap; }
+  .historial-row .badge{ font-size:.66rem; font-weight:700; padding:2px 8px; border-radius:999px; color:#fff; white-space:nowrap; }
   .prevision-grid{ display:grid; grid-template-columns:1fr; gap:14px; }
   @media (min-width:640px){ .prevision-grid{ grid-template-columns:1fr 1fr; } }
   .prevision-punto h3{ font-size:.85rem; margin:0 0 10px; color:var(--ink-soft); }
@@ -122,14 +130,22 @@
     </div>
 
     <div class="card full">
-      <h2>🗺️ Mapa de zonas de aviso</h2>
-      <p class="desc">Áreas oficiales de AEMET para Málaga (igual que en aemet.es/es/eltiempo/prediccion/avisos).</p>
+      <h2>🗺️ Mapa de riesgos — Málaga</h2>
+      <p class="desc">Zonas de aviso AEMET (con sus polígonos oficiales), sismos, radar de lluvia e incendios activos, todo en un mapa. Usa los filtros para mostrar u ocultar cada capa.</p>
+      <div class="layer-toggles" id="layerToggles">
+        <label><input type="checkbox" data-layer="avisos" checked> ⚠️ Zonas de aviso</label>
+        <label><input type="checkbox" data-layer="sismos" checked> 🌍 Sismos</label>
+        <label><input type="checkbox" data-layer="radar"> 🌧️ Radar de lluvia</label>
+        <label><input type="checkbox" data-layer="incendios" checked> 🔥 Incendios activos</label>
+      </div>
       <div id="map"></div>
       <div class="legend">
         <span><span class="dot" style="background:var(--nivel-verde)"></span>Sin aviso</span>
         <span><span class="dot" style="background:var(--nivel-amarillo)"></span>Amarillo</span>
         <span><span class="dot" style="background:var(--nivel-naranja)"></span>Naranja</span>
         <span><span class="dot" style="background:var(--nivel-rojo)"></span>Rojo</span>
+        <span>🔥 Foco activo (satélite, últimas 24h)</span>
+        <span id="firmsStatus" class="unavailable" style="display:none">— incendios: fuente no configurada todavía</span>
       </div>
     </div>
 
@@ -138,9 +154,15 @@
       <p class="desc">Predicción diaria AEMET para dos puntos de referencia de la provincia (costa e interior).</p>
       <div class="prevision-grid" id="previsionGrid"><div class="empty">Cargando previsión…</div></div>
     </div>
+
+    <div class="card full">
+      <h2>🕓 Historial de avisos (últimos 7 días)</h2>
+      <p class="desc">Avisos amarillos, naranjas o rojos emitidos en cualquier zona de la provincia.</p>
+      <div class="historial-list" id="historialList"><div class="empty">Cargando historial…</div></div>
+    </div>
   </div>
 
-  <footer>Coordinación de Emergencias 112 · Fuentes: IGN (sismos) y AEMET OpenData (avisos y previsión)</footer>
+  <footer>Coordinación de Emergencias 112 · Fuentes: IGN (sismos), AEMET OpenData (avisos y previsión), RainViewer (radar) y NASA FIRMS (incendios)</footer>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
@@ -172,6 +194,8 @@
       const fecha = cells[1].textContent.trim();
       const horaUTC = cells[2].textContent.trim();
       const horaLocal = cells[3].textContent.trim();
+      const lat = parseFloat(cells[4].textContent.trim().replace(',', '.'));
+      const lon = parseFloat(cells[5].textContent.trim().replace(',', '.'));
       const mag = parseFloat(cells[7].textContent.trim().replace(',', '.'));
       const depth = parseFloat(cells[6].textContent.trim().replace(',', '.'));
       const locRaw = cells[10].textContent.trim();
@@ -183,7 +207,7 @@
       let dateObj = null;
       if (dd && mmn && yyyy && horaUTC) dateObj = new Date(`${yyyy}-${mmn}-${dd}T${horaUTC}Z`);
       if (!dateObj || isNaN(dateObj.getTime())) return;
-      rows.push({ id, horaLocal, mag, depth, loc, dateObj });
+      rows.push({ id, horaLocal, mag, depth, loc, lat, lon, dateObj });
     });
     return rows;
   }
@@ -211,13 +235,29 @@
       .filter(r => (now - r.dateObj.getTime()) <= hours * 3600 * 1000)
       .sort((a,b) => b.dateObj - a.dateObj);
     const list = document.getElementById('quakeList');
-    if (!filtered.length) { list.innerHTML = '<div class="empty">Sin sismos en Málaga para este rango.</div>'; return; }
-    list.innerHTML = filtered.map(r => `
-      <div class="quake-row">
-        <span class="mag" style="background:${magClass(r.mag)}">${isFinite(r.mag) ? r.mag.toFixed(1) : '—'}</span>
-        <span class="loc">${r.loc}</span>
-        <span class="time">${r.horaLocal} · ${isFinite(r.depth) ? r.depth.toFixed(0)+' km' : ''}</span>
-      </div>`).join('');
+    if (!filtered.length) { list.innerHTML = '<div class="empty">Sin sismos en Málaga para este rango.</div>'; }
+    else {
+      list.innerHTML = filtered.map(r => `
+        <div class="quake-row">
+          <span class="mag" style="background:${magClass(r.mag)}">${isFinite(r.mag) ? r.mag.toFixed(1) : '—'}</span>
+          <span class="loc">${r.loc}</span>
+          <span class="time">${r.horaLocal} · ${isFinite(r.depth) ? r.depth.toFixed(0)+' km' : ''}</span>
+        </div>`).join('');
+    }
+    renderQuakeMarkers(filtered);
+  }
+
+  function renderQuakeMarkers(filtered){
+    if (!layers.sismos) return;
+    layers.sismos.clearLayers();
+    filtered.forEach(r => {
+      if (!isFinite(r.lat) || !isFinite(r.lon)) return;
+      const color = magClass(r.mag);
+      L.circleMarker([r.lat, r.lon], {
+        radius: 6 + Math.max(0, r.mag) * 2, color: '#fff', weight: 1.5, fillColor: color, fillOpacity: 0.75
+      }).bindPopup(`<b>M ${isFinite(r.mag) ? r.mag.toFixed(1) : '—'}</b> — ${r.loc}<br>${r.horaLocal}${isFinite(r.depth) ? ' · '+r.depth.toFixed(0)+' km' : ''}`)
+        .addTo(layers.sismos);
+    });
   }
 
   document.getElementById('quakeFilters').addEventListener('click', (e) => {
@@ -228,14 +268,28 @@
     renderQuakes();
   });
 
-  // ---------- Avisos AEMET + mapa ----------
+  // ---------- Mapa con capas conmutables ----------
   let map, zonasGeo = {};
+  const layers = {}; // { avisos, sismos, radar, incendios } -> L.layerGroup
 
   function initMap(){
     map = L.map('map', { scrollWheelZoom: false }).setView([36.75, -4.75], 9);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; OpenStreetMap contributors', maxZoom: 18
     }).addTo(map);
+
+    layers.avisos = L.layerGroup().addTo(map);
+    layers.sismos = L.layerGroup().addTo(map);
+    layers.radar = L.layerGroup(); // arranca oculta (mucha info a la vez)
+    layers.incendios = L.layerGroup().addTo(map);
+
+    document.getElementById('layerToggles').addEventListener('change', (e) => {
+      const cb = e.target.closest('input[data-layer]');
+      if (!cb) return;
+      const group = layers[cb.dataset.layer];
+      if (!group) return;
+      if (cb.checked) map.addLayer(group); else map.removeLayer(group);
+    });
   }
 
   function renderZonas(avisos){
@@ -249,18 +303,71 @@
         <span class="detalle">${z.avisos && z.avisos.length ? z.avisos.map(a=>a.fenomeno).join(', ') : ''}</span>
       </div>`).join('');
 
-    if (map && zonasGeo) {
-      entries.forEach(([code, z]) => {
-        const geo = zonasGeo[code];
-        if (!geo) return;
-        const color = NIVEL_COLOR_HEX[z.nivel] || '#8a94a3';
-        const poly = L.polygon(geo.points, {
-          color: '#ffffff', weight: 1, fillColor: color, fillOpacity: z.nivel==='verde' ? 0.25 : 0.6
-        }).addTo(map);
-        const detalle = (z.avisos||[]).map(a => `${a.fenomeno} (${NIVEL_LABEL[a.nivel]||a.nivel})`).join('<br>') || 'Sin avisos activos';
-        poly.bindPopup(`<b>${z.nombre}</b><br>Nivel: ${NIVEL_LABEL[z.nivel]||z.nivel}<br>${detalle}`);
+    if (!layers.avisos) return;
+    layers.avisos.clearLayers();
+    entries.forEach(([code, z]) => {
+      const geo = zonasGeo[code];
+      if (!geo) return;
+      const color = NIVEL_COLOR_HEX[z.nivel] || '#8a94a3';
+      const poly = L.polygon(geo.points, {
+        color: '#ffffff', weight: 1, fillColor: color, fillOpacity: z.nivel==='verde' ? 0.25 : 0.6
       });
+      const detalle = (z.avisos||[]).map(a => `${a.fenomeno} (${NIVEL_LABEL[a.nivel]||a.nivel})`).join('<br>') || 'Sin avisos activos';
+      poly.bindPopup(`<b>${z.nombre}</b><br>Nivel: ${NIVEL_LABEL[z.nivel]||z.nivel}<br>${detalle}`);
+      poly.addTo(layers.avisos);
+    });
+  }
+
+  // ---------- Radar de lluvia (RainViewer, público, sin API key) ----------
+  async function loadRadar(){
+    try {
+      const res = await fetch('https://api.rainviewer.com/public/weather-maps.json', { cache: 'no-store' });
+      const data = await res.json();
+      const frames = (data.radar && data.radar.past) || [];
+      const last = frames[frames.length - 1];
+      if (!last) return;
+      L.tileLayer(`${data.host}${last.path}/256/{z}/{x}/{y}/2/1_1.png`, {
+        opacity: 0.6, attribution: 'Radar: RainViewer.com'
+      }).addTo(layers.radar);
+    } catch (e) { /* si falla, el toggle simplemente no muestra nada */ }
+  }
+
+  // ---------- Incendios activos (NASA FIRMS) ----------
+  async function loadIncendios(){
+    try {
+      const res = await fetch('data/incendios.json', { cache: 'no-store' });
+      const data = await res.json();
+      const status = document.getElementById('firmsStatus');
+      if (!data.configurado) {
+        status.style.display = '';
+        return;
+      }
+      status.style.display = 'none';
+      layers.incendios.clearLayers();
+      (data.focos || []).forEach(f => {
+        L.circleMarker([f.lat, f.lon], {
+          radius: 6, color: '#fff', weight: 1.5, fillColor: '#e8541e', fillOpacity: 0.85
+        }).bindPopup(`🔥 Foco detectado por satélite<br>${f.fecha} ${f.hora ? f.hora.slice(0,2)+':'+f.hora.slice(2) : ''} UTC<br>Confianza: ${f.confianza || '—'}${f.frp ? ' · FRP: '+f.frp : ''}`)
+          .addTo(layers.incendios);
+      });
+    } catch (e) {
+      document.getElementById('firmsStatus').style.display = '';
     }
+  }
+
+  // ---------- Historial de avisos ----------
+  function renderHistorial(historial){
+    const list = document.getElementById('historialList');
+    if (!historial || !historial.length) {
+      list.innerHTML = '<div class="empty">Sin avisos amarillos, naranjas o rojos en los últimos 7 días.</div>';
+      return;
+    }
+    list.innerHTML = historial.map(h => `
+      <div class="historial-row">
+        <span class="fecha">${new Date(h.desde).toLocaleDateString('es-ES', {day:'2-digit', month:'2-digit'})}</span>
+        <span>${h.zona} — ${h.fenomeno}</span>
+        <span class="badge" style="background:${NIVEL_COLOR_HEX[h.nivel]||'#8a94a3'}">${NIVEL_LABEL[h.nivel]||h.nivel}</span>
+      </div>`).join('');
   }
 
   // ---------- Previsión ----------
@@ -295,19 +402,23 @@
       zonasGeo = await geoRes.json();
       renderZonas(data.avisos);
       renderPrevision(data.prevision);
+      renderHistorial(data.historial);
       const dt = new Date(data.generated_at);
       document.getElementById('updatedLine').textContent =
-        'Sismos: en vivo (IGN) · Avisos y previsión AEMET actualizados: ' + dt.toLocaleString('es-ES');
+        'Sismos y radar: en vivo · Avisos, previsión e incendios actualizados: ' + dt.toLocaleString('es-ES');
     } catch (e) {
       document.getElementById('updatedLine').textContent = 'No se pudieron cargar los avisos/previsión AEMET.';
       document.getElementById('zonaList').innerHTML = '<div class="empty">Sin datos disponibles.</div>';
       document.getElementById('previsionGrid').innerHTML = '<div class="empty">Sin datos disponibles.</div>';
+      document.getElementById('historialList').innerHTML = '<div class="empty">Sin datos disponibles.</div>';
     }
   }
 
   initMap();
   loadQuakes();
   loadAemetData();
+  loadRadar();
+  loadIncendios();
 })();
 </script>
 </body>
