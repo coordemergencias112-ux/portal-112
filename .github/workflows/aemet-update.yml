@@ -1,4 +1,4 @@
-name: Actualizar alertas Málaga (AEMET)
+name: Actualizar Alertas Málaga
 
 on:
   schedule:
@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  update-aemet:
+  update-datos:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,7 +18,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Ejecutar scraper AEMET
+      - name: Ejecutar scraper AEMET (avisos y previsión)
         env:
           AEMET_API_KEY: ${{ secrets.AEMET_API_KEY }}
         run: python alertas-malaga/scripts/aemet_scraper.py
@@ -28,10 +28,13 @@ jobs:
           FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
         run: python alertas-malaga/scripts/firms_scraper.py
 
+      - name: Ejecutar scraper SAIH Hidrosur (ríos, embalses, lluvia)
+        run: python alertas-malaga/scripts/saih_scraper.py
+
       - name: Commit y push si hay cambios
         run: |
           git config user.name "aemet-bot"
           git config user.email "actions@github.com"
-          git add alertas-malaga/data/aemet_malaga.json alertas-malaga/data/incendios.json
-          git diff --cached --quiet || git commit -m "Actualizar avisos, previsión e incendios Málaga"
+          git add alertas-malaga/data/aemet_malaga.json alertas-malaga/data/incendios.json alertas-malaga/data/saih.json
+          git diff --cached --quiet || git commit -m "Actualizar avisos, previsión, incendios y SAIH Hidrosur Málaga"
           git push
