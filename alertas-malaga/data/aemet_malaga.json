@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-25T08:47:30Z",
+  "generated_at": "2026-08-25T09:39:04Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -43,40 +43,8 @@
       "id": "29067",
       "nombre": "Málaga capital",
       "referencia": "Costa",
-      "dias": [
-        {
-          "fecha": "2026-08-25",
-          "probPrecipitacion": 5,
-          "vientoVelocidad": 25,
-          "vientoDireccion": "O",
-          "tempMax": 31,
-          "tempMin": 23
-        },
-        {
-          "fecha": "2026-08-26",
-          "probPrecipitacion": 5,
-          "vientoVelocidad": 20,
-          "vientoDireccion": "NO",
-          "tempMax": 34,
-          "tempMin": 21
-        },
-        {
-          "fecha": "2026-08-27",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 20,
-          "vientoDireccion": "O",
-          "tempMax": 32,
-          "tempMin": 20
-        },
-        {
-          "fecha": "2026-08-28",
-          "probPrecipitacion": 10,
-          "vientoVelocidad": 20,
-          "vientoDireccion": "NO",
-          "tempMax": 31,
-          "tempMin": 19
-        }
-      ]
+      "error": "HTTP Error 500: Internal Server Error",
+      "dias": []
     },
     {
       "id": "29079",
@@ -85,8 +53,8 @@
       "dias": [
         {
           "fecha": "2026-08-25",
-          "probPrecipitacion": 15,
-          "vientoVelocidad": 20,
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 15,
           "vientoDireccion": "N",
           "tempMax": 33,
           "tempMin": 16
@@ -94,16 +62,16 @@
         {
           "fecha": "2026-08-26",
           "probPrecipitacion": 10,
-          "vientoVelocidad": 15,
+          "vientoVelocidad": 20,
           "vientoDireccion": "NO",
           "tempMax": 33,
           "tempMin": 19
         },
         {
           "fecha": "2026-08-27",
-          "probPrecipitacion": 10,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "S",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 20,
+          "vientoDireccion": "N",
           "tempMax": 31,
           "tempMin": 17
         },
