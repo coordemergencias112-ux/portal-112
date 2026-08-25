@@ -115,10 +115,29 @@
   .dia-row .temp{ color:var(--ink-faint); white-space:nowrap; }
   footer{ margin-top:30px; text-align:center; font-size:.72rem; color:var(--ink-faint); }
   .status-dot{ display:inline-block; width:9px; height:9px; border-radius:50%; }
+
+  /* Modo "mapa a pantalla completa" (?mapa=full), pensado para abrir en una
+     ventana/monitor aparte, tipo pantalla de sala de coordinación. */
+  body.mapa-full{ padding:0; overflow:hidden; height:100dvh; }
+  body.mapa-full header.top, body.mapa-full .updated, body.mapa-full footer{ display:none; }
+  body.mapa-full .cards{ display:block; height:100dvh; gap:0; }
+  body.mapa-full .card{ display:none; }
+  body.mapa-full #mapCard{
+    display:block; height:100dvh; border-radius:0; border:none; box-shadow:none;
+    display:flex; flex-direction:column; padding:10px 14px;
+  }
+  body.mapa-full #mapCard h2{ font-size:1rem; }
+  body.mapa-full #btnAbrirVentana{ display:none; }
+  body.mapa-full #map{ flex:1; height:auto; }
+  #btnPantallaCompleta{ display:none; }
+  body.mapa-full #btnPantallaCompleta{
+    display:inline-flex; align-items:center; gap:6px; position:absolute; top:14px; right:14px; z-index:1000;
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
+  <button class="pill" id="btnPantallaCompleta" type="button">⛶ Pantalla completa</button>
   <header class="top">
     <div>
       <a class="back" href="../index.html">← Portal 112</a>
@@ -166,15 +185,20 @@
       </p>
     </div>
 
-    <div class="card full">
-      <h2>🗺️ Mapa de riesgos — Málaga</h2>
+    <div class="card full" id="mapCard">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+        <h2 style="margin:0">🗺️ Mapa de riesgos — Málaga</h2>
+        <button class="pill" id="btnAbrirVentana" type="button">🖥️ Abrir en pantalla completa ↗</button>
+      </div>
       <p class="desc">Zonas de aviso AEMET (con sus polígonos oficiales), sismos, radar de lluvia e incendios activos, todo en un mapa. Usa los filtros para mostrar u ocultar cada capa.</p>
       <div class="layer-toggles" id="layerToggles">
         <label><input type="checkbox" data-layer="avisos" checked> ⚠️ Zonas de aviso</label>
         <label><input type="checkbox" data-layer="sismos" checked> 🌍 Sismos</label>
         <label><input type="checkbox" data-layer="radar"> 🌧️ Radar de lluvia</label>
         <label><input type="checkbox" data-layer="incendios" checked> 🔥 Incendios activos</label>
-        <label><input type="checkbox" data-layer="saih" checked> 🌊 SAIH Hidrosur</label>
+        <label><input type="checkbox" data-layer="saihRios" checked> 🌊 Ríos</label>
+        <label><input type="checkbox" data-layer="saihEmbalses" checked> 🏞️ Embalses</label>
+        <label><input type="checkbox" data-layer="saihLluvia" checked> 💧 Pluviómetros</label>
       </div>
       <div id="map"></div>
       <div class="legend">
@@ -206,7 +230,22 @@
         <div id="saihRios"><div class="empty">Cargando ríos…</div></div>
         <h3>Embalses</h3>
         <div id="saihEmbalses"><div class="empty">Cargando embalses…</div></div>
-        <h3>Pluviómetros con lluvia registrada</h3>
+        <h3>Pluviómetros</h3>
+        <div class="pill-group" id="lluviaVentanaFilters">
+          <button class="pill" data-ventana="ultima_hora">Última hora</button>
+          <button class="pill" data-ventana="hora_anterior">Hora anterior</button>
+          <button class="pill" data-ventana="acum_12h">Acum. 12h</button>
+          <button class="pill active" data-ventana="acum_24h">Acum. 24h</button>
+          <button class="pill" data-ventana="acum_hoy">Acum. hoy</button>
+          <button class="pill" data-ventana="acum_ayer">Acum. ayer</button>
+          <button class="pill" data-ventana="todos">Todas las franjas</button>
+        </div>
+        <div class="pill-group" id="lluviaTopFilters">
+          <button class="pill" data-top="1">El que más llueve</button>
+          <button class="pill active" data-top="5">Top 5</button>
+          <button class="pill" data-top="10">Top 10</button>
+          <button class="pill" data-top="todos">Todos (23)</button>
+        </div>
         <div id="saihLluvia"><div class="empty">Cargando pluviómetros…</div></div>
       </div>
     </div>
@@ -340,7 +379,9 @@
     layers.sismos = L.layerGroup().addTo(map);
     layers.radar = L.layerGroup(); // arranca oculta (mucha info a la vez)
     layers.incendios = L.layerGroup().addTo(map);
-    layers.saih = L.layerGroup().addTo(map);
+    layers.saihRios = L.layerGroup().addTo(map);
+    layers.saihEmbalses = L.layerGroup().addTo(map);
+    layers.saihLluvia = L.layerGroup().addTo(map);
 
     document.getElementById('layerToggles').addEventListener('change', (e) => {
       const cb = e.target.closest('input[data-layer]');
@@ -456,6 +497,12 @@
 
   const ORDEN_ESTADO_SAIH = { rojo:0, naranja:1, amarillo:2, vigilancia:3, verde:4, sin_datos:5 };
   let riosGeo = {}, riosMunicipios = {};
+  let lluviaDatos = [];
+  let ventanaLluvia = 'acum_24h', topLluvia = '5';
+  const VENTANA_LABEL = {
+    ultima_hora: 'Última hora', hora_anterior: 'Hora anterior', acum_12h: 'Acum. 12h',
+    acum_24h: 'Acum. 24h', acum_hoy: 'Acum. hoy', acum_ayer: 'Acum. ayer', todos: 'todas las franjas'
+  };
 
   // Rango de velocidad de avenida MUY orientativo (torrentes mediterráneos): 5-15 km/h.
   // Ver el aviso permanente en la tarjeta - esto no es un modelo hidrológico.
@@ -487,8 +534,65 @@
       </details>`;
   }
 
+  function lluviaValorNum(l, ventana){
+    const v = ventana === 'todos' ? l.acum_24h : l[ventana];
+    return v == null ? -1 : v;
+  }
+
+  function lluviaValorTexto(l, ventana){
+    if (ventana === 'todos') {
+      return [['UH', l.ultima_hora], ['H.ant', l.hora_anterior], ['12h', l.acum_12h],
+              ['24h', l.acum_24h], ['Hoy', l.acum_hoy], ['Ayer', l.acum_ayer]]
+        .map(([lab, v]) => `${lab} ${v != null ? v.toFixed(1) : '—'}`).join(' · ') + ' mm';
+    }
+    const v = l[ventana];
+    return v != null ? v.toFixed(1) + ' mm' : 'sin dato para esta franja';
+  }
+
+  function pluviometrosFiltrados(){
+    const conValor = lluviaDatos.map(l => ({ ...l, _valor: lluviaValorNum(l, ventanaLluvia) }));
+    conValor.sort((a, b) => b._valor - a._valor);
+    return topLluvia === 'todos' ? conValor : conValor.slice(0, Number(topLluvia));
+  }
+
+  function renderLluvia(){
+    const filtrados = pluviometrosFiltrados();
+    document.getElementById('saihLluvia').innerHTML = filtrados.length ? filtrados.map(l => `
+      <div class="saih-row">
+        <span class="nombre">💧 ${l.nombre.replace(/\s*\(MA\)\s*$/, '')}</span>
+        <span class="valor">${lluviaValorTexto(l, ventanaLluvia)}</span>
+        ${saihBadge(l.estado)}
+      </div>`).join('') : '<div class="empty">Sin pluviómetros para este filtro.</div>';
+
+    if (!layers.saihLluvia) return;
+    layers.saihLluvia.clearLayers();
+    const idsVisibles = new Set(filtrados.map(l => l.estacion));
+    lluviaDatos.forEach(l => {
+      if (!idsVisibles.has(l.estacion) || !isFinite(l.lat) || !isFinite(l.lon)) return;
+      L.circleMarker([l.lat, l.lon], { radius: 6, color: '#fff', weight: 1.5, fillColor: SAIH_COLOR[l.estado] || '#8a94a3', fillOpacity: 0.85 })
+        .bindPopup(`💧 <b>${l.nombre.replace(/\s*\(MA\)\s*$/, '')}</b><br>${lluviaValorTexto(l, ventanaLluvia)}`)
+        .addTo(layers.saihLluvia);
+    });
+  }
+
+  document.getElementById('lluviaVentanaFilters').addEventListener('click', (e) => {
+    const btn = e.target.closest('.pill');
+    if (!btn) return;
+    ventanaLluvia = btn.dataset.ventana;
+    document.querySelectorAll('#lluviaVentanaFilters .pill').forEach(p => p.classList.toggle('active', p === btn));
+    renderLluvia();
+  });
+  document.getElementById('lluviaTopFilters').addEventListener('click', (e) => {
+    const btn = e.target.closest('.pill');
+    if (!btn) return;
+    topLluvia = btn.dataset.top;
+    document.querySelectorAll('#lluviaTopFilters .pill').forEach(p => p.classList.toggle('active', p === btn));
+    renderLluvia();
+  });
+
   function renderSaih(data){
-    const rios = data.rios || [], embalses = data.embalses || [], lluvia = (data.lluvia || []).filter(l => l.precip > 0);
+    const rios = data.rios || [], embalses = data.embalses || [];
+    lluviaDatos = data.lluvia || [];
 
     document.getElementById('saihRios').innerHTML = rios.length ? rios.map(r => `
       <div>
@@ -507,55 +611,56 @@
         <span></span>
       </div>`).join('') : '<div class="empty">Sin datos de embalses.</div>';
 
-    document.getElementById('saihLluvia').innerHTML = lluvia.length ? lluvia.map(l => `
-      <div class="saih-row">
-        <span class="nombre">💧 ${l.nombre.replace(/\s*\(MA\)\s*$/, '')}</span>
-        <span class="valor">${l.precip.toFixed(1)} mm ${l.precipacum != null ? '· acum. '+l.precipacum.toFixed(1)+' mm' : ''}</span>
-        ${saihBadge(l.estado)}
-      </div>`).join('') : '<div class="empty">Ningún pluviómetro de la provincia registra lluvia ahora mismo.</div>';
+    renderLluvia();
 
     if (data.data_timestamp) {
       document.getElementById('saihDesc').textContent =
         'Red de estaciones de la Junta de Andalucía · dato de la estación: ' + new Date(data.data_timestamp).toLocaleString('es-ES');
     }
 
-    if (!layers.saih) return;
-    layers.saih.clearLayers();
-    const addMarker = (s, icon, color, detalle) => {
-      if (!isFinite(s.lat) || !isFinite(s.lon)) return;
-      L.circleMarker([s.lat, s.lon], { radius: 6, color: '#fff', weight: 1.5, fillColor: color, fillOpacity: 0.85 })
-        .bindPopup(`${icon} <b>${s.nombre.replace(/\s*\(MA\)\s*$/, '')}</b><br>${detalle}`)
-        .addTo(layers.saih);
-    };
-    rios.forEach(r => addMarker(r, '🌊', SAIH_COLOR[r.estado] || '#8a94a3',
-      `Nivel: ${r.nivel_rio != null ? r.nivel_rio.toFixed(2)+' m' : '—'} · Caudal: ${r.caudal != null ? r.caudal.toFixed(2)+' m³/s' : '—'}<br>Estado: ${SAIH_LABEL[r.estado]||r.estado}${aguasAbajoHtml(r.estacion)}`));
-    embalses.forEach(e => addMarker(e, '🏞️', '#2f6fed',
-      `Volumen: ${e.porcentaje != null ? e.porcentaje.toFixed(1)+'%' : '—'} ${e.volumen != null ? '('+e.volumen.toFixed(1)+' hm³)' : ''}`));
-    (data.lluvia || []).forEach(l => addMarker(l, '💧', SAIH_COLOR[l.estado] || '#8a94a3',
-      `Precipitación: ${l.precip != null ? l.precip.toFixed(1)+' mm' : '—'} · Acumulada: ${l.precipacum != null ? l.precipacum.toFixed(1)+' mm' : '—'}`));
+    if (layers.saihRios) {
+      layers.saihRios.clearLayers();
+      rios.forEach(r => {
+        if (!isFinite(r.lat) || !isFinite(r.lon)) return;
+        L.circleMarker([r.lat, r.lon], { radius: 6, color: '#fff', weight: 1.5, fillColor: SAIH_COLOR[r.estado] || '#8a94a3', fillOpacity: 0.85 })
+          .bindPopup(`🌊 <b>${r.nombre.replace(/\s*\(MA\)\s*$/, '')}</b><br>Nivel: ${r.nivel_rio != null ? r.nivel_rio.toFixed(2)+' m' : '—'} · Caudal: ${r.caudal != null ? r.caudal.toFixed(2)+' m³/s' : '—'}<br>Estado: ${SAIH_LABEL[r.estado]||r.estado}${aguasAbajoHtml(r.estacion)}`)
+          .addTo(layers.saihRios);
+      });
+    }
+    if (layers.saihEmbalses) {
+      layers.saihEmbalses.clearLayers();
+      embalses.forEach(e => {
+        if (!isFinite(e.lat) || !isFinite(e.lon)) return;
+        L.circleMarker([e.lat, e.lon], { radius: 6, color: '#fff', weight: 1.5, fillColor: '#2f6fed', fillOpacity: 0.85 })
+          .bindPopup(`🏞️ <b>${e.nombre.replace(/\s*\(MA\)\s*$/, '')}</b><br>Volumen: ${e.porcentaje != null ? e.porcentaje.toFixed(1)+'%' : '—'} ${e.volumen != null ? '('+e.volumen.toFixed(1)+' hm³)' : ''}`)
+          .addTo(layers.saihEmbalses);
+      });
+    }
 
     // Trazado de los ríos con estación (agrupando por río: un río puede tener
     // varias estaciones, se pinta con el peor estado de todas ellas)
-    const porRio = {};
-    rios.forEach(r => {
-      if (!r.rio_base) return;
-      if (!porRio[r.rio_base]) porRio[r.rio_base] = [];
-      porRio[r.rio_base].push(r);
-    });
-    Object.entries(porRio).forEach(([base, estaciones]) => {
-      const tramos = riosGeo[base];
-      if (!tramos || !tramos.length) return;
-      const peor = estaciones.reduce((a, b) =>
-        (ORDEN_ESTADO_SAIH[b.estado] ?? 9) < (ORDEN_ESTADO_SAIH[a.estado] ?? 9) ? b : a
-      );
-      const color = SAIH_COLOR[peor.estado] || '#2f6fed';
-      const nombreRio = 'Río ' + base.charAt(0) + base.slice(1).toLowerCase();
-      tramos.forEach(tramo => {
-        L.polyline(tramo, { color, weight: 3, opacity: 0.75 })
-          .bindPopup(`🌊 <b>${nombreRio}</b><br>Estaciones: ${estaciones.map(e => e.nombre.replace(/\s*\(MA\)\s*$/, '')).join(', ')}<br>Peor estado: ${SAIH_LABEL[peor.estado]||peor.estado}`)
-          .addTo(layers.saih);
+    if (layers.saihRios) {
+      const porRio = {};
+      rios.forEach(r => {
+        if (!r.rio_base) return;
+        if (!porRio[r.rio_base]) porRio[r.rio_base] = [];
+        porRio[r.rio_base].push(r);
       });
-    });
+      Object.entries(porRio).forEach(([base, estaciones]) => {
+        const tramos = riosGeo[base];
+        if (!tramos || !tramos.length) return;
+        const peor = estaciones.reduce((a, b) =>
+          (ORDEN_ESTADO_SAIH[b.estado] ?? 9) < (ORDEN_ESTADO_SAIH[a.estado] ?? 9) ? b : a
+        );
+        const color = SAIH_COLOR[peor.estado] || '#2f6fed';
+        const nombreRio = 'Río ' + base.charAt(0) + base.slice(1).toLowerCase();
+        tramos.forEach(tramo => {
+          L.polyline(tramo, { color, weight: 3, opacity: 0.75 })
+            .bindPopup(`🌊 <b>${nombreRio}</b><br>Estaciones: ${estaciones.map(e => e.nombre.replace(/\s*\(MA\)\s*$/, '')).join(', ')}<br>Peor estado: ${SAIH_LABEL[peor.estado]||peor.estado}`)
+            .addTo(layers.saihRios);
+        });
+      });
+    }
   }
 
   async function loadSaih(){
@@ -634,12 +739,29 @@
     }
   }
 
+  // ---------- Mapa a pantalla completa en otra ventana ----------
+  const esMapaFull = new URLSearchParams(location.search).get('mapa') === 'full';
+  if (esMapaFull) document.body.classList.add('mapa-full');
+
+  document.getElementById('btnAbrirVentana').addEventListener('click', () => {
+    window.open(location.pathname + '?mapa=full', '_blank', 'noopener');
+  });
+
+  document.getElementById('btnPantallaCompleta').addEventListener('click', () => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      document.documentElement.requestFullscreen().catch(() => {});
+    }
+  });
+
   initMap();
   loadQuakes();
   loadAemetData();
   loadRadar();
   loadIncendios();
   loadSaih();
+  if (esMapaFull) setTimeout(() => map.invalidateSize(), 200);
 })();
 </script>
 </body>
