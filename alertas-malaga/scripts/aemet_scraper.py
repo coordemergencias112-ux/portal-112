@@ -148,14 +148,16 @@ def fetch_avisos():
         if vigentes:
             nivel_actual = max((r["nivel"] for r in vigentes), key=lambda n: NIVEL_ORDEN.get(n, 0))
 
-        # avisos no-verdes futuros/vigentes en las próximas 72h, para la lista de detalle
+        # avisos no-verdes futuros/vigentes en las próximas 72h, para la lista de detalle,
+        # marcados con su estado (activo ahora mismo, o próximo) para poder filtrarlos
         proximos = []
         for r in recs:
             if r["nivel"] == "verde":
                 continue
-            d1 = parse_dt(r["hasta"])
+            d0, d1 = parse_dt(r["desde"]), parse_dt(r["hasta"])
             if d1 and d1 >= now:
-                proximos.append(r)
+                estado_tiempo = "activo" if (d0 and d0 <= now) else "proximo"
+                proximos.append({**r, "estado_tiempo": estado_tiempo})
         proximos.sort(key=lambda r: r["desde"])
 
         zones_out[zcode] = {
