@@ -453,7 +453,11 @@
       const last = frames[frames.length - 1];
       if (!last) return;
       L.tileLayer(`${data.host}${last.path}/256/{z}/{x}/{y}/2/1_1.png`, {
-        opacity: 0.6, attribution: 'Radar: RainViewer.com'
+        opacity: 0.6, attribution: 'Radar: RainViewer.com',
+        // RainViewer solo sirve teselas hasta zoom 7 (https://www.rainviewer.com/api/weather-maps-api.html);
+        // maxNativeZoom hace que Leaflet reescale esa misma tesela al hacer más zoom en vez de pedir
+        // una que no existe (que es lo que producía el cartel "Zoom Level Not Supported").
+        maxNativeZoom: 7
       }).addTo(layers.radar);
     } catch (e) { /* si falla, el toggle simplemente no muestra nada */ }
   }
