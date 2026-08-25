@@ -29,6 +29,17 @@ PROVINCIA = "Málaga"
 # 'tipo' no sea 'A' (así lo hace explícito el JS del visor original).
 RIO_OVERRIDE_IDS = {"34", "49", "58", "103", "104", "130"}
 
+# Listado OFICIAL de estaciones de embalse y pluviométricas (id, nombre,
+# tipo, lat/lon ETRS89->WGS84), a partir de un CSV maestro de la propia
+# red SAIH Hidrosur. Se usa como fuente de verdad para estas dos
+# categorías (nombre y coordenadas más precisos que los del bloque
+# <script> de la web, y clasificación oficial en vez de heurística):
+# "embalse" para las 7 presas y "pluviometrica" para los 12 pluviómetros
+# dedicados (se excluyen así las estaciones tipo METEOROLÓGICA que
+# también miden lluvia de paso, para no mezclar categorías).
+ESTACIONES_OFICIALES_PATH = os.path.join(os.path.dirname(__file__), "..", "data",
+                                          "estaciones_oficiales_embalses_pluviometricas.json")
+
 UMBRAL_LLUVIA_MODERADA = 5.0
 UMBRAL_LLUVIA_INTENSA = 15.0
 UMBRAL_VIGILANCIA_PCT = 0.85  # a partir de qué % del umbral se avisa "a punto de alcanzarlo"
@@ -104,6 +115,16 @@ def normaliza_rio(nombre):
     if s == "AZUD DE PAREDONES":
         return "GUADALHORCE"
     return s
+
+
+def cargar_estaciones_oficiales():
+    try:
+        with open(ESTACIONES_OFICIALES_PATH, encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:  # noqa: BLE001
+        print(f"AVISO: no se pudo cargar el listado oficial de estaciones ({e}); "
+              f"se usará la clasificación heurística de la web como respaldo.", file=sys.stderr)
+        return {}
 
 
 def categoria_de(tipo, estacion_id):
@@ -213,13 +234,32 @@ def main():
     print("Descargando detalle de precipitación (franjas horarias)...")
     detalle_precip = fetch_precipitacion_detalle()
 
+    oficiales = cargar_estaciones_oficiales()
+    if oficiales:
+        print(f"Usando listado oficial de estaciones ({len(oficiales)}: "
+              f"{sum(1 for v in oficiales.values() if v['tipo']=='embalse')} embalses, "
+              f"{sum(1 for v in oficiales.values() if v['tipo']=='pluviometrica')} pluviométricas)")
+
     rios, embalses, lluvia = [], [], []
     for s in malaga:
-        cat = categoria_de(s["tipo"], s["estacion"])
-        lat, lon = to_float(s["latitud"]), to_float(s["longitud"])
+        oficial = oficiales.get(s["estacion"])
+        if oficial:
+            # El listado oficial manda: solo estas 19 estaciones cuentan como
+            # embalse/pluviómetro (se excluyen así las meteorológicas que también
+            # miden lluvia de paso, aunque el heurístico de la web las marcaría igual).
+            cat = "embalse" if oficial["tipo"] == "embalse" else "lluvia"
+        elif oficiales:
+            heur = categoria_de(s["tipo"], s["estacion"])
+            cat = heur if heur == "rio" else "otro"  # listado oficial cargado -> ya no vale el heurístico para embalse/lluvia
+        else:
+            cat = categoria_de(s["tipo"], s["estacion"])  # sin listado oficial disponible: heurístico de respaldo
+
+        lat = oficial["lat"] if oficial else to_float(s["latitud"])
+        lon = oficial["lon"] if oficial else to_float(s["longitud"])
+        nombre = oficial["nombre"] if oficial else s["nombre"].strip()
         base = {
             "estacion": s["estacion"],
-            "nombre": s["nombre"].strip(),
+            "nombre": nombre,
             "lat": lat,
             "lon": lon,
         }
