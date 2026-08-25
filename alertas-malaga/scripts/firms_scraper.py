@@ -19,6 +19,7 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.request
 from datetime import datetime, timezone
 
@@ -34,6 +35,22 @@ SENSOR = "VIIRS_SNPP_NRT"  # buena resolución (375 m) y baja tasa de falsos pos
 DIAS = 1  # detecciones del último día
 
 URL = f"https://firms.modaps.eosdis.nasa.gov/api/area/csv/{{key}}/{SENSOR}/{BBOX}/{DIAS}"
+
+
+def _get(url, retries=4, timeout=30):
+    """Descarga con reintentos: los runners de GitHub Actions a veces dan
+    'Network is unreachable' de forma puntual (IPv6 sin ruta) contra
+    algunos hosts .gov - un par de reintentos lo resuelve casi siempre."""
+    last_err = None
+    for attempt in range(retries):
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "portal-112-alertas-malaga"})
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                return resp.read()
+        except Exception as e:  # noqa: BLE001
+            last_err = e
+            time.sleep(3 * (attempt + 1))
+    raise last_err
 
 
 def main():
@@ -52,9 +69,7 @@ def main():
             json.dump(payload, f, ensure_ascii=False, indent=2)
         return
 
-    req = urllib.request.Request(URL.format(key=MAP_KEY), headers={"User-Agent": "portal-112-alertas-malaga"})
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        raw = resp.read().decode("utf-8", "replace")
+    raw = _get(URL.format(key=MAP_KEY)).decode("utf-8", "replace")
 
     if raw.lstrip().lower().startswith(("invalid", "error")):
         raise RuntimeError(f"FIRMS respondió con error: {raw[:200]}")
