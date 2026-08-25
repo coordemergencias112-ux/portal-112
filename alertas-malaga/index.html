@@ -230,7 +230,7 @@
         <div id="saihRios"><div class="empty">Cargando ríos…</div></div>
         <h3>Embalses</h3>
         <div id="saihEmbalses"><div class="empty">Cargando embalses…</div></div>
-        <h3>Pluviómetros</h3>
+        <h3>Pluviómetros <span style="font-weight:400;color:var(--ink-faint);font-size:.72rem">— elige una o varias franjas para comparar (se muestran las 23 estaciones siempre)</span></h3>
         <div class="pill-group" id="lluviaVentanaFilters">
           <button class="pill" data-ventana="ultima_hora">Última hora</button>
           <button class="pill" data-ventana="hora_anterior">Hora anterior</button>
@@ -238,15 +238,9 @@
           <button class="pill active" data-ventana="acum_24h">Acum. 24h</button>
           <button class="pill" data-ventana="acum_hoy">Acum. hoy</button>
           <button class="pill" data-ventana="acum_ayer">Acum. ayer</button>
-          <button class="pill" data-ventana="todos">Todas las franjas</button>
+          <button class="pill" id="btnTodasFranjas">Todas las franjas</button>
         </div>
-        <div class="pill-group" id="lluviaTopFilters">
-          <button class="pill" data-top="1">El que más llueve</button>
-          <button class="pill active" data-top="5">Top 5</button>
-          <button class="pill" data-top="10">Top 10</button>
-          <button class="pill" data-top="todos">Todos (23)</button>
-        </div>
-        <div id="saihLluvia"><div class="empty">Cargando pluviómetros…</div></div>
+        <div id="saihLluvia" class="quake-list"><div class="empty">Cargando pluviómetros…</div></div>
       </div>
     </div>
 
@@ -502,10 +496,15 @@
   const ORDEN_ESTADO_SAIH = { rojo:0, naranja:1, amarillo:2, vigilancia:3, verde:4, sin_datos:5 };
   let riosGeo = {}, riosMunicipios = {};
   let lluviaDatos = [];
-  let ventanaLluvia = 'acum_24h', topLluvia = '5';
+  const TODAS_VENTANAS = ['ultima_hora', 'hora_anterior', 'acum_12h', 'acum_24h', 'acum_hoy', 'acum_ayer'];
+  let ventanasLluvia = new Set(['acum_24h']); // multiselección, para poder comparar franjas
   const VENTANA_LABEL = {
     ultima_hora: 'Última hora', hora_anterior: 'Hora anterior', acum_12h: 'Acum. 12h',
-    acum_24h: 'Acum. 24h', acum_hoy: 'Acum. hoy', acum_ayer: 'Acum. ayer', todos: 'todas las franjas'
+    acum_24h: 'Acum. 24h', acum_hoy: 'Acum. hoy', acum_ayer: 'Acum. ayer'
+  };
+  const VENTANA_LABEL_CORTA = {
+    ultima_hora: 'UH', hora_anterior: 'H.ant', acum_12h: '12h',
+    acum_24h: '24h', acum_hoy: 'Hoy', acum_ayer: 'Ayer'
   };
 
   // Rango de velocidad de avenida MUY orientativo (torrentes mediterráneos): 5-15 km/h.
@@ -539,58 +538,66 @@
   }
 
   function lluviaValorNum(l, ventana){
-    const v = ventana === 'todos' ? l.acum_24h : l[ventana];
+    const v = l[ventana];
     return v == null ? -1 : v;
   }
 
-  function lluviaValorTexto(l, ventana){
-    if (ventana === 'todos') {
-      return [['UH', l.ultima_hora], ['H.ant', l.hora_anterior], ['12h', l.acum_12h],
-              ['24h', l.acum_24h], ['Hoy', l.acum_hoy], ['Ayer', l.acum_ayer]]
-        .map(([lab, v]) => `${lab} ${v != null ? v.toFixed(1) : '—'}`).join(' · ') + ' mm';
-    }
-    const v = l[ventana];
-    return v != null ? v.toFixed(1) + ' mm' : 'sin dato para esta franja';
+  function lluviaValorTexto(l, ventanas){
+    return ventanas.map(v => {
+      const val = l[v];
+      return `${VENTANA_LABEL_CORTA[v]}: ${val != null ? val.toFixed(1)+' mm' : 'Sin datos'}`;
+    }).join(' · ');
   }
 
-  function pluviometrosFiltrados(){
-    const conValor = lluviaDatos.map(l => ({ ...l, _valor: lluviaValorNum(l, ventanaLluvia) }));
-    conValor.sort((a, b) => b._valor - a._valor);
-    return topLluvia === 'todos' ? conValor : conValor.slice(0, Number(topLluvia));
+  function pluviometrosOrdenados(){
+    // se ordena por la primera franja seleccionada (si hay varias, esa manda el orden);
+    // sin datos (-1) siempre va al final
+    const ventanas = [...ventanasLluvia];
+    const principal = ventanas[0] || 'acum_24h';
+    return [...lluviaDatos].sort((a, b) => lluviaValorNum(b, principal) - lluviaValorNum(a, principal));
   }
 
   function renderLluvia(){
-    const filtrados = pluviometrosFiltrados();
-    document.getElementById('saihLluvia').innerHTML = filtrados.length ? filtrados.map(l => `
+    if (ventanasLluvia.size === 0) ventanasLluvia.add('acum_24h'); // siempre al menos una franja activa
+    const ventanas = [...ventanasLluvia];
+    const ordenados = pluviometrosOrdenados();
+
+    document.getElementById('saihLluvia').innerHTML = ordenados.length ? ordenados.map(l => `
       <div class="saih-row">
         <span class="nombre">💧 ${l.nombre.replace(/\s*\(MA\)\s*$/, '')}</span>
-        <span class="valor">${lluviaValorTexto(l, ventanaLluvia)}</span>
+        <span class="valor">${lluviaValorTexto(l, ventanas)}</span>
         ${saihBadge(l.estado)}
-      </div>`).join('') : '<div class="empty">Sin pluviómetros para este filtro.</div>';
+      </div>`).join('') : '<div class="empty">Sin datos disponibles.</div>';
 
     if (!layers.saihLluvia) return;
     layers.saihLluvia.clearLayers();
-    const idsVisibles = new Set(filtrados.map(l => l.estacion));
     lluviaDatos.forEach(l => {
-      if (!idsVisibles.has(l.estacion) || !isFinite(l.lat) || !isFinite(l.lon)) return;
+      if (!isFinite(l.lat) || !isFinite(l.lon)) return;
       L.circleMarker([l.lat, l.lon], { radius: 6, color: '#fff', weight: 1.5, fillColor: SAIH_COLOR[l.estado] || '#8a94a3', fillOpacity: 0.85 })
-        .bindPopup(`💧 <b>${l.nombre.replace(/\s*\(MA\)\s*$/, '')}</b><br>${lluviaValorTexto(l, ventanaLluvia)}`)
+        .bindPopup(`💧 <b>${l.nombre.replace(/\s*\(MA\)\s*$/, '')}</b><br>${lluviaValorTexto(l, ventanas)}`)
         .addTo(layers.saihLluvia);
     });
   }
 
   document.getElementById('lluviaVentanaFilters').addEventListener('click', (e) => {
     const btn = e.target.closest('.pill');
-    if (!btn) return;
-    ventanaLluvia = btn.dataset.ventana;
-    document.querySelectorAll('#lluviaVentanaFilters .pill').forEach(p => p.classList.toggle('active', p === btn));
+    if (!btn || !btn.dataset.ventana) return;
+    const v = btn.dataset.ventana;
+    if (ventanasLluvia.has(v)) {
+      if (ventanasLluvia.size > 1) ventanasLluvia.delete(v); // no se permite dejar 0 franjas activas
+    } else {
+      ventanasLluvia.add(v);
+    }
+    btn.classList.toggle('active', ventanasLluvia.has(v));
+    document.getElementById('btnTodasFranjas').classList.toggle('active', ventanasLluvia.size === TODAS_VENTANAS.length);
     renderLluvia();
   });
-  document.getElementById('lluviaTopFilters').addEventListener('click', (e) => {
-    const btn = e.target.closest('.pill');
-    if (!btn) return;
-    topLluvia = btn.dataset.top;
-    document.querySelectorAll('#lluviaTopFilters .pill').forEach(p => p.classList.toggle('active', p === btn));
+  document.getElementById('btnTodasFranjas').addEventListener('click', () => {
+    const activarTodas = ventanasLluvia.size < TODAS_VENTANAS.length;
+    ventanasLluvia = new Set(activarTodas ? TODAS_VENTANAS : ['acum_24h']);
+    document.querySelectorAll('#lluviaVentanaFilters [data-ventana]').forEach(p =>
+      p.classList.toggle('active', ventanasLluvia.has(p.dataset.ventana)));
+    document.getElementById('btnTodasFranjas').classList.toggle('active', activarTodas);
     renderLluvia();
   });
 
