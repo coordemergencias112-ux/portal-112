@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-25T07:57:41Z",
-  "data_timestamp": "2026-08-25T09:00:00",
+  "generated_at": "2026-08-25T08:15:14Z",
+  "data_timestamp": "2026-08-25T10:00:00",
   "rios": [
     {
       "estacion": "34",
@@ -14,7 +14,8 @@
       "prealerta": 4.0,
       "alerta": 5.0,
       "estado": "verde",
-      "info": {}
+      "info": {},
+      "rio_base": "AZUD DE PAREDONES"
     },
     {
       "estacion": "43",
@@ -22,13 +23,14 @@
       "lat": 36.8471,
       "lon": -4.2047,
       "nivel_rio": 0.03,
-      "caudal": 0.04,
+      "caudal": 0.03,
       "tendencia": "0",
       "aviso": 1.7,
       "prealerta": 2.3,
       "alerta": 2.8,
       "estado": "verde",
-      "info": {}
+      "info": {},
+      "rio_base": "BENAMARGOSA"
     },
     {
       "estacion": "106",
@@ -37,12 +39,13 @@
       "lon": -4.5105,
       "nivel_rio": 0.0,
       "caudal": 0.0,
-      "tendencia": "0",
+      "tendencia": "3",
       "aviso": 1.0,
       "prealerta": 2.0,
       "alerta": 3.2,
       "estado": "verde",
-      "info": {}
+      "info": {},
+      "rio_base": "CAMPANILLAS"
     },
     {
       "estacion": "13",
@@ -50,13 +53,14 @@
       "lat": 36.5672,
       "lon": -5.2463,
       "nivel_rio": 0.11,
-      "caudal": 0.65,
+      "caudal": 0.68,
       "tendencia": "0",
       "aviso": 1.1,
       "prealerta": 1.6,
       "alerta": 2.1,
       "estado": "verde",
-      "info": {}
+      "info": {},
+      "rio_base": "GENAL"
     },
     {
       "estacion": "104",
@@ -70,7 +74,8 @@
       "prealerta": 1.5,
       "alerta": 2.0,
       "estado": "verde",
-      "info": {}
+      "info": {},
+      "rio_base": "GRANDE"
     },
     {
       "estacion": "46",
@@ -84,21 +89,23 @@
       "prealerta": 1.5,
       "alerta": 2.0,
       "estado": "verde",
-      "info": {}
+      "info": {},
+      "rio_base": "GUADALHORCE"
     },
     {
       "estacion": "130",
       "nombre": "RÍO GUADALHORCE (ARCHIDONA) (MA)",
       "lat": 37.0821,
       "lon": -4.4554,
-      "nivel_rio": 0.09,
-      "caudal": 0.02,
-      "tendencia": "0",
+      "nivel_rio": 0.17,
+      "caudal": 0.17,
+      "tendencia": "1",
       "aviso": 2.0,
       "prealerta": 3.0,
       "alerta": 5.0,
       "estado": "verde",
-      "info": {}
+      "info": {},
+      "rio_base": "GUADALHORCE"
     },
     {
       "estacion": "127",
@@ -106,27 +113,29 @@
       "lat": 37.0401,
       "lon": -4.6958,
       "nivel_rio": 0.06,
-      "caudal": 0.07,
+      "caudal": 0.06,
       "tendencia": "0",
       "aviso": 2.5,
       "prealerta": 3.0,
       "alerta": 4.0,
       "estado": "verde",
-      "info": {}
+      "info": {},
+      "rio_base": "GUADALHORCE"
     },
     {
       "estacion": "38",
       "nombre": "RÍO GUADALHORCE (CÁRTAMA) (MA)",
       "lat": 36.7293,
       "lon": -4.6136,
-      "nivel_rio": 0.01,
-      "caudal": 0.0,
+      "nivel_rio": 0.02,
+      "caudal": 0.02,
       "tendencia": "0",
       "aviso": 2.5,
       "prealerta": 3.5,
       "alerta": 4.5,
       "estado": "verde",
-      "info": {}
+      "info": {},
+      "rio_base": "GUADALHORCE"
     },
     {
       "estacion": "129",
@@ -140,7 +149,8 @@
       "prealerta": 2.0,
       "alerta": 2.5,
       "estado": "verde",
-      "info": {}
+      "info": {},
+      "rio_base": "GUADALTEBA"
     },
     {
       "estacion": "103",
@@ -148,13 +158,14 @@
       "lat": 36.5797,
       "lon": -5.3374,
       "nivel_rio": 0.16,
-      "caudal": 0.52,
+      "caudal": 0.51,
       "tendencia": "0",
       "aviso": 2.0,
       "prealerta": 3.0,
       "alerta": 4.0,
       "estado": "verde",
-      "info": {}
+      "info": {},
+      "rio_base": "GUADIARO"
     },
     {
       "estacion": "128",
@@ -168,7 +179,8 @@
       "prealerta": 2.0,
       "alerta": 2.5,
       "estado": "verde",
-      "info": {}
+      "info": {},
+      "rio_base": "TURON"
     }
   ],
   "embalses": [
@@ -179,23 +191,23 @@
       "lon": -4.83,
       "volumen": 47.36,
       "porcentaje": 71.2,
-      "nivel": 336.97
+      "nivel": 336.96
     },
     {
       "estacion": "19",
       "nombre": "EMBALSE DE CASASOLA (MA)",
       "lat": 36.8062,
       "lon": -4.4951,
-      "volumen": 7.64,
-      "porcentaje": 35.2,
-      "nivel": 137.1
+      "volumen": 7.63,
+      "porcentaje": 35.1,
+      "nivel": 137.09
     },
     {
       "estacion": "16",
       "nombre": "EMBALSE DE LA CONCEPCIÓN (MA)",
       "lat": 36.54,
       "lon": -4.96,
-      "volumen": 37.28,
+      "volumen": 37.27,
       "porcentaje": 64.8,
       "nivel": 94.06
     },
@@ -213,7 +225,7 @@
       "nombre": "EMBALSE DEL GUADALHORCE (MA)",
       "lat": 36.96,
       "lon": -4.782,
-      "volumen": 116.58,
+      "volumen": 116.56,
       "porcentaje": 92.7,
       "nivel": 360.94
     },
@@ -231,7 +243,7 @@
       "nombre": "EMBALSE DEL LIMONERO (MA)",
       "lat": 36.7589,
       "lon": -4.434,
-      "volumen": 14.7,
+      "volumen": 14.69,
       "porcentaje": 100.0,
       "nivel": 95.44
     }
