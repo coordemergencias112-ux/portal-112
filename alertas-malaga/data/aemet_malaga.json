@@ -1,0 +1,121 @@
+{
+  "generated_at": "2026-08-25T06:36:26Z",
+  "avisos": {
+    "612901": {
+      "nombre": "Antequera",
+      "tipo": "interior",
+      "nivel": "verde",
+      "avisos": []
+    },
+    "612902": {
+      "nombre": "Ronda",
+      "tipo": "interior",
+      "nivel": "verde",
+      "avisos": []
+    },
+    "612903": {
+      "nombre": "Sol y Guadalhorce",
+      "tipo": "interior",
+      "nivel": "verde",
+      "avisos": []
+    },
+    "612903C": {
+      "nombre": "Costa - Sol y Guadalhorce",
+      "tipo": "litoral",
+      "nivel": "verde",
+      "avisos": []
+    },
+    "612904": {
+      "nombre": "Axarquía",
+      "tipo": "interior",
+      "nivel": "verde",
+      "avisos": []
+    },
+    "612904C": {
+      "nombre": "Costa - Axarquía",
+      "tipo": "litoral",
+      "nivel": "verde",
+      "avisos": []
+    }
+  },
+  "prevision": [
+    {
+      "id": "29067",
+      "nombre": "Málaga capital",
+      "referencia": "Costa",
+      "dias": [
+        {
+          "fecha": "2026-08-24",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 20,
+          "vientoDireccion": "O",
+          "tempMax": 33,
+          "tempMin": 20
+        },
+        {
+          "fecha": "2026-08-25",
+          "probPrecipitacion": 5,
+          "vientoVelocidad": 25,
+          "vientoDireccion": "O",
+          "tempMax": 31,
+          "tempMin": 19
+        },
+        {
+          "fecha": "2026-08-26",
+          "probPrecipitacion": 5,
+          "vientoVelocidad": 20,
+          "vientoDireccion": "NO",
+          "tempMax": 34,
+          "tempMin": 21
+        },
+        {
+          "fecha": "2026-08-27",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "SO",
+          "tempMax": 32,
+          "tempMin": 20
+        }
+      ]
+    },
+    {
+      "id": "29079",
+      "nombre": "Ronda",
+      "referencia": "Interior / Serranía",
+      "dias": [
+        {
+          "fecha": "2026-08-24",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 25,
+          "vientoDireccion": "N",
+          "tempMax": 31,
+          "tempMin": 18
+        },
+        {
+          "fecha": "2026-08-25",
+          "probPrecipitacion": 15,
+          "vientoVelocidad": 25,
+          "vientoDireccion": "N",
+          "tempMax": 33,
+          "tempMin": 15
+        },
+        {
+          "fecha": "2026-08-26",
+          "probPrecipitacion": 10,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "NO",
+          "tempMax": 33,
+          "tempMin": 19
+        },
+        {
+          "fecha": "2026-08-27",
+          "probPrecipitacion": 10,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "SO",
+          "tempMax": 31,
+          "tempMin": 18
+        }
+      ]
+    }
+  ]
+}
