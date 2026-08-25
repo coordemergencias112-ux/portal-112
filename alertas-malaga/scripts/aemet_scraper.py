@@ -47,6 +47,7 @@ FORECAST_POINTS = [
 ]
 
 NIVEL_ORDEN = {"verde": 0, "amarillo": 1, "naranja": 2, "rojo": 3}
+HISTORIAL_DIAS = 7  # cuánto conservamos el historial de avisos no-verdes
 
 
 def _get(url, params=None, retries=5, timeout=30):
@@ -165,7 +166,53 @@ def fetch_avisos():
                 {k: v for k, v in r.items() if k != "zona"} for r in proximos
             ],
         }
-    return zones_out
+
+    # todos los registros no-verdes vistos en esta pasada (para fundir con el historial)
+    vistos_ahora = [r for r in records if r["nivel"] != "verde"]
+    return zones_out, vistos_ahora
+
+
+def build_historial(vistos_ahora, ruta_json_previo):
+    """Mantiene una lista con los avisos no-verdes de los últimos
+    HISTORIAL_DIAS días, leyendo el JSON ya publicado (si existe) y
+    añadiendo lo nuevo visto en esta pasada. Así el historial sobrevive
+    aunque AEMET dé de baja el CAP en cuanto expira."""
+    now = datetime.now(timezone.utc)
+    previo = []
+    if os.path.exists(ruta_json_previo):
+        try:
+            with open(ruta_json_previo, encoding="utf-8") as f:
+                previo = json.load(f).get("historial", [])
+        except Exception:  # noqa: BLE001
+            previo = []
+
+    nuevos = [
+        {
+            "zona": ZONE_META.get(r["zona"], {}).get("nombre", r["zona"]),
+            "fenomeno": r["fenomeno"],
+            "nivel": r["nivel"],
+            "desde": r["desde"],
+            "hasta": r["hasta"],
+        }
+        for r in vistos_ahora
+    ]
+
+    combinados = {}
+    for item in previo + nuevos:
+        clave = (item["zona"], item["fenomeno"], item["nivel"], item["desde"])
+        combinados[clave] = item  # dedupe
+
+    corte = now.timestamp() - HISTORIAL_DIAS * 86400
+
+    def ts(item):
+        try:
+            return datetime.fromisoformat(item["desde"].replace("Z", "+00:00")).timestamp()
+        except Exception:  # noqa: BLE001
+            return 0
+
+    historial = [item for item in combinados.values() if ts(item) >= corte]
+    historial.sort(key=ts, reverse=True)
+    return historial
 
 
 def fetch_forecast():
@@ -202,25 +249,29 @@ def main():
         print("ERROR: falta la variable de entorno AEMET_API_KEY", file=sys.stderr)
         sys.exit(1)
 
+    out_dir = os.path.join(os.path.dirname(__file__), "..", "data")
+    os.makedirs(out_dir, exist_ok=True)
+    out_path = os.path.join(out_dir, "aemet_malaga.json")
+
     print("Descargando avisos AEMET...")
-    avisos = fetch_avisos()
+    avisos, vistos_ahora = fetch_avisos()
     print("Descargando previsión...")
     prevision = fetch_forecast()
+    historial = build_historial(vistos_ahora, out_path)
 
     payload = {
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "avisos": avisos,
         "prevision": prevision,
+        "historial": historial,
     }
 
-    out_dir = os.path.join(os.path.dirname(__file__), "..", "data")
-    os.makedirs(out_dir, exist_ok=True)
-    out_path = os.path.join(out_dir, "aemet_malaga.json")
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, indent=2)
     print(f"OK -> {out_path}")
     for zcode, z in avisos.items():
         print(f"  {z['nombre']:28s} nivel={z['nivel']}  avisos_proximos={len(z['avisos'])}")
+    print(f"  historial: {len(historial)} avisos en los últimos {HISTORIAL_DIAS} días")
 
 
 if __name__ == "__main__":
