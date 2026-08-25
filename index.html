@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portal 112</title>
+<meta name="theme-color" content="#144c53">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+  :root{
+    --ink:#101820; --ink-soft:#4b5560; --ink-faint:#7c8792;
+    --paper:#eef2f1; --surface:#ffffff; --surface-alt:#f5f8f7;
+    --border:#d8dfdc; --accent:#1f6f78; --accent-strong:#144c53; --accent-soft:#dbedec;
+    --shadow: 0 1px 2px rgba(16,24,32,.05), 0 6px 16px rgba(16,24,32,.06);
+    --radius-lg:18px; --radius-md:12px;
+    --font-ui: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#eef3f2; --ink-soft:#b7c2c6; --ink-faint:#8892988a;
+      --paper:#0b1215; --surface:#131c20; --surface-alt:#182226;
+      --border:#263133; --accent:#4fb3ac; --accent-strong:#7dd3cb; --accent-soft:#173634;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 20px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; min-height:100dvh; background:var(--paper); color:var(--ink);
+    font-family:var(--font-ui);
+    display:flex; flex-direction:column; align-items:center;
+    padding:max(24px, env(safe-area-inset-top)) 20px 32px;
+  }
+  header{ width:100%; max-width:720px; text-align:center; margin-bottom:28px; }
+  header h1{ font-size:1.5rem; margin:0 0 4px; letter-spacing:.02em; }
+  header p{ margin:0; color:var(--ink-soft); font-size:.95rem; }
+  .grid{
+    width:100%; max-width:720px; display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:14px;
+  }
+  a.tile{
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+    box-shadow:var(--shadow); padding:26px 14px; text-decoration:none; color:var(--ink);
+    transition:transform .12s ease, border-color .12s ease;
+  }
+  a.tile:hover, a.tile:focus-visible{ transform:translateY(-2px); border-color:var(--accent); outline:none; }
+  a.tile .icon{ font-size:2.1rem; line-height:1; }
+  a.tile .label{ font-weight:600; font-size:.95rem; text-align:center; }
+  a.tile .sub{ font-size:.75rem; color:var(--ink-faint); text-align:center; }
+  .tile.disabled{ opacity:.45; pointer-events:none; }
+  .badge-ext{
+    font-size:.65rem; font-weight:700; color:var(--accent-strong); background:var(--accent-soft);
+    border-radius:999px; padding:2px 8px; letter-spacing:.02em;
+  }
+  footer{ margin-top:36px; font-size:.75rem; color:var(--ink-faint); text-align:center; }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Portal 112</h1>
+    <p>Selecciona un módulo</p>
+  </header>
+
+  <nav class="grid" id="grid"></nav>
+
+  <footer>Coordinación de Emergencias 112</footer>
+
+<script>
+  // Añadir módulos aquí según se vayan incorporando.
+  var MODULOS = [
+    {
+      label: "Sismos",
+      sub: "Visor de sismicidad de Andalucía",
+      icon: "🌍",
+      href: "https://coordemergencias112-ux.github.io/visor-sismos-andalucia/",
+      external: true
+    },
+    {
+      label: "Fichaje / Turnos",
+      sub: "Guardia 112",
+      icon: "🕒",
+      href: "turnos/",
+      external: false
+    }
+  ];
+
+  var grid = document.getElementById('grid');
+  MODULOS.forEach(function(m){
+    var a = document.createElement('a');
+    a.className = 'tile';
+    a.href = m.href;
+    if (m.external) { a.target = '_blank'; a.rel = 'noopener'; }
+    a.innerHTML =
+      '<span class="icon">' + m.icon + '</span>' +
+      '<span class="label">' + m.label + '</span>' +
+      '<span class="sub">' + m.sub + '</span>' +
+      (m.external ? '<span class="badge-ext">↗ externo</span>' : '');
+    grid.appendChild(a);
+  });
+</script>
+</body>
+</html>
