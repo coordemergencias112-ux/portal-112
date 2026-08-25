@@ -17,6 +17,7 @@ import os
 import re
 import sys
 import time
+import unicodedata
 import urllib.request
 from datetime import datetime, timezone
 
@@ -87,6 +88,16 @@ def to_float(value):
         return float(v)
     except ValueError:
         return None
+
+
+def normaliza_rio(nombre):
+    """'RÍO GUADALHORCE (ARCHIDONA) (MA)' -> 'GUADALHORCE'. Misma normalización
+    que rios_geo_scraper.py, para poder unir cada estación con el trazado
+    del río correspondiente."""
+    s = unicodedata.normalize("NFKD", nombre).encode("ascii", "ignore").decode()
+    s = re.sub(r"\([^)]*\)", "", s)
+    s = re.sub(r"^\s*(rio|r[íi]o|arroyo)\s+", "", s.strip(), flags=re.I)
+    return s.strip().upper()
 
 
 def categoria_de(tipo, estacion_id):
@@ -175,7 +186,8 @@ def main():
             estado, info = evaluar_rio(nivel_rio, aviso, prealerta, alerta)
             rios.append({**base, "nivel_rio": nivel_rio, "caudal": to_float(s["caudal"]),
                          "tendencia": s["tendencia"].strip(), "aviso": aviso, "prealerta": prealerta,
-                         "alerta": alerta, "estado": estado, "info": info})
+                         "alerta": alerta, "estado": estado, "info": info,
+                         "rio_base": normaliza_rio(s["nombre"])})
         elif cat == "embalse":
             embalses.append({**base, "volumen": to_float(s["volumen"]), "porcentaje": to_float(s["porcentaje"]),
                               "nivel": to_float(s["nivel"])})
