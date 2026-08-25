@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-25T07:16:05Z",
+  "generated_at": "2026-08-25T07:36:28Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -45,14 +45,6 @@
       "referencia": "Costa",
       "dias": [
         {
-          "fecha": "2026-08-24",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 20,
-          "vientoDireccion": "O",
-          "tempMax": 32,
-          "tempMin": 20
-        },
-        {
           "fecha": "2026-08-25",
           "probPrecipitacion": 5,
           "vientoVelocidad": 25,
@@ -71,10 +63,18 @@
         {
           "fecha": "2026-08-27",
           "probPrecipitacion": 0,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "SO",
+          "vientoVelocidad": 20,
+          "vientoDireccion": "O",
           "tempMax": 32,
           "tempMin": 20
+        },
+        {
+          "fecha": "2026-08-28",
+          "probPrecipitacion": 10,
+          "vientoVelocidad": 20,
+          "vientoDireccion": "NO",
+          "tempMax": 31,
+          "tempMin": 19
         }
       ]
     },
@@ -84,20 +84,12 @@
       "referencia": "Interior / Serranía",
       "dias": [
         {
-          "fecha": "2026-08-24",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 25,
-          "vientoDireccion": "N",
-          "tempMax": 31,
-          "tempMin": 18
-        },
-        {
           "fecha": "2026-08-25",
           "probPrecipitacion": 15,
-          "vientoVelocidad": 25,
+          "vientoVelocidad": 20,
           "vientoDireccion": "N",
           "tempMax": 33,
-          "tempMin": 15
+          "tempMin": 16
         },
         {
           "fecha": "2026-08-26",
@@ -110,10 +102,18 @@
         {
           "fecha": "2026-08-27",
           "probPrecipitacion": 10,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "SO",
+          "vientoVelocidad": 15,
+          "vientoDireccion": "S",
           "tempMax": 31,
-          "tempMin": 18
+          "tempMin": 17
+        },
+        {
+          "fecha": "2026-08-28",
+          "probPrecipitacion": 15,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "N",
+          "tempMax": 31,
+          "tempMin": 15
         }
       ]
     }
