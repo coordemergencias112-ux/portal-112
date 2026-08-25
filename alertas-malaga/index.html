@@ -427,6 +427,9 @@
     return `<span class="badge" style="background:${color}">${label}</span>`;
   }
 
+  const ORDEN_ESTADO_SAIH = { rojo:0, naranja:1, amarillo:2, vigilancia:3, verde:4, sin_datos:5 };
+  let riosGeo = {};
+
   function renderSaih(data){
     const rios = data.rios || [], embalses = data.embalses || [], lluvia = (data.lluvia || []).filter(l => l.precip > 0);
 
@@ -470,12 +473,39 @@
       `Volumen: ${e.porcentaje != null ? e.porcentaje.toFixed(1)+'%' : '—'} ${e.volumen != null ? '('+e.volumen.toFixed(1)+' hm³)' : ''}`));
     (data.lluvia || []).forEach(l => addMarker(l, '💧', SAIH_COLOR[l.estado] || '#8a94a3',
       `Precipitación: ${l.precip != null ? l.precip.toFixed(1)+' mm' : '—'} · Acumulada: ${l.precipacum != null ? l.precipacum.toFixed(1)+' mm' : '—'}`));
+
+    // Trazado de los ríos con estación (agrupando por río: un río puede tener
+    // varias estaciones, se pinta con el peor estado de todas ellas)
+    const porRio = {};
+    rios.forEach(r => {
+      if (!r.rio_base) return;
+      if (!porRio[r.rio_base]) porRio[r.rio_base] = [];
+      porRio[r.rio_base].push(r);
+    });
+    Object.entries(porRio).forEach(([base, estaciones]) => {
+      const tramos = riosGeo[base];
+      if (!tramos || !tramos.length) return;
+      const peor = estaciones.reduce((a, b) =>
+        (ORDEN_ESTADO_SAIH[b.estado] ?? 9) < (ORDEN_ESTADO_SAIH[a.estado] ?? 9) ? b : a
+      );
+      const color = SAIH_COLOR[peor.estado] || '#2f6fed';
+      const nombreRio = 'Río ' + base.charAt(0) + base.slice(1).toLowerCase();
+      tramos.forEach(tramo => {
+        L.polyline(tramo, { color, weight: 3, opacity: 0.75 })
+          .bindPopup(`🌊 <b>${nombreRio}</b><br>Estaciones: ${estaciones.map(e => e.nombre.replace(/\s*\(MA\)\s*$/, '')).join(', ')}<br>Peor estado: ${SAIH_LABEL[peor.estado]||peor.estado}`)
+          .addTo(layers.saih);
+      });
+    });
   }
 
   async function loadSaih(){
     try {
-      const res = await fetch('data/saih.json', { cache: 'no-store' });
-      const data = await res.json();
+      const [dataRes, geoRes] = await Promise.all([
+        fetch('data/saih.json', { cache: 'no-store' }),
+        fetch('data/rios_geo.json', { cache: 'no-store' })
+      ]);
+      const data = await dataRes.json();
+      try { riosGeo = await geoRes.json(); } catch (e) { riosGeo = {}; }
       renderSaih(data);
     } catch (e) {
       ['saihRios','saihEmbalses','saihLluvia'].forEach(id =>
