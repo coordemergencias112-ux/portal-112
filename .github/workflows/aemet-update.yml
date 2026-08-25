@@ -23,10 +23,15 @@ jobs:
           AEMET_API_KEY: ${{ secrets.AEMET_API_KEY }}
         run: python alertas-malaga/scripts/aemet_scraper.py
 
+      - name: Ejecutar scraper NASA FIRMS (incendios)
+        env:
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+        run: python alertas-malaga/scripts/firms_scraper.py
+
       - name: Commit y push si hay cambios
         run: |
           git config user.name "aemet-bot"
           git config user.email "actions@github.com"
-          git add alertas-malaga/data/aemet_malaga.json
-          git diff --cached --quiet || git commit -m "Actualizar avisos y previsión AEMET Málaga"
+          git add alertas-malaga/data/aemet_malaga.json alertas-malaga/data/incendios.json
+          git diff --cached --quiet || git commit -m "Actualizar avisos, previsión e incendios Málaga"
           git push
