@@ -7,6 +7,8 @@ Descarga:
   - Avisos meteorológicos CAP vigentes (nivel por zona de aviso de Málaga)
   - Predicción diaria (lluvia / viento) para dos puntos de referencia:
       Málaga capital (costa) y Ronda (interior/serranía)
+  - Predicción horaria de HOY (temperatura, precipitación, prob. de lluvia
+      y viento por hora) para esos mismos dos puntos
 
 Escribe un único JSON estático (data/aemet_malaga.json) que la página
 alertas-malaga/index.html consume sin necesitar la API key.
@@ -246,6 +248,83 @@ def fetch_forecast():
     return out
 
 
+def _to_num(v):
+    """AEMET devuelve casi todo como string (a veces vacío); normaliza a número o None."""
+    if v is None or v == "":
+        return None
+    try:
+        return float(v) if "." in str(v) else int(v)
+    except (TypeError, ValueError):
+        return None
+
+
+def _indexar_por_hora(items):
+    """Indexa una lista [{value, periodo}] de la API horaria de AEMET por hora
+    (0-23). La mayoría de campos usan periodo de 2 dígitos (una hora exacta);
+    probPrecipitacion a veces usa un rango de 4 dígitos (p.ej. "0006" = 00h-06h),
+    en cuyo caso el valor se replica en todas las horas de ese rango."""
+    out = {}
+    for it in items or []:
+        periodo = str(it.get("periodo", ""))
+        valor = it.get("value")
+        if len(periodo) == 2 and periodo.isdigit():
+            out[int(periodo)] = valor
+        elif len(periodo) == 4 and periodo.isdigit():
+            ini, fin = int(periodo[:2]), int(periodo[2:])
+            for h in range(ini, fin if fin > ini else 24):
+                out.setdefault(h, valor)
+    return out
+
+
+def _viento_por_hora(items):
+    out = {}
+    for it in items or []:
+        periodo = str(it.get("periodo", ""))
+        if not (len(periodo) == 2 and periodo.isdigit()):
+            continue
+        vel, direc = it.get("velocidad"), it.get("direccion")
+        vel = vel[0] if isinstance(vel, list) and vel else vel
+        direc = direc[0] if isinstance(direc, list) and direc else direc
+        out[int(periodo)] = {"velocidad": _to_num(vel), "direccion": direc}
+    return out
+
+
+def fetch_forecast_horaria():
+    """Previsión HORARIA de hoy (temperatura, precipitación, prob. de lluvia
+    y viento por hora) para los mismos puntos de referencia que la diaria."""
+    out = []
+    for point in FORECAST_POINTS:
+        try:
+            raw = aemet_call(f"/prediccion/especifica/municipio/horaria/{point['id']}")
+            data = json.loads(raw.decode("latin-1", "replace"))
+            dia0 = data[0]["prediccion"]["dia"][0]  # primer día = hoy
+        except Exception as e:  # noqa: BLE001
+            out.append({"id": point["id"], "horas": [], "error": str(e)})
+            continue
+
+        temps = _indexar_por_hora(dia0.get("temperatura", []))
+        precs = _indexar_por_hora(dia0.get("precipitacion", []))
+        probs = _indexar_por_hora(dia0.get("probPrecipitacion", []))
+        cielos = _indexar_por_hora(dia0.get("estadoCielo", []))
+        vientos = _viento_por_hora(dia0.get("vientoAndRachaMax", []))
+
+        horas_presentes = sorted(set(temps) | set(precs) | set(cielos))
+        horas = []
+        for h in horas_presentes:
+            v = vientos.get(h, {})
+            horas.append({
+                "hora": h,
+                "temp": _to_num(temps.get(h)),
+                "precip": _to_num(precs.get(h)),
+                "probPrecipitacion": _to_num(probs.get(h)),
+                "estadoCielo": cielos.get(h) or None,
+                "vientoVelocidad": v.get("velocidad"),
+                "vientoDireccion": v.get("direccion"),
+            })
+        out.append({"id": point["id"], "fecha": dia0.get("fecha", "")[:10], "horas": horas})
+    return out
+
+
 def main():
     if not API_KEY:
         print("ERROR: falta la variable de entorno AEMET_API_KEY", file=sys.stderr)
@@ -257,8 +336,13 @@ def main():
 
     print("Descargando avisos AEMET...")
     avisos, vistos_ahora = fetch_avisos()
-    print("Descargando previsión...")
+    print("Descargando previsión diaria...")
     prevision = fetch_forecast()
+    print("Descargando previsión horaria (hoy)...")
+    horaria_por_id = {h["id"]: h for h in fetch_forecast_horaria()}
+    for p in prevision:
+        h = horaria_por_id.get(p["id"])
+        p["horas_hoy"] = h.get("horas", []) if h else []
     historial = build_historial(vistos_ahora, out_path)
 
     payload = {
@@ -274,6 +358,8 @@ def main():
     for zcode, z in avisos.items():
         print(f"  {z['nombre']:28s} nivel={z['nivel']}  avisos_proximos={len(z['avisos'])}")
     print(f"  historial: {len(historial)} avisos en los últimos {HISTORIAL_DIAS} días")
+    for p in prevision:
+        print(f"  {p['nombre']:20s} horas_hoy={len(p.get('horas_hoy', []))}")
 
 
 if __name__ == "__main__":
