@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Documentos</title>
+<meta name="theme-color" content="#144c53">
+<style>
+  :root{
+    --ink:#101820; --ink-soft:#4b5560; --ink-faint:#7c8792;
+    --paper:#eef2f1; --surface:#ffffff; --surface-alt:#f5f8f7;
+    --border:#d8dfdc; --accent:#1f6f78; --accent-strong:#144c53; --accent-soft:#dbedec;
+    --shadow: 0 1px 2px rgba(16,24,32,.05), 0 6px 16px rgba(16,24,32,.06);
+    --radius-lg:18px; --radius-md:12px; --radius-sm:8px;
+    --font-ui: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#eef3f2; --ink-soft:#b7c2c6; --ink-faint:#8892988a;
+      --paper:#0b1215; --surface:#131c20; --surface-alt:#182226;
+      --border:#263133; --accent:#4fb3ac; --accent-strong:#7dd3cb; --accent-soft:#173634;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 20px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; min-height:100dvh; background:var(--paper); color:var(--ink);
+    font-family:var(--font-ui); padding:max(20px, env(safe-area-inset-top)) 16px 40px;
+  }
+  .wrap{ max-width:760px; margin:0 auto; }
+  header.top{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:6px; flex-wrap:wrap; }
+  a.back{ color:var(--accent-strong); text-decoration:none; font-size:.85rem; font-weight:600; }
+  a.back:hover{ text-decoration:underline; }
+  h1{ font-size:1.4rem; margin:4px 0 2px; }
+  .desc{ color:var(--ink-faint); font-size:.85rem; margin:0 0 22px; }
+  .buscador{
+    width:100%; padding:10px 14px; border-radius:var(--radius-md); border:1px solid var(--border);
+    background:var(--surface); color:var(--ink); font-size:.9rem; margin-bottom:18px;
+  }
+  .cards{ display:flex; flex-direction:column; gap:12px; }
+  .doc-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+    box-shadow:var(--shadow); padding:16px 18px;
+  }
+  .doc-top{ display:flex; align-items:flex-start; gap:12px; }
+  .doc-icon{ font-size:1.7rem; line-height:1; flex:none; }
+  .doc-titulo{ font-weight:700; font-size:1rem; }
+  .doc-cat{
+    display:inline-block; margin-top:3px; font-size:.68rem; font-weight:700; text-transform:uppercase;
+    letter-spacing:.04em; color:var(--accent-strong); background:var(--accent-soft);
+    padding:2px 9px; border-radius:999px;
+  }
+  .doc-desc{ color:var(--ink-soft); font-size:.84rem; line-height:1.45; margin:10px 0 14px; }
+  .doc-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+  .btn{
+    border-radius:var(--radius-md); border:1px solid var(--border); background:var(--surface-alt);
+    color:var(--ink); font-weight:600; font-size:.84rem; padding:9px 15px; cursor:pointer;
+    text-decoration:none; display:inline-flex; align-items:center; gap:6px;
+  }
+  .btn:hover{ border-color:var(--accent); }
+  .btn-primary{ background:var(--accent); border-color:var(--accent); color:#fff; }
+  .btn-primary:hover{ background:var(--accent-strong); border-color:var(--accent-strong); }
+  .empty{ color:var(--ink-faint); font-size:.85rem; text-align:center; padding:30px 0; }
+  .toast{
+    position:fixed; left:50%; bottom:22px; transform:translateX(-50%) translateY(-4px);
+    background:var(--ink); color:var(--paper); padding:10px 18px; border-radius:999px;
+    font-size:.82rem; font-weight:600; box-shadow:var(--shadow); z-index:80; opacity:0; pointer-events:none;
+    transition:opacity .2s ease, transform .2s ease;
+  }
+  .toast.show{ opacity:1; }
+  footer{ margin-top:30px; text-align:center; font-size:.72rem; color:var(--ink-faint); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <a class="back" href="../index.html">← Portal 112</a>
+      <h1>📚 Documentos</h1>
+    </div>
+  </header>
+  <p class="desc">Plantillas y documentos de referencia del equipo — siempre disponibles aquí y listos para abrir o compartir por WhatsApp.</p>
+
+  <input type="text" class="buscador" id="buscador" placeholder="🔍 Buscar por nombre, categoría...">
+
+  <div class="cards" id="lista"></div>
+
+  <footer>Coordinación de Emergencias 112</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  // Para añadir un documento nuevo: sube el archivo a la carpeta "archivos/" de este
+  // módulo y añade una entrada aquí. No hace falta tocar nada más.
+  var DOCUMENTOS = [
+    {
+      titulo: "Hoja de Filiación de Persona Evacuada",
+      descripcion: "Plantilla EMA-112 para el registro de personas evacuadas: datos personales, información de la evacuación, grupo familiar, necesidades especiales/mascotas, ubicación asignada y contacto de un familiar.",
+      categoria: "Plantilla operativa",
+      archivo: "archivos/Hoja_Filiacion_Persona_Evacuada_EMA112.pdf",
+      icono: "📋"
+    },
+    {
+      titulo: "Comarcas AEMET — Provincia de Málaga",
+      descripcion: "Los 103 municipios de la provincia con su código oficial y la comarca de aviso AEMET a la que pertenece (Antequera, Ronda, Sol y Guadalhorce, Axarquía), más la subdivisión interna de la comarca de Ronda del cuadrante.",
+      categoria: "Referencia",
+      archivo: "archivos/Comarcas_AEMET_Malaga.pdf",
+      icono: "🗺️"
+    }
+  ];
+
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+
+  function toast(msg){
+    var el = document.getElementById("toast");
+    el.textContent = msg;
+    el.classList.add("show");
+    clearTimeout(el._t);
+    el._t = setTimeout(function(){ el.classList.remove("show"); }, 2600);
+  }
+
+  function urlAbsoluta(relativa){
+    return location.origin + location.pathname.replace(/index\.html$/, "") + relativa;
+  }
+
+  function compartir(archivo, titulo){
+    var url = urlAbsoluta(archivo);
+    if (navigator.share) {
+      navigator.share({ title: titulo, text: titulo, url: url }).catch(function(){ /* el usuario canceló */ });
+      return;
+    }
+    // Sin Web Share API (típico en escritorio): abre WhatsApp Web/Desktop con el enlace ya escrito.
+    window.open("https://wa.me/?text=" + encodeURIComponent(titulo + " — " + url), "_blank", "noopener");
+  }
+
+  function render(filtro){
+    var lista = document.getElementById("lista");
+    var f = (filtro || "").trim().toLowerCase();
+    var items = DOCUMENTOS.filter(function(d){
+      if (!f) return true;
+      return (d.titulo + " " + d.descripcion + " " + d.categoria).toLowerCase().indexOf(f) !== -1;
+    });
+    if (!items.length) {
+      lista.innerHTML = '<div class="empty">Sin documentos que coincidan con la búsqueda.</div>';
+      return;
+    }
+    lista.innerHTML = items.map(function(d){
+      return '<div class="doc-card">' +
+        '<div class="doc-top"><span class="doc-icon">' + d.icono + '</span>' +
+        '<div><div class="doc-titulo">' + esc(d.titulo) + '</div><span class="doc-cat">' + esc(d.categoria) + '</span></div></div>' +
+        '<p class="doc-desc">' + esc(d.descripcion) + '</p>' +
+        '<div class="doc-actions">' +
+          '<a class="btn btn-primary" href="' + esc(d.archivo) + '" target="_blank" rel="noopener">📄 Abrir</a>' +
+          '<a class="btn" href="' + esc(d.archivo) + '" download>⬇ Descargar</a>' +
+          '<button type="button" class="btn" data-compartir="' + esc(d.archivo) + '" data-titulo="' + esc(d.titulo) + '">📤 Compartir</button>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  }
+
+  document.getElementById("lista").addEventListener("click", function(e){
+    var btn = e.target.closest("[data-compartir]");
+    if (!btn) return;
+    compartir(btn.getAttribute("data-compartir"), btn.getAttribute("data-titulo"));
+  });
+  document.getElementById("buscador").addEventListener("input", function(e){ render(e.target.value); });
+
+  render("");
+})();
+</script>
+</body>
+</html>
