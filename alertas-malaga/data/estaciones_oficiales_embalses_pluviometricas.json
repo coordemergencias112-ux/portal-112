@@ -1,116 +1,594 @@
 {
-  "15": {
-    "nombre": "CUEVAS DEL BECERRO (MA)",
-    "tipo": "pluviometrica",
-    "lat": 36.83682,
-    "lon": -5.07846
+  "1": {
+    "es_embalse": false,
+    "lat": 36.60823,
+    "lon": -4.59515,
+    "mide_lluvia": true,
+    "nombre": "SIERRA MIJAS (MA)",
+    "tipos": [
+      "METEOROLÓGICA"
+    ]
   },
-  "16": {
-    "nombre": "EMBALSE DE LA CONCEPCIÓN (MA)",
-    "tipo": "embalse",
-    "lat": 36.53643,
-    "lon": -4.95889
+  "101": {
+    "es_embalse": false,
+    "lat": 36.71299,
+    "lon": -4.32249,
+    "mide_lluvia": true,
+    "nombre": "LA ARAÑA (MA)",
+    "tipos": [
+      "DISTRIBUCIÓN"
+    ]
   },
-  "18": {
-    "nombre": "EL TORCAL (MA)",
-    "tipo": "pluviometrica",
-    "lat": 36.94851,
-    "lon": -4.6168
+  "103": {
+    "es_embalse": false,
+    "lat": 36.58034,
+    "lon": -5.33723,
+    "mide_lluvia": true,
+    "nombre": "RÍO GUADIARO (TR. MAJACEITE) (MA)",
+    "tipos": [
+      "AFORO",
+      "DISTRIBUCIÓN"
+    ]
   },
-  "19": {
-    "nombre": "EMBALSE DE CASASOLA (MA)",
-    "tipo": "embalse",
-    "lat": 36.8062,
-    "lon": -4.49513
-  },
-  "20": {
-    "nombre": "EMBALSE DEL LIMONERO (MA)",
-    "tipo": "embalse",
-    "lat": 36.76059,
-    "lon": -4.42918
-  },
-  "25": {
-    "nombre": "SANTÓN PITAR (MA)",
-    "tipo": "pluviometrica",
-    "lat": 36.80327,
-    "lon": -4.29257
-  },
-  "26": {
-    "nombre": "CAÑETE LA REAL (MA)",
-    "tipo": "pluviometrica",
-    "lat": 36.94954,
-    "lon": -5.04407
-  },
-  "29": {
-    "nombre": "EMBALSE DEL GUADALTEBA (MA)",
-    "tipo": "embalse",
-    "lat": 36.94159,
-    "lon": -4.79908
-  },
-  "30": {
-    "nombre": "EMBALSE DEL GUADALHORCE (MA)",
-    "tipo": "embalse",
-    "lat": 36.94401,
-    "lon": -4.80277
-  },
-  "31": {
-    "nombre": "EMBALSE CONDE DE GUADALHORCE (MA)",
-    "tipo": "embalse",
-    "lat": 36.93444,
-    "lon": -4.80325
-  },
-  "32": {
-    "nombre": "REPETIDOR LA ENCANTADA (MA)",
-    "tipo": "pluviometrica",
-    "lat": 36.90724,
-    "lon": -4.77985
-  },
-  "35": {
-    "nombre": "COÍN (MA)",
-    "tipo": "pluviometrica",
-    "lat": 36.65699,
-    "lon": -4.7542
-  },
-  "36": {
-    "nombre": "ALCAUCÍN (MA)",
-    "tipo": "pluviometrica",
-    "lat": 36.90581,
-    "lon": -4.1121
-  },
-  "37": {
-    "nombre": "EMBALSE DE LA VIÑUELA (MA)",
-    "tipo": "embalse",
-    "lat": 36.86071,
-    "lon": -4.1645
-  },
-  "39": {
-    "nombre": "VILLANUEVA DE LA CONCEPCIÓN (MA)",
-    "tipo": "pluviometrica",
-    "lat": 36.93346,
-    "lon": -4.53392
-  },
-  "40": {
-    "nombre": "CASARABONELA (MA)",
-    "tipo": "pluviometrica",
-    "lat": 36.79187,
-    "lon": -4.84184
-  },
-  "41": {
-    "nombre": "COLMENAR (MA)",
-    "tipo": "pluviometrica",
-    "lat": 36.93924,
-    "lon": -4.39853
-  },
-  "42": {
-    "nombre": "ALFARNATEJO (MA)",
-    "tipo": "pluviometrica",
-    "lat": 36.95566,
-    "lon": -4.24726
+  "104": {
+    "es_embalse": false,
+    "lat": 36.70077,
+    "lon": -4.87767,
+    "mide_lluvia": true,
+    "nombre": "RÍO GRANDE (LAS MILLANAS) (MA)",
+    "tipos": [
+      "AFORO"
+    ]
   },
   "105": {
-    "nombre": "LAS GOLONDRINAS (MA)",
-    "tipo": "pluviometrica",
+    "es_embalse": false,
     "lat": 36.6543,
-    "lon": -4.92958
+    "lon": -4.92958,
+    "mide_lluvia": true,
+    "nombre": "LAS GOLONDRINAS (MA)",
+    "tipos": [
+      "PLUVIOMÉTRICA"
+    ]
+  },
+  "106": {
+    "es_embalse": false,
+    "lat": 36.82788,
+    "lon": -4.51115,
+    "mide_lluvia": false,
+    "nombre": "RÍO CAMPANILLAS (LOS LLANES) (MA)",
+    "tipos": [
+      "AFORO"
+    ]
+  },
+  "116": {
+    "es_embalse": false,
+    "lat": 36.53831,
+    "lon": -4.99646,
+    "mide_lluvia": true,
+    "nombre": "EMBALSE DE GUADAIZA (MA)",
+    "tipos": [
+      "DISTRIBUCIÓN"
+    ]
+  },
+  "117": {
+    "es_embalse": false,
+    "lat": 36.53174,
+    "lon": -5.04543,
+    "mide_lluvia": true,
+    "nombre": "EMBALSE DE GUADALMINA(MA)",
+    "tipos": [
+      "DISTRIBUCIÓN"
+    ]
+  },
+  "118": {
+    "es_embalse": false,
+    "lat": 36.51572,
+    "lon": -5.0921,
+    "mide_lluvia": true,
+    "nombre": "EMBALSE DE GUADALMANSA(MA)",
+    "tipos": [
+      "DISTRIBUCIÓN"
+    ]
+  },
+  "12": {
+    "es_embalse": false,
+    "lat": 36.54179,
+    "lon": -5.47226,
+    "mide_lluvia": true,
+    "nombre": "MAJADA DE LAS LOMAS (MA)",
+    "tipos": [
+      "METEOROLÓGICA"
+    ]
+  },
+  "120": {
+    "es_embalse": false,
+    "lat": 36.76059,
+    "lon": -4.42918,
+    "mide_lluvia": true,
+    "nombre": "CENTRO DE CONTROL LIMONERO (MA)",
+    "tipos": [
+      "METEOROLÓGICA"
+    ]
+  },
+  "121": {
+    "es_embalse": false,
+    "lat": 36.73718,
+    "lon": -4.42615,
+    "mide_lluvia": false,
+    "nombre": "LA ROSALEDA (MA)",
+    "tipos": [
+      "DISTRIBUCIÓN"
+    ]
+  },
+  "122": {
+    "es_embalse": false,
+    "lat": 36.73301,
+    "lon": -4.48805,
+    "mide_lluvia": false,
+    "nombre": "ARROYO LA CULEBRA (MA)",
+    "tipos": [
+      "DISTRIBUCIÓN"
+    ]
+  },
+  "125": {
+    "es_embalse": false,
+    "lat": 36.8099,
+    "lon": -4.12393,
+    "mide_lluvia": true,
+    "nombre": "DEPURADORA DEL TRAPICHE (MA)",
+    "tipos": [
+      "DISTRIBUCIÓN"
+    ]
+  },
+  "126": {
+    "es_embalse": false,
+    "lat": 36.73779,
+    "lon": -4.64251,
+    "mide_lluvia": true,
+    "nombre": "FAHALA (MA)",
+    "tipos": [
+      "DISTRIBUCIÓN"
+    ]
+  },
+  "127": {
+    "es_embalse": false,
+    "lat": 37.04024,
+    "lon": -4.69592,
+    "mide_lluvia": true,
+    "nombre": "RÍO GUADALHORCE (BOBADILLA) (MA)",
+    "tipos": [
+      "AFORO"
+    ]
+  },
+  "128": {
+    "es_embalse": false,
+    "lat": 36.88644,
+    "lon": -4.84908,
+    "mide_lluvia": true,
+    "nombre": "RÍO TURÓN (ARDALES) (MA)",
+    "tipos": [
+      "AFORO"
+    ]
+  },
+  "129": {
+    "es_embalse": false,
+    "lat": 36.93151,
+    "lon": -4.92842,
+    "mide_lluvia": true,
+    "nombre": "RIO GUADALTEBA (AFORO TEBA) (MA)",
+    "tipos": [
+      "AFORO"
+    ]
+  },
+  "13": {
+    "es_embalse": false,
+    "lat": 36.56745,
+    "lon": -5.24672,
+    "mide_lluvia": true,
+    "nombre": "RÍO GENAL (JUBRIQUE) (MA)",
+    "tipos": [
+      "AFORO"
+    ]
+  },
+  "130": {
+    "es_embalse": false,
+    "lat": 37.08178,
+    "lon": -4.45545,
+    "mide_lluvia": true,
+    "nombre": "RÍO GUADALHORCE (ARCHIDONA) (MA)",
+    "tipos": [
+      "AFORO"
+    ]
+  },
+  "137": {
+    "es_embalse": false,
+    "lat": 36.78361,
+    "lon": -3.88295,
+    "mide_lluvia": false,
+    "nombre": "RÍO CHÍLLAR (POZOS 2 Y 3) (MA)",
+    "tipos": [
+      "DISTRIBUCIÓN"
+    ]
+  },
+  "138": {
+    "es_embalse": false,
+    "lat": 36.76748,
+    "lon": -3.87983,
+    "mide_lluvia": false,
+    "nombre": "RÍO CHÍLLAR (POZO 1) (MA)",
+    "tipos": [
+      "DISTRIBUCIÓN"
+    ]
+  },
+  "139": {
+    "es_embalse": false,
+    "lat": 36.7675,
+    "lon": -3.87792,
+    "mide_lluvia": false,
+    "nombre": "RÍO CHÍLLAR (CLORÍMETRO) (MA)",
+    "tipos": [
+      "DISTRIBUCIÓN"
+    ]
+  },
+  "14": {
+    "es_embalse": false,
+    "lat": 36.57756,
+    "lon": -5.17601,
+    "mide_lluvia": true,
+    "nombre": "PUJERRA (MA)",
+    "tipos": [
+      "METEOROLÓGICA"
+    ]
+  },
+  "140": {
+    "es_embalse": false,
+    "lat": 36.68384,
+    "lon": -4.51864,
+    "mide_lluvia": false,
+    "nombre": "ESTACIÓN BOMBEO ZAPATA (MA)",
+    "tipos": [
+      "DISTRIBUCIÓN"
+    ]
+  },
+  "145": {
+    "es_embalse": false,
+    "lat": 36.71973,
+    "lon": -4.33319,
+    "mide_lluvia": false,
+    "nombre": "EDAR ARAÑA (MA)",
+    "tipos": [
+      "DISTRIBUCIÓN"
+    ]
+  },
+  "146": {
+    "es_embalse": false,
+    "lat": 36.71826,
+    "lon": -4.23837,
+    "mide_lluvia": false,
+    "nombre": "EDAR AÑORETA (MA)",
+    "tipos": [
+      "DISTRIBUCIÓN"
+    ]
+  },
+  "15": {
+    "es_embalse": false,
+    "lat": 36.83682,
+    "lon": -5.07846,
+    "mide_lluvia": true,
+    "nombre": "CUEVAS DEL BECERRO (MA)",
+    "tipos": [
+      "PLUVIOMÉTRICA"
+    ]
+  },
+  "16": {
+    "es_embalse": true,
+    "lat": 36.53643,
+    "lon": -4.95889,
+    "mide_lluvia": true,
+    "nombre": "EMBALSE DE LA CONCEPCIÓN (MA)",
+    "tipos": [
+      "EMBALSE"
+    ]
+  },
+  "17": {
+    "es_embalse": false,
+    "lat": 36.56873,
+    "lon": -4.82189,
+    "mide_lluvia": true,
+    "nombre": "OJEN (MA)",
+    "tipos": [
+      "METEOROLÓGICA"
+    ]
+  },
+  "18": {
+    "es_embalse": false,
+    "lat": 36.94851,
+    "lon": -4.6168,
+    "mide_lluvia": true,
+    "nombre": "EL TORCAL (MA)",
+    "tipos": [
+      "PLUVIOMÉTRICA"
+    ]
+  },
+  "19": {
+    "es_embalse": true,
+    "lat": 36.8062,
+    "lon": -4.49513,
+    "mide_lluvia": true,
+    "nombre": "EMBALSE DE CASASOLA (MA)",
+    "tipos": [
+      "EMBALSE"
+    ]
+  },
+  "20": {
+    "es_embalse": true,
+    "lat": 36.76059,
+    "lon": -4.42918,
+    "mide_lluvia": true,
+    "nombre": "EMBALSE DEL LIMONERO (MA)",
+    "tipos": [
+      "EMBALSE"
+    ]
+  },
+  "21": {
+    "es_embalse": false,
+    "lat": 36.73078,
+    "lon": -4.46639,
+    "mide_lluvia": true,
+    "nombre": "DEPURADORA DEL ATABAL (MA)",
+    "tipos": [
+      "DISTRIBUCIÓN"
+    ]
+  },
+  "22": {
+    "es_embalse": false,
+    "lat": 36.71636,
+    "lon": -4.41273,
+    "mide_lluvia": true,
+    "nombre": "MÁLAGA - PASEO DE LA FAROLA (MA)",
+    "tipos": [
+      "METEOROLÓGICA"
+    ]
+  },
+  "24": {
+    "es_embalse": false,
+    "lat": 36.51667,
+    "lon": -4.94593,
+    "mide_lluvia": true,
+    "nombre": "DEPURADORA DE MARBELLA (MA)",
+    "tipos": [
+      "DISTRIBUCIÓN"
+    ]
+  },
+  "25": {
+    "es_embalse": false,
+    "lat": 36.80327,
+    "lon": -4.29257,
+    "mide_lluvia": true,
+    "nombre": "SANTÓN PITAR (MA)",
+    "tipos": [
+      "PLUVIOMÉTRICA"
+    ]
+  },
+  "26": {
+    "es_embalse": false,
+    "lat": 36.94954,
+    "lon": -5.04407,
+    "mide_lluvia": true,
+    "nombre": "CAÑETE LA REAL (MA)",
+    "tipos": [
+      "PLUVIOMÉTRICA"
+    ]
+  },
+  "27": {
+    "es_embalse": false,
+    "lat": 36.7614,
+    "lon": -5.1729,
+    "mide_lluvia": true,
+    "nombre": "RONDA (MA)",
+    "tipos": [
+      "METEOROLÓGICA"
+    ]
+  },
+  "28": {
+    "es_embalse": false,
+    "lat": 37.1342,
+    "lon": -4.72753,
+    "mide_lluvia": true,
+    "nombre": "LAGUNA DE FUENTE PIEDRA (MA)",
+    "tipos": [
+      "METEOROLÓGICA"
+    ]
+  },
+  "29": {
+    "es_embalse": true,
+    "lat": 36.94159,
+    "lon": -4.79908,
+    "mide_lluvia": true,
+    "nombre": "EMBALSE DEL GUADALTEBA (MA)",
+    "tipos": [
+      "EMBALSE"
+    ]
+  },
+  "30": {
+    "es_embalse": true,
+    "lat": 36.94401,
+    "lon": -4.80277,
+    "mide_lluvia": false,
+    "nombre": "EMBALSE DEL GUADALHORCE (MA)",
+    "tipos": [
+      "EMBALSE"
+    ]
+  },
+  "31": {
+    "es_embalse": true,
+    "lat": 36.93444,
+    "lon": -4.80325,
+    "mide_lluvia": true,
+    "nombre": "EMBALSE CONDE DE GUADALHORCE (MA)",
+    "tipos": [
+      "EMBALSE"
+    ]
+  },
+  "32": {
+    "es_embalse": false,
+    "lat": 36.90724,
+    "lon": -4.77985,
+    "mide_lluvia": true,
+    "nombre": "REPETIDOR LA ENCANTADA (MA)",
+    "tipos": [
+      "PLUVIOMÉTRICA"
+    ]
+  },
+  "33": {
+    "es_embalse": false,
+    "lat": 36.90219,
+    "lon": -4.76002,
+    "mide_lluvia": true,
+    "nombre": "CANAL DE LA ENCANTADA (MA)",
+    "tipos": [
+      "DISTRIBUCIÓN"
+    ]
+  },
+  "34": {
+    "es_embalse": false,
+    "lat": 36.85982,
+    "lon": -4.71604,
+    "mide_lluvia": true,
+    "nombre": "AZUD DE PAREDONES (MA)",
+    "tipos": [
+      "AFORO",
+      "DISTRIBUCIÓN"
+    ]
+  },
+  "35": {
+    "es_embalse": false,
+    "lat": 36.65699,
+    "lon": -4.7542,
+    "mide_lluvia": true,
+    "nombre": "COÍN (MA)",
+    "tipos": [
+      "PLUVIOMÉTRICA"
+    ]
+  },
+  "36": {
+    "es_embalse": false,
+    "lat": 36.90581,
+    "lon": -4.1121,
+    "mide_lluvia": true,
+    "nombre": "ALCAUCÍN (MA)",
+    "tipos": [
+      "PLUVIOMÉTRICA"
+    ]
+  },
+  "37": {
+    "es_embalse": true,
+    "lat": 36.86071,
+    "lon": -4.1645,
+    "mide_lluvia": true,
+    "nombre": "EMBALSE DE LA VIÑUELA (MA)",
+    "tipos": [
+      "EMBALSE"
+    ]
+  },
+  "38": {
+    "es_embalse": false,
+    "lat": 36.72877,
+    "lon": -4.61401,
+    "mide_lluvia": true,
+    "nombre": "RÍO GUADALHORCE (CARTAMA) (MA)",
+    "tipos": [
+      "AFORO"
+    ]
+  },
+  "39": {
+    "es_embalse": false,
+    "lat": 36.93346,
+    "lon": -4.53392,
+    "mide_lluvia": true,
+    "nombre": "VILLANUEVA DE LA CONCEPCIÓN (MA)",
+    "tipos": [
+      "PLUVIOMÉTRICA"
+    ]
+  },
+  "40": {
+    "es_embalse": false,
+    "lat": 36.79187,
+    "lon": -4.84184,
+    "mide_lluvia": true,
+    "nombre": "CASARABONELA (MA)",
+    "tipos": [
+      "PLUVIOMÉTRICA"
+    ]
+  },
+  "41": {
+    "es_embalse": false,
+    "lat": 36.93924,
+    "lon": -4.39853,
+    "mide_lluvia": true,
+    "nombre": "COLMENAR (MA)",
+    "tipos": [
+      "PLUVIOMÉTRICA"
+    ]
+  },
+  "42": {
+    "es_embalse": false,
+    "lat": 36.95566,
+    "lon": -4.24726,
+    "mide_lluvia": true,
+    "nombre": "ALFARNATEJO (MA)",
+    "tipos": [
+      "PLUVIOMÉTRICA"
+    ]
+  },
+  "43": {
+    "es_embalse": false,
+    "lat": 36.84705,
+    "lon": -4.20439,
+    "mide_lluvia": true,
+    "nombre": "RÍO BENAMARGOSA (S. NEGRO) (MA)",
+    "tipos": [
+      "AFORO"
+    ]
+  },
+  "44": {
+    "es_embalse": false,
+    "lat": 36.75212,
+    "lon": -3.93108,
+    "mide_lluvia": true,
+    "nombre": "TORROX (MA)",
+    "tipos": [
+      "METEOROLÓGICA"
+    ]
+  },
+  "45": {
+    "es_embalse": false,
+    "lat": 36.75244,
+    "lon": -4.10893,
+    "mide_lluvia": true,
+    "nombre": "TORRE DEL MAR (MA)",
+    "tipos": [
+      "METEOROLÓGICA"
+    ]
+  },
+  "46": {
+    "es_embalse": false,
+    "lat": 36.72816,
+    "lon": -4.66529,
+    "mide_lluvia": true,
+    "nombre": "RIO GUADALHORCE (ALJAIMA) (MA)",
+    "tipos": [
+      "AFORO"
+    ]
+  },
+  "6": {
+    "es_embalse": false,
+    "lat": 36.48485,
+    "lon": -5.20811,
+    "mide_lluvia": true,
+    "nombre": "LOS REALES (MA)",
+    "tipos": [
+      "METEOROLÓGICA"
+    ]
   }
 }
