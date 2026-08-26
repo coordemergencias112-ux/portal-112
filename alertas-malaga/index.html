@@ -113,6 +113,25 @@
   .dia-row .precip{ display:flex; align-items:center; gap:5px; }
   .dia-row .viento{ display:flex; align-items:center; gap:5px; white-space:nowrap; }
   .dia-row .temp{ color:var(--ink-faint); white-space:nowrap; }
+  .horas-hoy{ margin:2px 0 12px; }
+  .horas-hoy summary{
+    cursor:pointer; font-size:.76rem; font-weight:600; color:var(--accent-strong);
+    margin-bottom:8px; list-style:none;
+  }
+  .horas-hoy summary::-webkit-details-marker{ display:none; }
+  .horas-hoy summary::before{ content:'▸ '; }
+  .horas-hoy[open] summary::before{ content:'▾ '; }
+  .horas-scroll{ display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; scroll-snap-type:x proximity; }
+  .hora-col{
+    flex:0 0 auto; min-width:56px; text-align:center; background:var(--surface-alt);
+    border:1px solid transparent; border-radius:var(--radius-sm); padding:7px 5px; font-size:.7rem;
+    scroll-snap-align:start;
+  }
+  .hora-col.now{ background:var(--accent-soft); border-color:var(--accent); }
+  .hora-col .h{ display:block; font-weight:700; margin-bottom:3px; color:var(--ink-soft); }
+  .hora-col .t{ display:block; font-weight:600; }
+  .hora-col .p{ display:block; color:var(--ink-faint); font-size:.66rem; margin-top:2px; white-space:nowrap; }
+  .hora-col .v{ display:block; color:var(--ink-faint); font-size:.66rem; white-space:nowrap; }
   footer{ margin-top:30px; text-align:center; font-size:.72rem; color:var(--ink-faint); }
   .status-dot{ display:inline-block; width:9px; height:9px; border-radius:50%; }
 
@@ -712,6 +731,30 @@
     return map[dir] || '';
   }
 
+  function horaHtml(h, horaActual){
+    return `
+      <div class="hora-col${h.hora === horaActual ? ' now' : ''}">
+        <span class="h">${String(h.hora).padStart(2,'0')}h</span>
+        <span class="t">${h.temp != null ? h.temp+'°' : '—'}</span>
+        <span class="p">💧 ${h.probPrecipitacion != null ? h.probPrecipitacion+'%' : '—'}${h.precip ? ' ('+h.precip+'mm)' : ''}</span>
+        <span class="v">${windArrow(h.vientoDireccion)} ${h.vientoVelocidad != null ? h.vientoVelocidad+' km/h' : '—'}</span>
+      </div>`;
+  }
+
+  function horasHoyHtml(horas){
+    if (!horas || !horas.length) return '';
+    const ahora = new Date();
+    const horaActual = ahora.getHours();
+    // abierto por defecto si el punto tiene datos, para que se vea sin un clic extra
+    return `
+      <details class="horas-hoy" open>
+        <summary>Hoy por horas</summary>
+        <div class="horas-scroll">
+          ${horas.map(h => horaHtml(h, horaActual)).join('')}
+        </div>
+      </details>`;
+  }
+
   function renderPrevision(prevision){
     const grid = document.getElementById('previsionGrid');
     grid.innerHTML = prevision.map(p => `
@@ -724,7 +767,16 @@
             <span class="viento">${windArrow(d.vientoDireccion)} ${d.vientoVelocidad != null ? d.vientoVelocidad+' km/h' : '—'}</span>
             <span class="temp">${d.tempMin!=null?d.tempMin:'—'}° / ${d.tempMax!=null?d.tempMax:'—'}°</span>
           </div>`).join('') : '<div class="empty">Previsión no disponible</div>'}
+        ${horasHoyHtml(p.horas_hoy)}
       </div>`).join('');
+
+    // centra la franja horaria en la hora actual (sin saltos bruscos: se hace tras pintar el DOM)
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.horas-scroll').forEach(el => {
+        const activa = el.querySelector('.hora-col.now');
+        if (activa) activa.scrollIntoView({ inline: 'center', block: 'nearest' });
+      });
+    });
   }
 
   // ---------- Carga principal ----------
