@@ -102,36 +102,43 @@
   .aguas-abajo table{ width:100%; border-collapse:collapse; margin-top:6px; font-size:.72rem; }
   .aguas-abajo td{ padding:3px 6px; border-bottom:1px solid var(--border); }
   .aguas-abajo td.num{ text-align:right; white-space:nowrap; color:var(--ink-soft); }
-  .prevision-grid{ display:grid; grid-template-columns:1fr; gap:14px; }
-  @media (min-width:640px){ .prevision-grid{ grid-template-columns:1fr 1fr; } }
-  .prevision-punto h3{ font-size:.85rem; margin:0 0 10px; color:var(--ink-soft); }
+  .prevision-selector{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+  .prevision-selector label{ font-size:.78rem; color:var(--ink-soft); font-weight:600; }
+  .prevision-selector select{
+    font:inherit; font-size:.82rem; padding:7px 10px; border-radius:var(--radius-sm); border:1px solid var(--border);
+    background:var(--surface-alt); color:var(--ink); cursor:pointer; max-width:100%;
+  }
+  .dias-list{ display:flex; flex-direction:column; gap:6px; margin-bottom:18px; }
   .dia-row{
     display:grid; grid-template-columns:64px 1fr auto auto; align-items:center; gap:10px;
-    padding:8px 10px; border-radius:var(--radius-sm); background:var(--surface-alt); font-size:.78rem; margin-bottom:6px;
+    padding:8px 10px; border-radius:var(--radius-sm); background:var(--surface-alt); font-size:.78rem;
   }
   .dia-row .fecha{ font-weight:700; text-transform:capitalize; }
   .dia-row .precip{ display:flex; align-items:center; gap:5px; }
   .dia-row .viento{ display:flex; align-items:center; gap:5px; white-space:nowrap; }
   .dia-row .temp{ color:var(--ink-faint); white-space:nowrap; }
-  .horas-hoy{ margin:2px 0 12px; }
-  .horas-hoy summary{
-    cursor:pointer; font-size:.76rem; font-weight:600; color:var(--accent-strong);
-    margin-bottom:8px; list-style:none;
+  .horas-titulo{ font-size:.82rem; margin:0 0 8px; color:var(--ink-soft); font-weight:700; }
+  .horas-nav{ display:flex; align-items:center; gap:6px; min-width:0; }
+  .horas-btn{
+    flex:0 0 auto; width:26px; height:60px; border-radius:var(--radius-sm); border:1px solid var(--border);
+    background:var(--surface-alt); color:var(--ink-soft); cursor:pointer; font-size:1rem; line-height:1;
   }
-  .horas-hoy summary::-webkit-details-marker{ display:none; }
-  .horas-hoy summary::before{ content:'▸ '; }
-  .horas-hoy[open] summary::before{ content:'▾ '; }
-  .horas-scroll{ display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; scroll-snap-type:x proximity; }
+  .horas-btn:hover:not(:disabled){ background:var(--accent-soft); color:var(--accent-strong); border-color:var(--accent); }
+  .horas-btn:disabled{ opacity:.3; cursor:default; }
+  .horas-viewport{
+    flex:0 1 auto; min-width:0; width:330px; max-width:100%; overflow-x:auto; scroll-behavior:smooth;
+    scrollbar-width:thin; padding-bottom:2px;
+  }
+  .horas-scroll{ display:flex; gap:6px; width:max-content; }
   .hora-col{
-    flex:0 0 auto; min-width:56px; text-align:center; background:var(--surface-alt);
-    border:1px solid transparent; border-radius:var(--radius-sm); padding:7px 5px; font-size:.7rem;
-    scroll-snap-align:start;
+    flex:0 0 auto; width:58px; text-align:center; background:var(--surface-alt);
+    border:1px solid transparent; border-radius:var(--radius-sm); padding:7px 4px; font-size:.68rem;
   }
   .hora-col.now{ background:var(--accent-soft); border-color:var(--accent); }
   .hora-col .h{ display:block; font-weight:700; margin-bottom:3px; color:var(--ink-soft); }
   .hora-col .t{ display:block; font-weight:600; }
-  .hora-col .p{ display:block; color:var(--ink-faint); font-size:.66rem; margin-top:2px; white-space:nowrap; }
-  .hora-col .v{ display:block; color:var(--ink-faint); font-size:.66rem; white-space:nowrap; }
+  .hora-col .p{ display:block; color:var(--ink-faint); font-size:.62rem; margin-top:2px; white-space:nowrap; }
+  .hora-col .v{ display:block; color:var(--ink-faint); font-size:.62rem; white-space:nowrap; }
   footer{ margin-top:30px; text-align:center; font-size:.72rem; color:var(--ink-faint); }
   .status-dot{ display:inline-block; width:9px; height:9px; border-radius:50%; }
 
@@ -233,8 +240,18 @@
 
     <div class="card full">
       <h2>🌧️ Previsión de lluvia y viento</h2>
-      <p class="desc">Predicción diaria AEMET para dos puntos de referencia de la provincia (costa e interior).</p>
-      <div class="prevision-grid" id="previsionGrid"><div class="empty">Cargando previsión…</div></div>
+      <p class="desc">Predicción de AEMET — diaria y por horas desde ahora.</p>
+      <div class="prevision-selector">
+        <label for="previsionSelect">Ver previsión de:</label>
+        <select id="previsionSelect"><option>Cargando…</option></select>
+      </div>
+      <div id="previsionDias" class="dias-list"><div class="empty">Cargando previsión…</div></div>
+      <div class="horas-titulo">Horas desde ahora</div>
+      <div class="horas-nav">
+        <button class="horas-btn" id="horasPrev" type="button" aria-label="Horas anteriores">‹</button>
+        <div class="horas-viewport" id="horasViewport"><div class="horas-scroll" id="horasScroll"></div></div>
+        <button class="horas-btn" id="horasNext" type="button" aria-label="Horas siguientes">›</button>
+      </div>
     </div>
 
     <div class="card full">
@@ -741,43 +758,62 @@
       </div>`;
   }
 
-  function horasHoyHtml(horas){
-    if (!horas || !horas.length) return '';
-    const ahora = new Date();
-    const horaActual = ahora.getHours();
-    // abierto por defecto si el punto tiene datos, para que se vea sin un clic extra
-    return `
-      <details class="horas-hoy" open>
-        <summary>Hoy por horas</summary>
-        <div class="horas-scroll">
-          ${horas.map(h => horaHtml(h, horaActual)).join('')}
-        </div>
-      </details>`;
+  let previsionPuntos = [];
+  let previsionIdx = 0;
+
+  function actualizarBotonesHoras(){
+    const vp = document.getElementById('horasViewport');
+    document.getElementById('horasPrev').disabled = vp.scrollLeft <= 2;
+    document.getElementById('horasNext').disabled = vp.scrollLeft + vp.clientWidth >= vp.scrollWidth - 2;
   }
 
-  function renderPrevision(prevision){
-    const grid = document.getElementById('previsionGrid');
-    grid.innerHTML = prevision.map(p => `
-      <div class="prevision-punto">
-        <h3>${p.nombre} <span style="color:var(--ink-faint);font-weight:400">— ${p.referencia}</span></h3>
-        ${(p.dias && p.dias.length) ? p.dias.map(d => `
-          <div class="dia-row">
-            <span class="fecha">${new Date(d.fecha).toLocaleDateString('es-ES', {weekday:'short', day:'numeric'})}</span>
-            <span class="precip">💧 ${d.probPrecipitacion != null ? d.probPrecipitacion+'%' : '—'}</span>
-            <span class="viento">${windArrow(d.vientoDireccion)} ${d.vientoVelocidad != null ? d.vientoVelocidad+' km/h' : '—'}</span>
-            <span class="temp">${d.tempMin!=null?d.tempMin:'—'}° / ${d.tempMax!=null?d.tempMax:'—'}°</span>
-          </div>`).join('') : '<div class="empty">Previsión no disponible</div>'}
-        ${horasHoyHtml(p.horas_hoy)}
-      </div>`).join('');
+  function renderPrevisionDetalle(){
+    const p = previsionPuntos[previsionIdx];
+    const diasEl = document.getElementById('previsionDias');
+    if (!p) { diasEl.innerHTML = '<div class="empty">Sin datos disponibles.</div>'; return; }
 
-    // centra la franja horaria en la hora actual (sin saltos bruscos: se hace tras pintar el DOM)
-    requestAnimationFrame(() => {
-      document.querySelectorAll('.horas-scroll').forEach(el => {
-        const activa = el.querySelector('.hora-col.now');
-        if (activa) activa.scrollIntoView({ inline: 'center', block: 'nearest' });
-      });
-    });
+    diasEl.innerHTML = (p.dias && p.dias.length) ? p.dias.map(d => `
+      <div class="dia-row">
+        <span class="fecha">${new Date(d.fecha).toLocaleDateString('es-ES', {weekday:'short', day:'numeric'})}</span>
+        <span class="precip">💧 ${d.probPrecipitacion != null ? d.probPrecipitacion+'%' : '—'}</span>
+        <span class="viento">${windArrow(d.vientoDireccion)} ${d.vientoVelocidad != null ? d.vientoVelocidad+' km/h' : '—'}</span>
+        <span class="temp">${d.tempMin!=null?d.tempMin:'—'}° / ${d.tempMax!=null?d.tempMax:'—'}°</span>
+      </div>`).join('') : '<div class="empty">Previsión no disponible</div>';
+
+    const horaActual = new Date().getHours();
+    // solo horas desde el momento actual en adelante (las de antes ya han pasado)
+    const horas = (p.horas_hoy || []).filter(h => h.hora >= horaActual);
+    const scroll = document.getElementById('horasScroll');
+    scroll.innerHTML = horas.length
+      ? horas.map(h => horaHtml(h, horaActual)).join('')
+      : '<div class="empty" style="padding:8px 0">Sin previsión horaria disponible</div>';
+
+    const vp = document.getElementById('horasViewport');
+    vp.scrollLeft = 0;
+    requestAnimationFrame(actualizarBotonesHoras);
   }
+
+  function renderPrevisionSelector(prevision){
+    previsionPuntos = prevision || [];
+    if (previsionIdx >= previsionPuntos.length) previsionIdx = 0;
+    const select = document.getElementById('previsionSelect');
+    select.innerHTML = previsionPuntos.map((p, i) =>
+      `<option value="${i}">${p.nombre} — ${p.referencia}</option>`).join('');
+    select.value = previsionIdx;
+    renderPrevisionDetalle();
+  }
+
+  document.getElementById('previsionSelect').addEventListener('change', (e) => {
+    previsionIdx = Number(e.target.value) || 0;
+    renderPrevisionDetalle();
+  });
+  document.getElementById('horasPrev').addEventListener('click', () => {
+    document.getElementById('horasViewport').scrollBy({ left: -180, behavior: 'smooth' });
+  });
+  document.getElementById('horasNext').addEventListener('click', () => {
+    document.getElementById('horasViewport').scrollBy({ left: 180, behavior: 'smooth' });
+  });
+  document.getElementById('horasViewport').addEventListener('scroll', actualizarBotonesHoras);
 
   // ---------- Carga principal ----------
   async function loadAemetData(){
@@ -789,7 +825,7 @@
       const data = await dataRes.json();
       zonasGeo = await geoRes.json();
       renderZonas(data.avisos);
-      renderPrevision(data.prevision);
+      renderPrevisionSelector(data.prevision);
       renderHistorial(data.historial);
       const dt = new Date(data.generated_at);
       document.getElementById('updatedLine').textContent =
@@ -797,7 +833,7 @@
     } catch (e) {
       document.getElementById('updatedLine').textContent = 'No se pudieron cargar los avisos/previsión AEMET.';
       document.getElementById('zonaList').innerHTML = '<div class="empty">Sin datos disponibles.</div>';
-      document.getElementById('previsionGrid').innerHTML = '<div class="empty">Sin datos disponibles.</div>';
+      document.getElementById('previsionDias').innerHTML = '<div class="empty">Sin datos disponibles.</div>';
       document.getElementById('historialList').innerHTML = '<div class="empty">Sin datos disponibles.</div>';
     }
   }
