@@ -244,6 +244,7 @@
   .cal-table tbody tr:last-child .cal-cell{border-bottom:none;}
   .cal-chip{display:block;width:100%;margin-bottom:3px;border:none;border-radius:6px;padding:4px 5px;font-size:.66rem;font-weight:700;font-family:var(--font-mono);cursor:pointer;}
   .cal-chip-descanso{background:var(--st-none-soft);color:var(--st-none);font-family:var(--font-ui);}
+  .cal-chip-guardia{background:var(--st-amber-soft);color:var(--st-amber);font-family:var(--font-ui);}
   .cal-add{width:100%;border:1px dashed var(--border);background:transparent;border-radius:6px;color:var(--ink-faint);font-size:.8rem;padding:3px;cursor:pointer;line-height:1.2;}
   .cal-add:hover{border-color:var(--accent);color:var(--accent);}
 
@@ -287,7 +288,7 @@
   .link-row{display:flex;align-items:center;gap:8px;color:var(--ink-soft);}
 </style>
 
-<script id="app-state" type="application/json">{"personas":[{"id":"ana","nombre":"Ana Celia","rol":"Jefa de Servicio","inicial":"AC"},{"id":"kiko","nombre":"Kiko","rol":"Coordinador de Emergencias","inicial":"K"},{"id":"juan","nombre":"Juan Andrés","rol":"ATEM","inicial":"JA"},{"id":"fernando","nombre":"Fernando","rol":"ATEM","inicial":"F"}],"emergencias":[{"id":"emsyjwqt1x5heg","nombre":"prueba","tipo":"Inundación","prioridad":"Alta","estado":"activa","ubicacion":"","pma":"","descripcion":"","inicio":1787050805941,"cierre":null,"turnos":[],"fichajes":[{"id":"fmsyjwtbtcbimg","personaId":"kiko","tipo":"salida_casa","ts":1787050809209},{"id":"fmsyjww14hqwfg","personaId":"kiko","tipo":"salida_casa","ts":1787050812712},{"id":"fmsyjwyqgo9i1l","personaId":"kiko","tipo":"en_ruta","ts":1787050816217},{"id":"fmsyjx4aig8ih8","personaId":"kiko","tipo":"llegada_pma","ts":1787050823418},{"id":"fmt6u78hz2tohp","personaId":"kiko","tipo":"salida_casa","ts":1787551821000},{"id":"fmt6u7an6dmah8","personaId":"kiko","tipo":"salida_casa","ts":1787551823778},{"id":"fmt6u7dxtai89n","personaId":"kiko","tipo":"llegada_pma","ts":1787551828049},{"id":"fmt6u7fgoydg29","personaId":"kiko","tipo":"llegada_casa","ts":1787551830024},{"id":"fmt6u8xge9n15k","personaId":"fernando","tipo":"salida_casa","ts":1787551899998},{"id":"fmt6u8yqmr2mle","personaId":"fernando","tipo":"llegada_pma","ts":1787551901662},{"id":"fmt6u98znydu0f","personaId":"fernando","tipo":"salida_pma","ts":1787551914947}]}]}</script>
+<script id="app-state" type="application/json">{"personas":[{"id":"ana","nombre":"Ana Celia","rol":"Jefa de Servicio","inicial":"AC"},{"id":"kiko","nombre":"Kiko","rol":"Coordinador de Emergencias","inicial":"K"},{"id":"juan","nombre":"Juan Andrés","rol":"ATEM","inicial":"JA"},{"id":"fernando","nombre":"Fernando","rol":"ATEM","inicial":"F"}],"emergencias":[]}</script>
 <div id="app-root"></div>
 
 <script id="app-runtime">
@@ -296,32 +297,33 @@
   var SC = '<' + '/script>';
 
   /* ---------- state & ui ---------- */
-  var state = JSON.parse(document.getElementById('app-state').textContent);
-  var ui = { view:'home', emgId:null, subtab:'resumen', personaActual:null, addingTurno:false, showCerradas:false,
+  // Herramienta de un solo usuario (Kiko): ya no hay enlaces personalizados ni selector
+  // de identidad — se guarda todo en este dispositivo (localStorage), de verdad, en vez
+  // de solo en memoria mientras dura la pestaña abierta.
+  var STATE_KEY = 'g112_state_v1';
+  function loadState(){
+    try{
+      var saved = localStorage.getItem(STATE_KEY);
+      if(saved) return JSON.parse(saved);
+    }catch(e){}
+    return JSON.parse(document.getElementById('app-state').textContent);
+  }
+  function saveState(){
+    try{ localStorage.setItem(STATE_KEY, JSON.stringify(state)); }catch(e){}
+  }
+  var state = loadState();
+  var ui = { view:'home', emgId:null, subtab:'resumen', personaActual:'kiko', addingTurno:false, showCerradas:false,
     horasFiltro: { personaId:'all', emgId:'all', tipo:'todo' }, calDays: 4 };
   var horasTimer = null;
-  try{ ui.personaActual = localStorage.getItem('g112_persona') || null; }catch(e){}
   try{
     var savedUi = JSON.parse(sessionStorage.getItem('g112_ui')||'null');
     if(savedUi){ ui.view=savedUi.view||'home'; ui.emgId=savedUi.emgId||null; ui.subtab=savedUi.subtab||'resumen'; }
   }catch(e){}
-  // Enlace personalizado: .../?yo=kiko fija (y recuerda) la identidad de quien abre ese enlace.
-  try{
-    var qp = new URLSearchParams(window.location.search).get('yo');
-    if(qp && persona_exists(qp)){
-      ui.personaActual = qp;
-      localStorage.setItem('g112_persona', qp);
-    }
-  }catch(e){}
-  function persona_exists(id){ for(var i=0;i<state.personas.length;i++){ if(state.personas[i].id===id) return true; } return false; }
 
   var ADMIN_ID = 'kiko';
   function isAdmin(){ return ui.personaActual === ADMIN_ID; }
-  // Enlace público estable de este artefacto (no cambia al republicar). Se usa para
-  // generar los enlaces personalizados ?yo=<persona> del panel de administración.
-  var ARTIFACT_URL = 'https://claude.ai/code/artifact/69fbf878-fee7-4822-a638-8588f803ae4f';
 
-  var artifactCap = null, downloadsCap = null, mode = 'connecting', readOnly = false;
+  var artifactCap = null, downloadsCap = null, readOnly = false;
 
   var TIPOS = ['Incendio','Accidente de tráfico','Inundación','Rescate acuático','Rescate en altura/confinado','Sanitario','Búsqueda de persona','Riesgo químico','Otro'];
   var PRIORIDADES = ['Alta','Media','Baja'];
@@ -497,55 +499,30 @@
   }
 
   function commit(mutator, successMsg){
-    var snapshot = JSON.parse(JSON.stringify(state));
+    // Fuente de verdad: localStorage, guardado de forma síncrona antes de repintar.
+    // Así "eliminar de verdad" funciona siempre, incluso sin conexión a ninguna
+    // capability externa (que era el motivo de que los cambios se perdieran al recargar).
     mutator(state);
+    saveState();
     render();
     saveUi();
-    if(mode==='local'){
-      if(successMsg) toast(successMsg);
-      return;
+    if(successMsg) toast(successMsg);
+    // Si además esta página corre como artefacto publicado de Claude, se intenta
+    // sincronizar también ahí — pero nunca depende de ello para guardar.
+    if(artifactCap && !readOnly){
+      artifactCap.publish(buildFullDocument(state)).catch(function(err){
+        var code = err && err.code;
+        if(code==='not_writer' || code==='not_granted' || code==='not_declared' || code==='capability_disabled'){
+          readOnly = true;
+        }
+      });
     }
-    if(!artifactCap){
-      // capability still resolving; try again shortly
-      setTimeout(function(){ commit2(snapshot, successMsg); }, 300);
-      return;
-    }
-    commit2(snapshot, successMsg);
-  }
-  function commit2(snapshot, successMsg){
-    if(readOnly){
-      state = snapshot; render();
-      toast('Vista de solo lectura: no se pudo guardar.');
-      return;
-    }
-    artifactCap.publish(buildFullDocument(state)).then(function(){
-      if(successMsg) toast(successMsg);
-    }).catch(function(err){
-      var code = err && err.code;
-      if(code==='conflict'){
-        // shell reloads the view automatically; nothing to do
-        return;
-      }
-      if(code==='not_writer' || code==='not_granted' || code==='not_declared' || code==='capability_disabled'){
-        readOnly = true;
-        state = snapshot;
-        render();
-        toast('Este enlace es de solo lectura para ti.');
-        return;
-      }
-      state = snapshot;
-      render();
-      toast('No se pudo guardar el cambio. Inténtalo de nuevo.');
-    });
   }
 
   /* ---------- init capability ---------- */
   function initCapability(){
-    if(!window.claude || !window.claude.use){ mode='local'; return; }
-    window.claude.use('artifact').then(function(cap){
-      if(!cap){ mode='local'; return; }
-      artifactCap = cap; mode='connected';
-    }).catch(function(){ mode='local'; });
+    if(!window.claude || !window.claude.use) return;
+    window.claude.use('artifact').then(function(cap){ artifactCap = cap || null; }).catch(function(){ artifactCap = null; });
     window.claude.use('downloads').then(function(cap){ downloadsCap = cap || null; }).catch(function(){ downloadsCap = null; });
   }
 
@@ -554,12 +531,6 @@
   function openEmg(id){ ui.view='detail'; ui.emgId=id; ui.subtab='resumen'; saveUi(); render(); }
   function openHoras(){ if(!isAdmin()) return; ui.view='horas'; saveUi(); render(); window.scrollTo(0,0); }
   function setSubtab(t){ ui.subtab=t; saveUi(); render(); window.scrollTo(0,0); }
-  function chooseSelf(id){
-    ui.personaActual = id;
-    try{ localStorage.setItem('g112_persona', id); }catch(e){}
-    render();
-  }
-  function switchSelf(){ ui.personaActual = null; try{ localStorage.removeItem('g112_persona'); }catch(e){} render(); }
 
   /* ---------- modals ---------- */
   function openModal(html){
@@ -574,30 +545,6 @@
     document.body.appendChild(wrap);
   }
   function closeModal(){ var m=document.getElementById('g112-modal'); if(m) m.remove(); }
-
-  /* ---------- enlaces del equipo (solo admin) ---------- */
-  function linkFor(personaId){ return ARTIFACT_URL + '?yo=' + personaId; }
-  function copyLink(personaId){
-    if(!isAdmin()) return;
-    var url = linkFor(personaId);
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(url).then(function(){
-        toast('Enlace de '+persona(personaId).nombre+' copiado');
-      }).catch(function(){ showLinkModal(personaId, url); });
-    } else {
-      showLinkModal(personaId, url);
-    }
-  }
-  function showLinkModal(personaId, url){
-    openModal(
-      '<h2>Enlace de '+esc(persona(personaId).nombre)+'</h2>' +
-      '<div class="field"><label>No se pudo copiar automáticamente — selecciona y copia</label>' +
-      '<input id="link-copy-input" value="'+esc(url)+'" readonly></div>' +
-      '<div class="modal-actions"><button type="button" class="btn btn-primary btn-block" data-close>Cerrar</button></div>'
-    );
-    var inp = document.getElementById('link-copy-input');
-    if(inp){ inp.focus(); inp.select(); }
-  }
 
   /* ---------- informe de horas (solo admin) ---------- */
   function csvField(v){
@@ -754,6 +701,7 @@
       '<form id="f-new-turno">' +
         '<div class="field"><label>Tipo</label><div class="seg">' +
           '<button type="button" class="on" data-turno-tipo="turno">Turno</button>' +
+          '<button type="button" data-turno-tipo="guardia">Guardia</button>' +
           '<button type="button" data-turno-tipo="descanso">Descanso</button>' +
         '</div></div>' +
         '<input type="hidden" name="tipo" value="turno">' +
@@ -799,10 +747,11 @@
       if(!t.fecha) return;
       if(tipo!=='descanso' && (!t.inicio || !t.fin)) return;
       closeModal();
+      var msg = tipo==='descanso' ? 'Descanso añadido' : (tipo==='guardia' ? 'Guardia añadida' : 'Turno añadido');
       commit(function(s){
         var e2 = emergencia(emgId);
         e2.turnos.push(t);
-      }, tipo==='descanso' ? 'Descanso añadido' : 'Turno añadido');
+      }, msg);
     });
   }
 
@@ -812,9 +761,11 @@
     var t = emg.turnos.filter(function(x){ return x.id===turnoId; })[0];
     if(!t) return;
     var p = persona(t.personaId);
-    var esDescanso = (t.tipo||'turno')==='descanso';
+    var tTipo = t.tipo||'turno';
+    var esDescanso = tTipo==='descanso';
+    var tipoLabel = tTipo==='guardia' ? 'Guardia' : (esDescanso ? 'Descanso' : 'Turno');
     openModal(
-      '<h2>'+(esDescanso?'Descanso':'Turno')+' — '+esc(p.nombre)+'</h2>' +
+      '<h2>'+tipoLabel+' — '+esc(p.nombre)+'</h2>' +
       '<div class="detail-grid">' +
         '<div><div class="k">Fecha</div><div class="v">'+fmtFechaLarga(t.fecha)+'</div></div>' +
         (esDescanso ? '' : '<div><div class="k">Horario</div><div class="v">'+esc(t.inicio)+'–'+esc(t.fin)+'</div></div>') +
@@ -904,9 +855,7 @@
   /* ---------- rendering ---------- */
   function render(){
     var root = document.getElementById('app-root');
-    if(!ui.personaActual){
-      root.innerHTML = renderOnboarding();
-    } else if(ui.view==='horas' && isAdmin()){
+    if(ui.view==='horas' && isAdmin()){
       root.innerHTML = renderHoras();
     } else if(ui.view==='detail' && emergencia(ui.emgId)){
       root.innerHTML = renderDetail(emergencia(ui.emgId));
@@ -918,20 +867,6 @@
       var t=document.createElement('div'); t.id='g112-toast'; t.className='toast'; document.body.appendChild(t);
     }
     wireEvents();
-  }
-
-  function renderOnboarding(){
-    return '<div class="onboard">' +
-      '<div><div class="brand-mark" style="font-size:2rem;">🚨</div>' +
-      '<h1>Guardia 112</h1>' +
-      '<p>Coordinación de turnos, relevos y fichajes del equipo de emergencias.</p></div>' +
-      '<div><p style="font-weight:700;font-size:.8rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);margin-bottom:2px;">¿Quién eres?</p>' +
-      '<div class="who-grid">' + state.personas.map(function(p){
-        var tag = p.id===ADMIN_ID ? '<div class="rl" style="color:var(--accent-strong);font-weight:700;">★ Administrador</div>' : '';
-        return '<div class="who-card" data-who="'+p.id+'"><div class="av">'+esc(p.inicial)+'</div><div class="nm">'+esc(p.nombre)+'</div><div class="rl">'+esc(p.rol)+'</div>'+tag+'</div>';
-      }).join('') + '</div></div>' +
-      '<p class="hint">Este dispositivo recordará tu elección. Puedes cambiarla luego tocando tu nombre arriba.</p>' +
-      '</div>';
   }
 
   function statusStripHTML(){
@@ -974,12 +909,11 @@
     var me = persona(ui.personaActual);
     var html = '<div class="topbar"><div class="topbar-row">' +
       '<div class="brand"><span class="brand-mark">🚨</span><div><h1>Guardia 112</h1></div></div>' +
-      '<div class="persona-chip" data-switch-self><div class="av">'+esc(me.inicial)+'</div><span class="name">'+esc(me.nombre)+'</span></div>' +
+      '<div class="persona-chip" style="cursor:default;"><div class="av">'+esc(me.inicial)+'</div><span class="name">'+esc(me.nombre)+'</span></div>' +
       '</div>' + statusStripHTML() + '</div>';
 
     html += '<main>';
-    if(mode==='local') html += '<div class="banner">⚠️ Vista local: comparte el enlace publicado para que los fichajes se sincronicen entre todos.</div>';
-    if(readOnly) html += '<div class="banner">🔒 Este enlace está en modo solo lectura para ti.</div>';
+    if(readOnly) html += '<div class="banner">🔒 No se pudo sincronizar el último cambio.</div>';
 
     if(isAdmin()) html += renderPanelAdmin();
 
@@ -997,18 +931,8 @@
   }
 
   function renderPanelAdmin(){
-    var rows = state.personas.map(function(p){
-      var url = linkFor(p.id);
-      var tag = p.id===ADMIN_ID ? ' <span style="color:var(--accent-strong);">(tú)</span>' : '';
-      return '<div style="display:flex;align-items:center;gap:8px;justify-content:space-between;">' +
-        '<div style="min-width:0;"><div style="font-weight:700;font-size:.82rem;">'+esc(p.nombre)+tag+'</div>' +
-        '<div style="font-family:var(--font-mono);font-size:.68rem;color:var(--ink-faint);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+esc(url)+'</div></div>' +
-        '<button class="btn btn-sm" data-copy-link="'+p.id+'">Copiar</button></div>';
-    }).join('');
     return '<div class="section-title"><h2>Panel de administración</h2></div>' +
       '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:11px;">' +
-      '<div style="font-size:.72rem;color:var(--ink-faint);">Enlace personal de cada uno — cópialo y pégalo donde quieras enviarlo.</div>' +
-      rows +
       '<button class="btn btn-primary btn-block" data-go-horas style="margin-top:2px;">📊 Ver horas trabajadas</button>' +
       '</div>';
   }
@@ -1054,6 +978,59 @@
     });
     return out;
   }
+  /* ---------- horas planificadas: según el cuadrante (turnos), no los fichajes reales ---------- */
+  function turnoDurMin(t){
+    var a = minutesOf(t.inicio), b = minutesOf(t.fin);
+    var d = b - a;
+    if(d <= 0) d += 1440; // turno que cruza medianoche (p.ej. 22:00–06:00)
+    return d;
+  }
+  // Franja según la hora de inicio: mañana 06–14, tarde 14–22, noche 22–06.
+  function franjaDe(inicioHM){
+    var m = minutesOf(inicioHM);
+    if(m >= 360 && m < 840) return 'manana';
+    if(m >= 840 && m < 1320) return 'tarde';
+    return 'noche';
+  }
+  function horasPlanificadas(emg){
+    var out = {};
+    state.personas.forEach(function(p){ out[p.id] = { manana:0, tarde:0, noche:0, turno:0, guardia:0 }; });
+    emg.turnos.forEach(function(t){
+      var tipo = t.tipo||'turno';
+      if(tipo==='descanso' || !t.inicio || !t.fin) return;
+      var bucket = out[t.personaId];
+      if(!bucket) return;
+      var min = turnoDurMin(t);
+      if(tipo==='guardia'){
+        bucket.guardia += min;
+      } else {
+        bucket.turno += min;
+        bucket[franjaDe(t.inicio)] += min;
+      }
+    });
+    return out;
+  }
+  function renderHorasPlanificadas(emg){
+    var datos = horasPlanificadas(emg);
+    var filas = state.personas.map(function(p){
+      var d = datos[p.id];
+      return '<tr style="border-top:1px solid var(--border);">' +
+        '<td style="padding:6px 8px;font-weight:700;">'+esc(p.nombre)+'</td>' +
+        '<td style="padding:6px 8px;">'+fmtDuration(d.manana*60000)+'</td>' +
+        '<td style="padding:6px 8px;">'+fmtDuration(d.tarde*60000)+'</td>' +
+        '<td style="padding:6px 8px;">'+fmtDuration(d.noche*60000)+'</td>' +
+        '<td style="padding:6px 8px;font-weight:700;color:var(--accent-strong);">'+fmtDuration(d.turno*60000)+'</td>' +
+        '<td style="padding:6px 8px;">'+(d.guardia? fmtDuration(d.guardia*60000) : '—')+'</td>' +
+        '</tr>';
+    }).join('');
+    return '<div class="section-title"><h2>Horas según el cuadrante</h2></div>' +
+      '<p class="hint" style="margin-top:-4px;">Calculado a partir de las horas de inicio/fin de cada turno planificado — no de los fichajes reales.</p>' +
+      '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.78rem;white-space:nowrap;">' +
+      '<thead><tr style="text-align:left;color:var(--ink-faint);font-size:.64rem;text-transform:uppercase;letter-spacing:.04em;">' +
+      '<th style="padding:6px 8px;">Persona</th><th style="padding:6px 8px;">Mañana</th><th style="padding:6px 8px;">Tarde</th><th style="padding:6px 8px;">Noche</th><th style="padding:6px 8px;">Total turno</th><th style="padding:6px 8px;">Guardia</th></tr></thead>' +
+      '<tbody>'+filas+'</tbody></table></div>';
+  }
+
   function renderCalendario(emg){
     var dates = calendarDates(emg);
     var html = '<div class="cal-wrap"><table class="cal-table"><thead><tr><th class="cal-corner"></th>' +
@@ -1064,8 +1041,12 @@
           dates.map(function(d){
             var entries = emg.turnos.filter(function(t){ return t.personaId===p.id && t.fecha===d; });
             var chips = entries.map(function(t){
-              if((t.tipo||'turno')==='descanso'){
+              var tTipo = t.tipo||'turno';
+              if(tTipo==='descanso'){
                 return '<button type="button" class="cal-chip cal-chip-descanso" data-cal-edit="'+t.id+'">Descanso</button>';
+              }
+              if(tTipo==='guardia'){
+                return '<button type="button" class="cal-chip cal-chip-guardia" data-cal-edit="'+t.id+'">🛡️ '+esc(t.inicio)+'–'+esc(t.fin)+'</button>';
               }
               return '<button type="button" class="cal-chip" style="background:var(--st-'+colorForPersonaIndex(p.id)+'-soft);color:var(--st-'+colorForPersonaIndex(p.id)+');" data-cal-edit="'+t.id+'">'+esc(t.inicio)+'–'+esc(t.fin)+'</button>';
             }).join('');
@@ -1090,7 +1071,7 @@
     var me = persona(ui.personaActual);
     var html = '<div class="topbar"><div class="back-row">' +
       '<button class="btn btn-ghost btn-sm" data-go-home>← Emergencias</button>' +
-      '<div class="persona-chip" data-switch-self><div class="av">'+esc(me.inicial)+'</div><span class="name">'+esc(me.nombre)+'</span></div>' +
+      '<div class="persona-chip" style="cursor:default;"><div class="av">'+esc(me.inicial)+'</div><span class="name">'+esc(me.nombre)+'</span></div>' +
       '</div></div>';
 
     html += '<main>';
@@ -1144,6 +1125,7 @@
   function renderPlanificacion(e){
     var html = isAdmin() ? '<div class="plan-toolbar"><button type="button" class="btn btn-primary btn-sm" data-new-turno="'+e.id+'">＋ Añadir turno</button></div>' : '';
     html += renderCalendario(e);
+    html += renderHorasPlanificadas(e);
     return html;
   }
 
@@ -1186,7 +1168,7 @@
     var f = ui.horasFiltro;
     var html = '<div class="topbar"><div class="back-row">' +
       '<button class="btn btn-ghost btn-sm" data-go-home>← Emergencias</button>' +
-      '<div class="persona-chip" data-switch-self><div class="av">'+esc(me.inicial)+'</div><span class="name">'+esc(me.nombre)+'</span></div>' +
+      '<div class="persona-chip" style="cursor:default;"><div class="av">'+esc(me.inicial)+'</div><span class="name">'+esc(me.nombre)+'</span></div>' +
       '</div></div>';
 
     html += '<main>';
@@ -1279,8 +1261,6 @@
      no solo el listener de cierre. */
   function handleAppClick(ev){
     var t = ev.target.closest('[data-close]'); if(t){ closeModal(); return; }
-    t = ev.target.closest('[data-who]'); if(t){ chooseSelf(t.getAttribute('data-who')); return; }
-    t = ev.target.closest('[data-switch-self]'); if(t){ switchSelf(); return; }
     t = ev.target.closest('[data-open]'); if(t){ openEmg(t.getAttribute('data-open')); return; }
     t = ev.target.closest('[data-new-emg]'); if(t){ openNuevaEmergencia(); return; }
     t = ev.target.closest('[data-new-turno]'); if(t){ openNuevoTurno(t.getAttribute('data-new-turno')); return; }
@@ -1289,7 +1269,6 @@
     t = ev.target.closest('[data-del-emg]'); if(t){ deleteEmergencia(t.getAttribute('data-del-emg')); return; }
     t = ev.target.closest('[data-go-home]'); if(t){ goHome(); return; }
     t = ev.target.closest('[data-go-horas]'); if(t){ openHoras(); return; }
-    t = ev.target.closest('[data-copy-link]'); if(t){ copyLink(t.getAttribute('data-copy-link')); return; }
     t = ev.target.closest('[data-filter-tipo]'); if(t){ ui.horasFiltro.tipo = t.getAttribute('data-filter-tipo'); render(); return; }
     t = ev.target.closest('[data-download-horas]'); if(t){ downloadHoras(); return; }
     t = ev.target.closest('[data-subtab]'); if(t){ setSubtab(t.getAttribute('data-subtab')); return; }
