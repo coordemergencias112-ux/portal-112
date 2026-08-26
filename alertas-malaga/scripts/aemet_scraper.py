@@ -298,12 +298,14 @@ def fetch_forecast_horaria():
             raw = aemet_call(f"/prediccion/especifica/municipio/horaria/{point['id']}")
             data = json.loads(raw.decode("latin-1", "replace"))
             dias_raw = data[0]["prediccion"]["dia"]
-            print(f"DEBUG horaria {point['id']} num_dias={len(dias_raw)} "
-                  f"fechas={[d.get('fecha') for d in dias_raw]} "
-                  f"n_temp_por_dia={[len(d.get('temperatura', [])) for d in dias_raw]} "
-                  f"n_precip_por_dia={[len(d.get('precipitacion', [])) for d in dias_raw]}",
-                  file=sys.stderr)
-            dia0 = dias_raw[0]  # primer día = hoy
+            # OJO: el primer elemento de "dia" NO es siempre hoy - a veces trae un
+            # resto de horas del día anterior (p.ej. 3-4 horas sueltas de "ayer"
+            # mientras el de "hoy" ya tiene las 24 completas). Se busca explícitamente
+            # el día cuya fecha coincide con la de hoy en vez de asumir el índice 0.
+            hoy = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+            dia0 = next((d for d in dias_raw if str(d.get("fecha", "")).startswith(hoy)), None)
+            if dia0 is None:
+                dia0 = dias_raw[0] if dias_raw else {}
         except Exception as e:  # noqa: BLE001
             out.append({"id": point["id"], "horas": [], "error": str(e)})
             continue
