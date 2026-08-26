@@ -1,0 +1,975 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mi Panel</title>
+<meta name="theme-color" content="#144c53">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+<style>
+  :root{
+    --ink:#101820; --ink-soft:#4b5560; --ink-faint:#7c8792;
+    --paper:#eef2f1; --surface:#ffffff; --surface-alt:#f5f8f7;
+    --border:#d8dfdc; --accent:#1f6f78; --accent-strong:#144c53; --accent-soft:#dbedec;
+    --danger:#c8402f; --danger-soft:#f8e0db;
+    --nivel-verde:#1f9d55;   --nivel-verde-soft:#dff5e6;
+    --nivel-amarillo:#c9820a; --nivel-amarillo-soft:#faedd0;
+    --nivel-naranja:#d9711a; --nivel-naranja-soft:#fbe3cf;
+    --nivel-rojo:#c8402f;    --nivel-rojo-soft:#f8e0db;
+    --shadow: 0 1px 2px rgba(16,24,32,.05), 0 6px 16px rgba(16,24,32,.06);
+    --radius-lg:18px; --radius-md:12px; --radius-sm:8px;
+    --font-ui: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#eef3f2; --ink-soft:#b7c2c6; --ink-faint:#8892988a;
+      --paper:#0b1215; --surface:#131c20; --surface-alt:#182226;
+      --border:#263133; --accent:#4fb3ac; --accent-strong:#7dd3cb; --accent-soft:#173634;
+      --danger:#e8695a; --danger-soft:#3a1f1c;
+      --nivel-verde:#5cc98a; --nivel-verde-soft:#153524;
+      --nivel-amarillo:#e3a83c; --nivel-amarillo-soft:#3a2c12;
+      --nivel-naranja:#ef8f4e; --nivel-naranja-soft:#3a2413;
+      --nivel-rojo:#e8695a; --nivel-rojo-soft:#3a1f1c;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 20px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; min-height:100dvh; background:var(--paper); color:var(--ink);
+    font-family:var(--font-ui); padding:max(20px, env(safe-area-inset-top)) 16px 40px;
+  }
+  .wrap{ max-width:1080px; margin:0 auto; }
+  header.top{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:6px; flex-wrap:wrap; }
+  a.back{ color:var(--accent-strong); text-decoration:none; font-size:.85rem; font-weight:600; }
+  a.back:hover{ text-decoration:underline; }
+  h1{ font-size:1.4rem; margin:4px 0 2px; }
+  .updated{ color:var(--ink-faint); font-size:.78rem; margin-bottom:20px; }
+  .cards{ display:grid; grid-template-columns:1fr; gap:18px; }
+  @media (min-width:900px){ .cards{ grid-template-columns:1fr 1fr; } .card.full{ grid-column:1 / -1; } }
+  .card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+    box-shadow:var(--shadow); padding:18px 20px;
+  }
+  .card h2{ font-size:1rem; margin:0 0 2px; display:flex; align-items:center; gap:8px; }
+  .card .desc{ color:var(--ink-faint); font-size:.78rem; margin:0 0 14px; }
+  .pill-group{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+  .pill{
+    border:1px solid var(--border); background:var(--surface-alt); color:var(--ink-soft);
+    font-size:.75rem; font-weight:600; padding:5px 11px; border-radius:999px; cursor:pointer;
+  }
+  .pill.active{ background:var(--accent); border-color:var(--accent); color:#fff; }
+  .quake-list{ display:flex; flex-direction:column; gap:8px; max-height:340px; overflow-y:auto; }
+  .quake-row{
+    display:flex; justify-content:space-between; align-items:center; gap:10px;
+    padding:8px 10px; border-radius:var(--radius-sm); background:var(--surface-alt); font-size:.82rem;
+  }
+  .quake-row .mag{ font-weight:700; min-width:34px; text-align:center; padding:2px 6px; border-radius:6px; color:#fff; }
+  .quake-row .loc{ flex:1; }
+  .quake-row .time{ color:var(--ink-faint); font-size:.72rem; white-space:nowrap; }
+  .empty{ color:var(--ink-faint); font-size:.82rem; padding:14px 0; text-align:center; }
+  #map{ height:360px; border-radius:var(--radius-md); overflow:hidden; border:1px solid var(--border); }
+  .legend{ display:flex; gap:14px; flex-wrap:wrap; margin-top:12px; font-size:.74rem; color:var(--ink-soft); }
+  .legend span.dot{ display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:5px; vertical-align:middle; }
+  .zona-list{ margin-top:14px; display:flex; flex-direction:column; gap:8px; }
+  .zona-row{ display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:var(--radius-sm); background:var(--surface-alt); }
+  .zona-row .badge{ font-size:.68rem; font-weight:700; padding:2px 9px; border-radius:999px; }
+  .zona-row .nombre{ font-size:.85rem; font-weight:600; flex:1; }
+  .zona-row .detalle{ font-size:.72rem; color:var(--ink-faint); }
+  .layer-toggles{ display:flex; gap:14px; flex-wrap:wrap; margin:0 0 12px; font-size:.8rem; color:var(--ink-soft); }
+  .layer-toggles label{ display:flex; align-items:center; gap:6px; cursor:pointer; }
+  .layer-toggles input{ accent-color:var(--accent); width:15px; height:15px; }
+  .layer-toggles .unavailable{ color:var(--ink-faint); font-style:italic; }
+  .historial-list{ display:flex; flex-direction:column; gap:6px; max-height:280px; overflow-y:auto; }
+  .historial-row{ display:grid; grid-template-columns:90px 1fr auto; gap:10px; align-items:center; padding:7px 10px; border-radius:var(--radius-sm); background:var(--surface-alt); font-size:.78rem; }
+  .historial-row .fecha{ color:var(--ink-faint); font-size:.72rem; white-space:nowrap; }
+  .historial-row .badge{ font-size:.66rem; font-weight:700; padding:2px 8px; border-radius:999px; color:#fff; white-space:nowrap; }
+  .aviso-chip{ display:inline-block; font-size:.68rem; padding:1px 8px; border-radius:999px; margin:2px 4px 0 0; border:1px solid var(--border); }
+  .aviso-chip.activo{ background:var(--danger-soft); color:var(--danger); border-color:transparent; font-weight:700; }
+  .aviso-chip.proximo{ background:var(--surface); color:var(--ink-faint); }
+  .saih-section h3{ font-size:.85rem; margin:16px 0 8px; color:var(--ink-soft); }
+  .saih-section h3:first-child{ margin-top:0; }
+  .saih-row{ display:grid; grid-template-columns:1fr auto auto; align-items:center; gap:10px; padding:8px 10px; border-radius:var(--radius-sm); background:var(--surface-alt); font-size:.8rem; margin-bottom:6px; }
+  .saih-row .nombre{ display:flex; align-items:center; gap:8px; }
+  .saih-row .valor{ color:var(--ink-soft); white-space:nowrap; font-size:.75rem; }
+  .saih-row .badge{ font-size:.66rem; font-weight:700; padding:2px 8px; border-radius:999px; color:#fff; white-space:nowrap; }
+  .saih-disclaimer{
+    display:flex; gap:8px; align-items:flex-start; background:var(--nivel-amarillo-soft); color:var(--ink);
+    border:1px solid var(--nivel-amarillo); border-radius:var(--radius-sm); padding:10px 12px;
+    font-size:.74rem; line-height:1.4; margin:0 0 14px;
+  }
+  .prevision-selector{ display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+  .prevision-selector label{ font-size:.78rem; color:var(--ink-soft); font-weight:600; }
+  .prevision-selector select{
+    font:inherit; font-size:.82rem; padding:7px 10px; border-radius:var(--radius-sm); border:1px solid var(--border);
+    background:var(--surface-alt); color:var(--ink); cursor:pointer; max-width:100%;
+  }
+  .dias-list{ display:flex; flex-direction:column; gap:6px; margin-bottom:18px; }
+  .dia-row{
+    display:grid; grid-template-columns:64px 1fr auto auto; align-items:center; gap:10px;
+    padding:8px 10px; border-radius:var(--radius-sm); background:var(--surface-alt); font-size:.78rem;
+  }
+  .dia-row .fecha{ font-weight:700; text-transform:capitalize; }
+  .dia-row .precip{ display:flex; align-items:center; gap:5px; }
+  .dia-row .viento{ display:flex; align-items:center; gap:5px; white-space:nowrap; }
+  .dia-row .temp{ color:var(--ink-faint); white-space:nowrap; }
+  .horas-titulo{ font-size:.82rem; margin:0 0 8px; color:var(--ink-soft); font-weight:700; }
+  .horas-nav{ display:flex; align-items:center; gap:6px; min-width:0; }
+  .horas-btn{
+    flex:0 0 auto; width:26px; height:60px; border-radius:var(--radius-sm); border:1px solid var(--border);
+    background:var(--surface-alt); color:var(--ink-soft); cursor:pointer; font-size:1rem; line-height:1;
+  }
+  .horas-btn:hover:not(:disabled){ background:var(--accent-soft); color:var(--accent-strong); border-color:var(--accent); }
+  .horas-btn:disabled{ opacity:.3; cursor:default; }
+  .horas-viewport{
+    flex:0 1 auto; min-width:0; width:330px; max-width:100%; overflow-x:auto; scroll-behavior:smooth;
+    scrollbar-width:thin; padding-bottom:2px;
+  }
+  .horas-scroll{ display:flex; gap:6px; width:max-content; }
+  .hora-col{
+    flex:0 0 auto; width:58px; text-align:center; background:var(--surface-alt);
+    border:1px solid transparent; border-radius:var(--radius-sm); padding:7px 4px; font-size:.68rem;
+  }
+  .hora-col.now{ background:var(--accent-soft); border-color:var(--accent); }
+  .hora-col .h{ display:block; font-weight:700; margin-bottom:3px; color:var(--ink-soft); }
+  .hora-col .t{ display:block; font-weight:600; }
+  .hora-col .p{ display:block; color:var(--ink-faint); font-size:.62rem; margin-top:2px; white-space:nowrap; }
+  .hora-col .v{ display:block; color:var(--ink-faint); font-size:.62rem; white-space:nowrap; }
+  footer{ margin-top:30px; text-align:center; font-size:.72rem; color:var(--ink-faint); }
+  .status-dot{ display:inline-block; width:9px; height:9px; border-radius:50%; }
+
+  /* ---------- Panel de personalización ---------- */
+  .settings-card{ border-color:var(--accent); }
+  .settings-toolbar{ display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+  .settings-toolbar .acciones{ display:flex; gap:8px; flex-wrap:wrap; }
+  .settings-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(190px,1fr)); gap:8px; margin:14px 0 0;
+  }
+  .widget-toggle{
+    display:flex; align-items:center; gap:8px; padding:9px 12px; border-radius:var(--radius-sm);
+    background:var(--surface-alt); border:1px solid var(--border); font-size:.82rem; font-weight:600; cursor:pointer;
+  }
+  .widget-toggle input{ accent-color:var(--accent); width:16px; height:16px; flex:0 0 auto; }
+  .settings-sub{ margin-top:16px; padding-top:14px; border-top:1px dashed var(--border); }
+  .settings-sub-title{ font-size:.78rem; font-weight:700; color:var(--ink-soft); margin-bottom:8px; display:flex; align-items:center; gap:10px; }
+  .settings-sub-title .mini-btns{ font-weight:400; display:flex; gap:8px; }
+  .settings-sub-title .mini-btns a{ font-size:.72rem; color:var(--accent-strong); cursor:pointer; text-decoration:underline; }
+  .settings-sub-grid{ display:flex; flex-wrap:wrap; gap:6px; }
+  .settings-chip{
+    display:flex; align-items:center; gap:6px; padding:5px 10px; border-radius:999px;
+    background:var(--surface-alt); border:1px solid var(--border); font-size:.76rem; cursor:pointer;
+  }
+  .settings-chip input{ accent-color:var(--accent); width:14px; height:14px; }
+  .station-grid{ max-height:170px; overflow-y:auto; padding:2px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--surface); }
+  .settings-aviso{ font-size:.76rem; color:var(--accent-strong); font-weight:600; margin-left:8px; }
+  .settings-aviso.oculto{ display:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <a class="back" href="../index.html">← Portal 112</a>
+      <h1>🧩 Mi Panel</h1>
+    </div>
+  </header>
+  <p class="updated" id="updatedLine">Cargando datos…</p>
+
+  <div class="cards">
+
+    <div class="card full settings-card">
+      <div class="settings-toolbar">
+        <h2 style="margin:0">⚙️ Personalizar panel</h2>
+        <div class="acciones">
+          <button class="pill" id="btnCopiarEnlace" type="button">🔗 Copiar enlace de esta configuración</button>
+          <button class="pill" id="btnRestablecer" type="button">↺ Restablecer</button>
+          <span class="settings-aviso oculto" id="settingsAviso"></span>
+        </div>
+      </div>
+      <p class="desc">Marca lo que quieras ver en tu panel — reutiliza los mismos datos de Alertas Málaga, sin modificarlo. Se guarda solo en este navegador; usa "Copiar enlace" para llevarte esta misma configuración a otro sitio o compartirla.</p>
+
+      <div class="settings-grid" id="widgetToggles">
+        <label class="widget-toggle"><input type="checkbox" data-widget="sismos">🌍 Sismos</label>
+        <label class="widget-toggle"><input type="checkbox" data-widget="avisos">⚠️ Avisos AEMET</label>
+        <label class="widget-toggle"><input type="checkbox" data-widget="trafico">🚗 Tráfico DGT</label>
+        <label class="widget-toggle"><input type="checkbox" data-widget="mapa">🗺️ Mapa</label>
+        <label class="widget-toggle"><input type="checkbox" data-widget="prevision">🌧️ Previsión (tiempo y lluvia)</label>
+        <label class="widget-toggle"><input type="checkbox" data-widget="saihRios">🌊 Ríos (SAIH)</label>
+        <label class="widget-toggle"><input type="checkbox" data-widget="saihEmbalses">🏞️ Embalses (SAIH)</label>
+        <label class="widget-toggle"><input type="checkbox" data-widget="saihLluvia">💧 Pluviómetros (SAIH)</label>
+        <label class="widget-toggle"><input type="checkbox" data-widget="historial">🕓 Historial de avisos</label>
+      </div>
+
+      <div class="settings-sub" id="filtroAvisos" hidden>
+        <div class="settings-sub-title">Zonas de aviso a mostrar (avisos e historial)
+          <span class="mini-btns"><a id="zonasAvisosTodas">Todas</a><a id="zonasAvisosNinguna">Ninguna</a></span>
+        </div>
+        <div class="settings-sub-grid" id="zonasCheckboxAvisos"></div>
+      </div>
+
+      <div class="settings-sub" id="filtroPrevision" hidden>
+        <div class="settings-sub-title">Puntos de previsión a mostrar
+          <span class="mini-btns"><a id="puntosTodas">Todas</a><a id="puntosNinguna">Ninguna</a></span>
+        </div>
+        <div class="settings-sub-grid" id="puntosCheckbox"></div>
+      </div>
+
+      <div class="settings-sub" id="filtroSaih" hidden>
+        <div class="settings-sub-title">Filtrar SAIH por</div>
+        <div class="pill-group" id="saihFiltroModo" style="margin-bottom:10px">
+          <button class="pill" data-modo="zona">Zona</button>
+          <button class="pill" data-modo="estaciones">Estaciones concretas</button>
+        </div>
+        <div id="saihPorZona">
+          <div class="settings-sub-grid" id="zonasCheckboxSaih"></div>
+        </div>
+        <div id="saihPorEstacion" hidden>
+          <div class="settings-sub-title" id="tituloEstRios" style="margin-top:4px">Ríos
+            <span class="mini-btns"><a data-cat="rios" data-accion="todas">Todas</a><a data-cat="rios" data-accion="ninguna">Ninguna</a></span>
+          </div>
+          <div class="settings-sub-grid station-grid" id="estacionesCheckboxRios"></div>
+          <div class="settings-sub-title" id="tituloEstEmbalses" style="margin-top:10px">Embalses
+            <span class="mini-btns"><a data-cat="embalses" data-accion="todas">Todas</a><a data-cat="embalses" data-accion="ninguna">Ninguna</a></span>
+          </div>
+          <div class="settings-sub-grid station-grid" id="estacionesCheckboxEmbalses"></div>
+          <div class="settings-sub-title" id="tituloEstLluvia" style="margin-top:10px">Pluviómetros
+            <span class="mini-btns"><a data-cat="lluvia" data-accion="todas">Todas</a><a data-cat="lluvia" data-accion="ninguna">Ninguna</a></span>
+          </div>
+          <div class="settings-sub-grid station-grid" id="estacionesCheckboxLluvia"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" data-widget-card="sismos">
+      <h2>🌍 Sismos — Málaga</h2>
+      <p class="desc">Datos del IGN, últimas 24 horas.</p>
+      <div class="quake-list" id="quakeList"><div class="empty">Cargando sismos…</div></div>
+    </div>
+
+    <div class="card" data-widget-card="avisos">
+      <h2>⚠️ Avisos AEMET — por zona</h2>
+      <p class="desc" id="avisosDesc">Zonas seleccionadas en "Personalizar".</p>
+      <div class="zona-list" id="zonaList"><div class="empty">Cargando avisos…</div></div>
+    </div>
+
+    <div class="card" data-widget-card="trafico">
+      <h2>🚗 Tráfico — DGT</h2>
+      <p class="desc" style="margin-bottom:0">
+        <a class="back" href="https://etraffic.dgt.es/etrafficWEB/" target="_blank" rel="noopener">Abrir mapa de tráfico DGT ↗</a>
+        <span style="color:var(--ink-faint)"> (abre centrado en España)</span>
+      </p>
+    </div>
+
+    <div class="card full" data-widget-card="mapa">
+      <h2 style="margin:0">🗺️ Mapa</h2>
+      <p class="desc">Muestra las capas según lo que hayas marcado arriba; puedes ocultarlas también aquí sin cambiar tu configuración guardada.</p>
+      <div class="layer-toggles" id="layerToggles">
+        <label><input type="checkbox" data-layer="avisos"> ⚠️ Zonas de aviso</label>
+        <label><input type="checkbox" data-layer="sismos"> 🌍 Sismos</label>
+        <label><input type="checkbox" data-layer="radar"> 🌧️ Radar de lluvia</label>
+        <label><input type="checkbox" data-layer="saihRios"> 🌊 Ríos</label>
+        <label><input type="checkbox" data-layer="saihEmbalses"> 🏞️ Embalses</label>
+        <label><input type="checkbox" data-layer="saihLluvia"> 💧 Pluviómetros</label>
+      </div>
+      <div id="map"></div>
+      <div class="legend">
+        <span><span class="dot" style="background:var(--nivel-verde)"></span>Sin aviso</span>
+        <span><span class="dot" style="background:var(--nivel-amarillo)"></span>Amarillo</span>
+        <span><span class="dot" style="background:var(--nivel-naranja)"></span>Naranja</span>
+        <span><span class="dot" style="background:var(--nivel-rojo)"></span>Rojo</span>
+        <span>🌊 Río · 💧 Pluviómetro · 🏞️ Embalse</span>
+      </div>
+    </div>
+
+    <div class="card full" data-widget-card="prevision">
+      <h2>🌧️ Previsión de lluvia y viento</h2>
+      <p class="desc">Predicción de AEMET — diaria y por horas desde ahora.</p>
+      <div class="prevision-selector">
+        <label for="previsionSelect">Ver previsión de:</label>
+        <select id="previsionSelect"><option>Cargando…</option></select>
+      </div>
+      <div id="previsionDias" class="dias-list"><div class="empty">Cargando previsión…</div></div>
+      <div class="horas-titulo">Horas desde ahora</div>
+      <div class="horas-nav">
+        <button class="horas-btn" id="horasPrev" type="button" aria-label="Horas anteriores">‹</button>
+        <div class="horas-viewport" id="horasViewport"><div class="horas-scroll" id="horasScroll"></div></div>
+        <button class="horas-btn" id="horasNext" type="button" aria-label="Horas siguientes">›</button>
+      </div>
+    </div>
+
+    <div class="card full" id="saihCard">
+      <h2>🌊 SAIH Hidrosur</h2>
+      <p class="desc" id="saihDesc">Red de estaciones de la Junta de Andalucía.</p>
+      <div class="saih-disclaimer">
+        <span>⚠️</span>
+        <span>Datos reutilizados de Alertas Málaga. El municipio y el tiempo estimado de llegada de crecidas son una <b>referencia orientativa</b>, no una previsión hidrológica oficial.</span>
+      </div>
+      <div class="saih-section">
+        <div data-widget-card="saihRios">
+          <h3>Ríos</h3>
+          <div id="saihRios"><div class="empty">Cargando ríos…</div></div>
+        </div>
+        <div data-widget-card="saihEmbalses">
+          <h3>Embalses</h3>
+          <div id="saihEmbalses"><div class="empty">Cargando embalses…</div></div>
+        </div>
+        <div data-widget-card="saihLluvia">
+          <h3>Pluviómetros</h3>
+          <div id="saihLluvia" class="quake-list"><div class="empty">Cargando pluviómetros…</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card full" data-widget-card="historial">
+      <h2>🕓 Historial de avisos (últimos 7 días)</h2>
+      <p class="desc">Filtrado por las mismas zonas que "Avisos AEMET".</p>
+      <div class="historial-list" id="historialList"><div class="empty">Cargando historial…</div></div>
+    </div>
+
+  </div>
+
+  <footer>Coordinación de Emergencias 112 · Panel personalizado — reutiliza los datos de <a class="back" href="../alertas-malaga/">Alertas Málaga</a>, sin modificarlo</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  const NIVEL_COLOR = { verde:'var(--nivel-verde)', amarillo:'var(--nivel-amarillo)', naranja:'var(--nivel-naranja)', rojo:'var(--nivel-rojo)' };
+  const NIVEL_COLOR_HEX = { verde:'#1f9d55', amarillo:'#c9820a', naranja:'#d9711a', rojo:'#c8402f' };
+  const NIVEL_LABEL = { verde:'Sin aviso', amarillo:'Amarillo', naranja:'Naranja', rojo:'Rojo' };
+  const SAIH_COLOR = { rojo:'#c8402f', naranja:'#d9711a', amarillo:'#c9820a', vigilancia:'#6b7fd7', verde:'#1f9d55', sin_datos:'#8a94a3' };
+  const SAIH_LABEL = { rojo:'Alerta', naranja:'Prealerta', amarillo:'Aviso', vigilancia:'Vigilancia', verde:'Normal', sin_datos:'Sin datos' };
+  const ORDEN_ESTADO_SAIH = { rojo:0, naranja:1, amarillo:2, vigilancia:3, verde:4, sin_datos:5 };
+  const DATA_BASE = '../alertas-malaga/data/';
+
+  // ---------- Configuración personalizada (localStorage + URL) ----------
+  const STORAGE_KEY = 'panelControlConfig_v1';
+  // Convención: null = "todas/todos" (sin filtro); un array (incluso []) = selección
+  // explícita (["ninguna" seleccionada] si está vacío). Así "desmarcar la última casilla
+  // a mano" y "todas" no se confunden entre sí.
+  const DEFAULT_CONFIG = {
+    widgets: { sismos:true, avisos:true, trafico:false, mapa:false, prevision:true, saihRios:true, saihEmbalses:true, saihLluvia:false, historial:false },
+    avisosZonas: null,
+    previsionPuntos: null,
+    saihFiltro: 'zona',
+    saihZonas: null,
+    saihEstaciones: { rios: null, embalses: null, lluvia: null }
+  };
+
+  function mergeConDefaults(cfg){
+    cfg = cfg || {};
+    const se = cfg.saihEstaciones || {};
+    return {
+      widgets: Object.assign({}, DEFAULT_CONFIG.widgets, cfg.widgets || {}),
+      avisosZonas: Array.isArray(cfg.avisosZonas) ? cfg.avisosZonas : null,
+      previsionPuntos: Array.isArray(cfg.previsionPuntos) ? cfg.previsionPuntos : null,
+      saihFiltro: cfg.saihFiltro === 'estaciones' ? 'estaciones' : 'zona',
+      saihZonas: Array.isArray(cfg.saihZonas) ? cfg.saihZonas : null,
+      saihEstaciones: {
+        rios: Array.isArray(se.rios) ? se.rios : null,
+        embalses: Array.isArray(se.embalses) ? se.embalses : null,
+        lluvia: Array.isArray(se.lluvia) ? se.lluvia : null
+      }
+    };
+  }
+
+  function cargarConfigInicial(){
+    const params = new URLSearchParams(location.search);
+    const cfgParam = params.get('cfg');
+    if (cfgParam) {
+      try {
+        const decoded = JSON.parse(atob(decodeURIComponent(cfgParam)));
+        const merged = mergeConDefaults(decoded);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+        return merged;
+      } catch (e) { /* si el enlace está corrupto, cae al guardado local */ }
+    }
+    try {
+      const guardado = localStorage.getItem(STORAGE_KEY);
+      if (guardado) return mergeConDefaults(JSON.parse(guardado));
+    } catch (e) { /* ignore */ }
+    return mergeConDefaults(DEFAULT_CONFIG);
+  }
+
+  let config = cargarConfigInicial();
+  function guardarConfig(){
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(config)); } catch (e) { /* ignore */ }
+  }
+
+  function mostrarAviso(texto){
+    const el = document.getElementById('settingsAviso');
+    el.textContent = texto;
+    el.classList.remove('oculto');
+    clearTimeout(mostrarAviso._t);
+    mostrarAviso._t = setTimeout(() => el.classList.add('oculto'), 3500);
+  }
+
+  document.getElementById('btnCopiarEnlace').addEventListener('click', async () => {
+    const b64 = encodeURIComponent(btoa(JSON.stringify(config)));
+    const url = location.origin + location.pathname + '?cfg=' + b64;
+    history.replaceState(null, '', '?cfg=' + b64);
+    try {
+      await navigator.clipboard.writeText(url);
+      mostrarAviso('Enlace copiado ✓');
+    } catch (e) {
+      mostrarAviso('No se pudo copiar solo — usa la URL de la barra de direcciones.');
+    }
+  });
+
+  document.getElementById('btnRestablecer').addEventListener('click', () => {
+    if (!confirm('¿Restablecer tu panel a la configuración por defecto?')) return;
+    config = mergeConDefaults(DEFAULT_CONFIG);
+    guardarConfig();
+    history.replaceState(null, '', location.pathname);
+    sincronizarUIConConfig();
+    renderTodo();
+  });
+
+  // ---------- Visibilidad de widgets ----------
+  function aplicarVisibilidadWidgets(){
+    document.querySelectorAll('[data-widget-card]').forEach(el => {
+      const key = el.dataset.widgetCard;
+      el.style.display = config.widgets[key] ? '' : 'none';
+    });
+    document.getElementById('saihCard').style.display =
+      (config.widgets.saihRios || config.widgets.saihEmbalses || config.widgets.saihLluvia) ? '' : 'none';
+    document.getElementById('filtroAvisos').hidden = !(config.widgets.avisos || config.widgets.historial);
+    document.getElementById('filtroPrevision').hidden = !config.widgets.prevision;
+    document.getElementById('filtroSaih').hidden =
+      !(config.widgets.saihRios || config.widgets.saihEmbalses || config.widgets.saihLluvia);
+    document.getElementById('saihPorZona').hidden = config.saihFiltro !== 'zona';
+    document.getElementById('saihPorEstacion').hidden = config.saihFiltro !== 'estaciones';
+    document.querySelectorAll('#saihFiltroModo .pill').forEach(p =>
+      p.classList.toggle('active', p.dataset.modo === config.saihFiltro));
+    document.getElementById('tituloEstRios').style.display = config.widgets.saihRios ? '' : 'none';
+    document.getElementById('estacionesCheckboxRios').style.display = config.widgets.saihRios ? '' : 'none';
+    document.getElementById('tituloEstEmbalses').style.display = config.widgets.saihEmbalses ? '' : 'none';
+    document.getElementById('estacionesCheckboxEmbalses').style.display = config.widgets.saihEmbalses ? '' : 'none';
+    document.getElementById('tituloEstLluvia').style.display = config.widgets.saihLluvia ? '' : 'none';
+    document.getElementById('estacionesCheckboxLluvia').style.display = config.widgets.saihLluvia ? '' : 'none';
+
+    if (config.widgets.mapa) {
+      if (!map) { initMap(); }
+      setTimeout(() => map && map.invalidateSize(), 60);
+    }
+  }
+
+  document.querySelectorAll('#widgetToggles input[data-widget]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      config.widgets[cb.dataset.widget] = cb.checked;
+      guardarConfig();
+      aplicarVisibilidadWidgets();
+      renderTodo();
+    });
+  });
+
+  document.getElementById('saihFiltroModo').addEventListener('click', (e) => {
+    const btn = e.target.closest('.pill');
+    if (!btn) return;
+    config.saihFiltro = btn.dataset.modo;
+    guardarConfig();
+    aplicarVisibilidadWidgets();
+    renderTodo();
+  });
+
+  // ---------- Listas de zonas / puntos / estaciones (checkboxes dinámicos) ----------
+  let todosCodigosZona = [], todosIdsPunto = [], todosIdsEstacion = { rios: [], embalses: [], lluvia: [] };
+
+  function chip(container, checked, texto, onChange){
+    const label = document.createElement('label');
+    label.className = 'settings-chip';
+    const input = document.createElement('input');
+    input.type = 'checkbox';
+    input.checked = checked;
+    input.addEventListener('change', () => onChange(input.checked));
+    label.appendChild(input);
+    label.appendChild(document.createTextNode(texto));
+    container.appendChild(label);
+    return input;
+  }
+
+  function alternarEnLista(lista, todos, id, checked){
+    let arr = lista === null ? todos.slice() : lista.slice();
+    if (checked) { if (!arr.includes(id)) arr.push(id); }
+    else { arr = arr.filter(x => x !== id); }
+    if (arr.length === todos.length) return null; // vuelve a "todas" si quedan todas marcadas
+    return arr; // puede quedar [] de forma legítima = "ninguna"
+  }
+
+  function construirZonasCheckbox(zonasGeo){
+    todosCodigosZona = Object.keys(zonasGeo);
+    const cAvisos = document.getElementById('zonasCheckboxAvisos');
+    const cSaih = document.getElementById('zonasCheckboxSaih');
+    cAvisos.innerHTML = ''; cSaih.innerHTML = '';
+    todosCodigosZona.forEach(code => {
+      const nombre = zonasGeo[code].nombre;
+      chip(cAvisos, config.avisosZonas === null || config.avisosZonas.includes(code), nombre, (checked) => {
+        config.avisosZonas = alternarEnLista(config.avisosZonas, todosCodigosZona, code, checked);
+        guardarConfig(); renderTodo();
+      });
+      chip(cSaih, config.saihZonas === null || config.saihZonas.includes(code), nombre, (checked) => {
+        config.saihZonas = alternarEnLista(config.saihZonas, todosCodigosZona, code, checked);
+        guardarConfig(); renderTodo();
+      });
+    });
+  }
+
+  document.getElementById('zonasAvisosTodas').addEventListener('click', () => {
+    config.avisosZonas = null; guardarConfig(); sincronizarUIConConfig(); renderTodo();
+  });
+  document.getElementById('zonasAvisosNinguna').addEventListener('click', () => {
+    config.avisosZonas = []; guardarConfig(); sincronizarUIConConfig(); renderTodo();
+  });
+
+  function construirPuntosCheckbox(prevision){
+    todosIdsPunto = (prevision || []).map(p => p.id);
+    const c = document.getElementById('puntosCheckbox');
+    c.innerHTML = '';
+    (prevision || []).forEach(p => {
+      chip(c, config.previsionPuntos === null || config.previsionPuntos.includes(p.id), p.nombre, (checked) => {
+        config.previsionPuntos = alternarEnLista(config.previsionPuntos, todosIdsPunto, p.id, checked);
+        guardarConfig(); renderTodo();
+      });
+    });
+  }
+  document.getElementById('puntosTodas').addEventListener('click', () => {
+    config.previsionPuntos = null; guardarConfig(); sincronizarUIConConfig(); renderTodo();
+  });
+  document.getElementById('puntosNinguna').addEventListener('click', () => {
+    config.previsionPuntos = []; guardarConfig(); sincronizarUIConConfig(); renderTodo();
+  });
+
+  function nombreLimpio(n){ return (n || '').replace(/\s*\(MA\)\s*$/, ''); }
+
+  function construirEstacionesCheckbox(saih){
+    const mapaCat = { rios: 'estacionesCheckboxRios', embalses: 'estacionesCheckboxEmbalses', lluvia: 'estacionesCheckboxLluvia' };
+    ['rios', 'embalses', 'lluvia'].forEach(cat => {
+      const lista = (saih[cat] || []);
+      todosIdsEstacion[cat] = lista.map(s => s.estacion);
+      const c = document.getElementById(mapaCat[cat]);
+      c.innerHTML = '';
+      lista.forEach(s => {
+        chip(c, config.saihEstaciones[cat] === null || config.saihEstaciones[cat].includes(s.estacion), nombreLimpio(s.nombre), (checked) => {
+          config.saihEstaciones[cat] = alternarEnLista(config.saihEstaciones[cat], todosIdsEstacion[cat], s.estacion, checked);
+          guardarConfig(); renderTodo();
+        });
+      });
+    });
+  }
+  document.querySelectorAll('[data-cat][data-accion]').forEach(a => {
+    a.addEventListener('click', () => {
+      const cat = a.dataset.cat;
+      if (a.dataset.accion === 'todas') config.saihEstaciones[cat] = null;
+      else config.saihEstaciones[cat] = [];
+      guardarConfig(); sincronizarUIConConfig(); renderTodo();
+    });
+  });
+
+  function sincronizarUIConConfig(){
+    document.querySelectorAll('#widgetToggles input[data-widget]').forEach(cb => {
+      cb.checked = !!config.widgets[cb.dataset.widget];
+    });
+    document.querySelectorAll('#zonasCheckboxAvisos input').forEach((input, i) => {
+      const code = todosCodigosZona[i];
+      input.checked = config.avisosZonas === null || config.avisosZonas.includes(code);
+    });
+    document.querySelectorAll('#zonasCheckboxSaih input').forEach((input, i) => {
+      const code = todosCodigosZona[i];
+      input.checked = config.saihZonas === null || config.saihZonas.includes(code);
+    });
+    document.querySelectorAll('#puntosCheckbox input').forEach((input, i) => {
+      const id = todosIdsPunto[i];
+      input.checked = config.previsionPuntos === null || config.previsionPuntos.includes(id);
+    });
+    const mapaCat = { rios: 'estacionesCheckboxRios', embalses: 'estacionesCheckboxEmbalses', lluvia: 'estacionesCheckboxLluvia' };
+    ['rios', 'embalses', 'lluvia'].forEach(cat => {
+      document.querySelectorAll('#' + mapaCat[cat] + ' input').forEach((input, i) => {
+        const id = todosIdsEstacion[cat][i];
+        input.checked = config.saihEstaciones[cat] === null || config.saihEstaciones[cat].includes(id);
+      });
+    });
+    aplicarVisibilidadWidgets();
+  }
+
+  // ---------- Filtros aplicados a los datos ----------
+  function zonasFiltradas(avisosData){
+    const entries = Object.entries(avisosData || {});
+    if (config.avisosZonas === null) return entries;
+    return entries.filter(([code]) => config.avisosZonas.includes(code));
+  }
+
+  function estacionEnZonaSaih(id, estacionesZona){
+    if (config.saihZonas === null) return true;
+    return config.saihZonas.includes(estacionesZona[id]);
+  }
+
+  function filtrarSaihCategoria(lista, cat, estacionesZona){
+    if (config.saihFiltro === 'estaciones') {
+      const elegidas = config.saihEstaciones[cat];
+      if (elegidas === null) return lista;
+      return lista.filter(s => elegidas.includes(s.estacion));
+    }
+    return lista.filter(s => estacionEnZonaSaih(s.estacion, estacionesZona));
+  }
+
+  // ---------- Sismos (IGN, últimas 24h, sin filtros extra) ----------
+  const IGN_URLS = [
+    'https://www.ign.es/web/ign/portal/ultimos-terremotos/-/ultimos-terremotos/get10dias',
+    'https://www.ign.es/web/ign/portal/ultimos-terremotos'
+  ];
+
+  function parseIgnHtml(html) {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const trs = doc.querySelectorAll('table tr');
+    const rows = [];
+    trs.forEach(tr => {
+      const cells = tr.querySelectorAll('td');
+      if (cells.length < 11) return;
+      const id = cells[0].textContent.trim();
+      if (!/^es\d{4}[a-z0-9]+$/i.test(id)) return;
+      const fecha = cells[1].textContent.trim();
+      const horaUTC = cells[2].textContent.trim();
+      const horaLocal = cells[3].textContent.trim();
+      const lat = parseFloat(cells[4].textContent.trim().replace(',', '.'));
+      const lon = parseFloat(cells[5].textContent.trim().replace(',', '.'));
+      const mag = parseFloat(cells[7].textContent.trim().replace(',', '.'));
+      const depth = parseFloat(cells[6].textContent.trim().replace(',', '.'));
+      const locRaw = cells[10].textContent.trim();
+      const m = locRaw.match(/\.([A-ZÑ]{1,4})\s*$/);
+      const provCode = m ? m[1] : null;
+      if (provCode !== 'MA') return;
+      const loc = locRaw.replace(/\.[A-ZÑ]{1,4}\s*$/, '').trim();
+      const [dd, mmn, yyyy] = fecha.split('/');
+      let dateObj = null;
+      if (dd && mmn && yyyy && horaUTC) dateObj = new Date(`${yyyy}-${mmn}-${dd}T${horaUTC}Z`);
+      if (!dateObj || isNaN(dateObj.getTime())) return;
+      rows.push({ id, horaLocal, mag, depth, loc, lat, lon, dateObj });
+    });
+    return rows;
+  }
+
+  function magClass(m){ if (m>=4) return NIVEL_COLOR_HEX.rojo; if (m>=3) return NIVEL_COLOR_HEX.naranja; if (m>=2) return NIVEL_COLOR_HEX.amarillo; return '#8a94a3'; }
+
+  let quakeRows = [];
+  async function loadQuakes() {
+    for (const url of IGN_URLS) {
+      try {
+        const res = await fetch(url, { cache: 'no-store', mode: 'cors' });
+        if (!res.ok) continue;
+        const text = await res.text();
+        quakeRows = parseIgnHtml(text);
+        renderQuakes();
+        return;
+      } catch (e) { /* prueba la siguiente URL */ }
+    }
+    document.getElementById('quakeList').innerHTML = '<div class="empty">No se pudo cargar el listado de sismos.</div>';
+  }
+
+  function renderQuakes() {
+    const now = Date.now();
+    const filtered = quakeRows
+      .filter(r => (now - r.dateObj.getTime()) <= 24 * 3600 * 1000)
+      .sort((a,b) => b.dateObj - a.dateObj);
+    const list = document.getElementById('quakeList');
+    list.innerHTML = filtered.length ? filtered.map(r => `
+      <div class="quake-row">
+        <span class="mag" style="background:${magClass(r.mag)}">${isFinite(r.mag) ? r.mag.toFixed(1) : '—'}</span>
+        <span class="loc">${r.loc}</span>
+        <span class="time">${r.horaLocal} · ${isFinite(r.depth) ? r.depth.toFixed(0)+' km' : ''}</span>
+      </div>`).join('') : '<div class="empty">Sin sismos en Málaga en las últimas 24h.</div>';
+    renderQuakeMarkers(filtered);
+  }
+
+  function renderQuakeMarkers(filtered){
+    if (!layers.sismos) return;
+    layers.sismos.clearLayers();
+    filtered.forEach(r => {
+      if (!isFinite(r.lat) || !isFinite(r.lon)) return;
+      const color = magClass(r.mag);
+      L.circleMarker([r.lat, r.lon], { radius: 6 + Math.max(0, r.mag) * 2, color: '#fff', weight: 1.5, fillColor: color, fillOpacity: 0.75 })
+        .bindPopup(`<b>M ${isFinite(r.mag) ? r.mag.toFixed(1) : '—'}</b> — ${r.loc}<br>${r.horaLocal}`)
+        .addTo(layers.sismos);
+    });
+  }
+
+  // ---------- Mapa (perezoso: solo se inicializa si el widget está activo) ----------
+  let map = null, zonasGeoCache = {}, riosGeoCache = {}, riosMunicipiosCache = {};
+  const layers = {};
+
+  function initMap(){
+    map = L.map('map', { scrollWheelZoom: false }).setView([36.75, -4.75], 9);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors', maxZoom: 18
+    }).addTo(map);
+    layers.avisos = L.layerGroup();
+    layers.sismos = L.layerGroup();
+    layers.radar = L.layerGroup();
+    layers.saihRios = L.layerGroup();
+    layers.saihEmbalses = L.layerGroup();
+    layers.saihLluvia = L.layerGroup();
+
+    // data-layer coincide 1:1 con las claves de config.widgets, salvo "radar" (sin
+    // widget propio, arranca siempre apagada como en Alertas Málaga).
+    document.getElementById('layerToggles').querySelectorAll('input[data-layer]').forEach(cb => {
+      const capa = cb.dataset.layer;
+      cb.checked = capa !== 'radar' && !!config.widgets[capa];
+      if (cb.checked) map.addLayer(layers[capa]);
+    });
+    document.getElementById('layerToggles').addEventListener('change', (e) => {
+      const cb = e.target.closest('input[data-layer]');
+      if (!cb) return;
+      const group = layers[cb.dataset.layer];
+      if (!group) return;
+      if (cb.checked) map.addLayer(group); else map.removeLayer(group);
+    });
+    loadRadar();
+    renderMapaContenido();
+  }
+
+  async function loadRadar(){
+    try {
+      const res = await fetch('https://api.rainviewer.com/public/weather-maps.json', { cache: 'no-store' });
+      const data = await res.json();
+      const frames = (data.radar && data.radar.past) || [];
+      const last = frames[frames.length - 1];
+      if (!last) return;
+      L.tileLayer(`${data.host}${last.path}/256/{z}/{x}/{y}/2/1_1.png`, { opacity: 0.6, attribution: 'Radar: RainViewer.com', maxNativeZoom: 7 }).addTo(layers.radar);
+    } catch (e) { /* el toggle simplemente no mostrará nada */ }
+  }
+
+  function renderMapaContenido(){
+    if (!map) return;
+    layers.avisos.clearLayers();
+    zonasFiltradas(ultimoAvisos).forEach(([code, z]) => {
+      const geo = zonasGeoCache[code];
+      if (!geo) return;
+      const color = NIVEL_COLOR_HEX[z.nivel] || '#8a94a3';
+      L.polygon(geo.points, { color: '#ffffff', weight: 1, fillColor: color, fillOpacity: z.nivel==='verde' ? 0.25 : 0.6 })
+        .bindPopup(`<b>${z.nombre}</b><br>Nivel: ${NIVEL_LABEL[z.nivel]||z.nivel}`)
+        .addTo(layers.avisos);
+    });
+
+    layers.saihRios.clearLayers();
+    const riosF = filtrarSaihCategoria((ultimoSaih && ultimoSaih.rios) || [], 'rios', estacionesZonaCache);
+    riosF.forEach(r => {
+      if (!isFinite(r.lat) || !isFinite(r.lon)) return;
+      L.circleMarker([r.lat, r.lon], { radius: 6, color: '#fff', weight: 1.5, fillColor: SAIH_COLOR[r.estado] || '#8a94a3', fillOpacity: 0.85 })
+        .bindPopup(`🌊 <b>${nombreLimpio(r.nombre)}</b><br>Nivel: ${r.nivel_rio != null ? r.nivel_rio.toFixed(2)+' m' : '—'}`)
+        .addTo(layers.saihRios);
+    });
+    const porRio = {};
+    riosF.forEach(r => { if (r.rio_base) (porRio[r.rio_base] = porRio[r.rio_base] || []).push(r); });
+    Object.entries(porRio).forEach(([base, estaciones]) => {
+      const tramos = riosGeoCache[base];
+      if (!tramos) return;
+      const peor = estaciones.reduce((a, b) =>
+        (ORDEN_ESTADO_SAIH[b.estado] ?? 9) < (ORDEN_ESTADO_SAIH[a.estado] ?? 9) ? b : a
+      );
+      tramos.forEach(tramo => L.polyline(tramo, { color: SAIH_COLOR[peor.estado] || '#2f6fed', weight: 3, opacity: 0.75 }).addTo(layers.saihRios));
+    });
+
+    layers.saihEmbalses.clearLayers();
+    filtrarSaihCategoria((ultimoSaih && ultimoSaih.embalses) || [], 'embalses', estacionesZonaCache).forEach(eSt => {
+      if (!isFinite(eSt.lat) || !isFinite(eSt.lon)) return;
+      L.circleMarker([eSt.lat, eSt.lon], { radius: 6, color: '#fff', weight: 1.5, fillColor: '#2f6fed', fillOpacity: 0.85 })
+        .bindPopup(`🏞️ <b>${nombreLimpio(eSt.nombre)}</b><br>${eSt.porcentaje != null ? eSt.porcentaje.toFixed(1)+'%' : '—'}`)
+        .addTo(layers.saihEmbalses);
+    });
+
+    layers.saihLluvia.clearLayers();
+    filtrarSaihCategoria((ultimoSaih && ultimoSaih.lluvia) || [], 'lluvia', estacionesZonaCache).forEach(l => {
+      if (!isFinite(l.lat) || !isFinite(l.lon)) return;
+      L.circleMarker([l.lat, l.lon], { radius: 6, color: '#fff', weight: 1.5, fillColor: SAIH_COLOR[l.estado] || '#8a94a3', fillOpacity: 0.85 })
+        .bindPopup(`💧 <b>${nombreLimpio(l.nombre)}</b>`)
+        .addTo(layers.saihLluvia);
+    });
+
+    layers.sismos.clearLayers();
+    renderQuakeMarkers(quakeRows.filter(r => (Date.now() - r.dateObj.getTime()) <= 24*3600*1000));
+  }
+
+  // ---------- Avisos AEMET ----------
+  let ultimoAvisos = {};
+  function renderAvisos(){
+    const entries = zonasFiltradas(ultimoAvisos);
+    const list = document.getElementById('zonaList');
+    document.getElementById('avisosDesc').textContent = config.avisosZonas !== null
+      ? `Mostrando ${entries.length} zona(s) seleccionada(s).`
+      : 'Mostrando todas las zonas (elige un subconjunto en "Personalizar").';
+    list.innerHTML = entries.length ? entries.map(([code, z]) => `
+      <div class="zona-row">
+        <span class="status-dot" style="background:${NIVEL_COLOR_HEX[z.nivel]||'#8a94a3'}"></span>
+        <span class="nombre">${z.nombre}</span>
+        <span class="badge" style="background:${(z.nivel==='verde')?'var(--surface)':NIVEL_COLOR[z.nivel]};color:${(z.nivel==='verde')?'var(--ink-faint)':'#fff'};border:1px solid var(--border)">${NIVEL_LABEL[z.nivel]||z.nivel}</span>
+      </div>`).join('') : '<div class="empty">No hay zonas seleccionadas — elige alguna en "Personalizar".</div>';
+  }
+
+  // ---------- Historial ----------
+  let ultimoHistorial = [];
+  function renderHistorialWidget(){
+    const list = document.getElementById('historialList');
+    let hist = ultimoHistorial || [];
+    if (config.avisosZonas !== null) {
+      const nombreToCode = {};
+      Object.entries(zonasGeoCache).forEach(([code,z]) => { nombreToCode[z.nombre] = code; });
+      hist = hist.filter(h => config.avisosZonas.includes(nombreToCode[h.zona]));
+    }
+    if (!hist.length) { list.innerHTML = '<div class="empty">Sin avisos en las zonas seleccionadas (últimos 7 días).</div>'; return; }
+    list.innerHTML = hist.map(h => `
+      <div class="historial-row">
+        <span class="fecha">${new Date(h.desde).toLocaleDateString('es-ES', {day:'2-digit', month:'2-digit'})}</span>
+        <span>${h.zona} — ${h.fenomeno}</span>
+        <span class="badge" style="background:${NIVEL_COLOR_HEX[h.nivel]||'#8a94a3'}">${NIVEL_LABEL[h.nivel]||h.nivel}</span>
+      </div>`).join('');
+  }
+
+  // ---------- SAIH (listas) ----------
+  let ultimoSaih = { rios: [], embalses: [], lluvia: [] };
+  let estacionesZonaCache = {};
+
+  function tendenciaArrow(t){ if (t === '1') return '↑'; if (t === '2') return '↓'; if (t === '0') return '→'; return ''; }
+  function saihBadge(estado){ return `<span class="badge" style="background:${SAIH_COLOR[estado]||'#8a94a3'}">${SAIH_LABEL[estado]||estado}</span>`; }
+
+  function renderSaihListas(){
+    const rios = filtrarSaihCategoria(ultimoSaih.rios || [], 'rios', estacionesZonaCache);
+    const embalses = filtrarSaihCategoria(ultimoSaih.embalses || [], 'embalses', estacionesZonaCache);
+    const lluvia = filtrarSaihCategoria(ultimoSaih.lluvia || [], 'lluvia', estacionesZonaCache);
+
+    document.getElementById('saihRios').innerHTML = rios.length ? rios.map(r => `
+      <div class="saih-row">
+        <span class="nombre">🌊 ${nombreLimpio(r.nombre)}</span>
+        <span class="valor">${r.nivel_rio != null ? r.nivel_rio.toFixed(2)+' m' : '—'} ${tendenciaArrow(r.tendencia)} · ${r.caudal != null ? r.caudal.toFixed(2)+' m³/s' : '—'}</span>
+        ${saihBadge(r.estado)}
+      </div>`).join('') : '<div class="empty">Sin ríos para este filtro.</div>';
+
+    document.getElementById('saihEmbalses').innerHTML = embalses.length ? embalses.map(eSt => `
+      <div class="saih-row">
+        <span class="nombre">🏞️ ${nombreLimpio(eSt.nombre)}</span>
+        <span class="valor">${eSt.porcentaje != null ? eSt.porcentaje.toFixed(1)+'%' : '—'} ${eSt.volumen != null ? '· '+eSt.volumen.toFixed(1)+' hm³' : ''}</span>
+        <span></span>
+      </div>`).join('') : '<div class="empty">Sin embalses para este filtro.</div>';
+
+    document.getElementById('saihLluvia').innerHTML = lluvia.length ? lluvia.map(l => `
+      <div class="saih-row">
+        <span class="nombre">💧 ${nombreLimpio(l.nombre)}</span>
+        <span class="valor">${l.acum_24h != null ? '24h: '+l.acum_24h.toFixed(1)+' mm' : '24h: Sin datos'}</span>
+        ${saihBadge(l.estado)}
+      </div>`).join('') : '<div class="empty">Sin pluviómetros para este filtro.</div>';
+  }
+
+  // ---------- Previsión ----------
+  function windArrow(dir){ const map = {N:'↓',NE:'↙',E:'←',SE:'↖',S:'↑',SO:'↗',SW:'↗',O:'→',W:'→',NO:'↘',NW:'↘'}; return map[dir] || ''; }
+
+  function horaHtml(h, horaActual){
+    return `
+      <div class="hora-col${h.hora === horaActual ? ' now' : ''}">
+        <span class="h">${String(h.hora).padStart(2,'0')}h</span>
+        <span class="t">${h.temp != null ? h.temp+'°' : '—'}</span>
+        <span class="p">💧 ${h.probPrecipitacion != null ? h.probPrecipitacion+'%' : '—'}${h.precip ? ' ('+h.precip+'mm)' : ''}</span>
+        <span class="v">${windArrow(h.vientoDireccion)} ${h.vientoVelocidad != null ? h.vientoVelocidad+' km/h' : '—'}</span>
+      </div>`;
+  }
+
+  let previsionPuntosFiltrados = [];
+  let previsionIdx = 0;
+
+  function actualizarBotonesHoras(){
+    const vp = document.getElementById('horasViewport');
+    document.getElementById('horasPrev').disabled = vp.scrollLeft <= 2;
+    document.getElementById('horasNext').disabled = vp.scrollLeft + vp.clientWidth >= vp.scrollWidth - 2;
+  }
+
+  function renderPrevisionDetalle(){
+    const p = previsionPuntosFiltrados[previsionIdx];
+    const diasEl = document.getElementById('previsionDias');
+    if (!p) { diasEl.innerHTML = '<div class="empty">No hay puntos seleccionados — elige alguno en "Personalizar".</div>'; document.getElementById('horasScroll').innerHTML=''; return; }
+    diasEl.innerHTML = (p.dias && p.dias.length) ? p.dias.map(d => `
+      <div class="dia-row">
+        <span class="fecha">${new Date(d.fecha).toLocaleDateString('es-ES', {weekday:'short', day:'numeric'})}</span>
+        <span class="precip">💧 ${d.probPrecipitacion != null ? d.probPrecipitacion+'%' : '—'}</span>
+        <span class="viento">${windArrow(d.vientoDireccion)} ${d.vientoVelocidad != null ? d.vientoVelocidad+' km/h' : '—'}</span>
+        <span class="temp">${d.tempMin!=null?d.tempMin:'—'}° / ${d.tempMax!=null?d.tempMax:'—'}°</span>
+      </div>`).join('') : '<div class="empty">Previsión no disponible</div>';
+
+    const horaActual = new Date().getHours();
+    const horas = (p.horas_hoy || []).filter(h => h.hora >= horaActual);
+    const scroll = document.getElementById('horasScroll');
+    scroll.innerHTML = horas.length ? horas.map(h => horaHtml(h, horaActual)).join('') : '<div class="empty" style="padding:8px 0">Sin previsión horaria disponible</div>';
+    const vp = document.getElementById('horasViewport');
+    vp.scrollLeft = 0;
+    requestAnimationFrame(actualizarBotonesHoras);
+  }
+
+  function renderPrevisionWidget(prevision){
+    previsionPuntosFiltrados = (prevision || []).filter(p => config.previsionPuntos === null || config.previsionPuntos.includes(p.id));
+    if (previsionIdx >= previsionPuntosFiltrados.length) previsionIdx = 0;
+    const select = document.getElementById('previsionSelect');
+    select.innerHTML = previsionPuntosFiltrados.length
+      ? previsionPuntosFiltrados.map((p, i) => `<option value="${i}">${p.nombre} — ${p.referencia}</option>`).join('')
+      : '<option>Ninguno seleccionado</option>';
+    select.value = previsionIdx;
+    renderPrevisionDetalle();
+  }
+
+  document.getElementById('previsionSelect').addEventListener('change', (e) => {
+    previsionIdx = Number(e.target.value) || 0;
+    renderPrevisionDetalle();
+  });
+  document.getElementById('horasPrev').addEventListener('click', () => document.getElementById('horasViewport').scrollBy({ left: -180, behavior: 'smooth' }));
+  document.getElementById('horasNext').addEventListener('click', () => document.getElementById('horasViewport').scrollBy({ left: 180, behavior: 'smooth' }));
+  document.getElementById('horasViewport').addEventListener('scroll', actualizarBotonesHoras);
+
+  // ---------- Re-renderizado global (sin volver a pedir datos) ----------
+  let datosPrevision = [];
+  function renderTodo(){
+    if (config.widgets.avisos) renderAvisos();
+    if (config.widgets.historial) renderHistorialWidget();
+    if (config.widgets.prevision) renderPrevisionWidget(datosPrevision);
+    if (config.widgets.saihRios || config.widgets.saihEmbalses || config.widgets.saihLluvia) renderSaihListas();
+    renderMapaContenido();
+  }
+
+  // ---------- Carga de datos (una sola vez, reutilizando los JSON de Alertas Málaga) ----------
+  async function cargarTodo(){
+    try {
+      const [aemetRes, zonasRes, saihRes, riosGeoRes, riosMunRes, estZonaRes] = await Promise.all([
+        fetch(DATA_BASE + 'aemet_malaga.json', { cache: 'no-store' }),
+        fetch(DATA_BASE + 'zonas_geo.json', { cache: 'no-store' }),
+        fetch(DATA_BASE + 'saih.json', { cache: 'no-store' }),
+        fetch(DATA_BASE + 'rios_geo.json', { cache: 'no-store' }),
+        fetch(DATA_BASE + 'rios_municipios.json', { cache: 'no-store' }),
+        fetch(DATA_BASE + 'estaciones_zona.json', { cache: 'no-store' })
+      ]);
+      const aemet = await aemetRes.json();
+      zonasGeoCache = await zonasRes.json();
+      const saih = await saihRes.json();
+      try { riosGeoCache = await riosGeoRes.json(); } catch (e) { riosGeoCache = {}; }
+      try { riosMunicipiosCache = await riosMunRes.json(); } catch (e) { riosMunicipiosCache = {}; }
+      try { estacionesZonaCache = await estZonaRes.json(); } catch (e) { estacionesZonaCache = {}; }
+
+      ultimoAvisos = aemet.avisos || {};
+      ultimoHistorial = aemet.historial || [];
+      datosPrevision = aemet.prevision || [];
+      ultimoSaih = saih;
+
+      construirZonasCheckbox(zonasGeoCache);
+      construirPuntosCheckbox(datosPrevision);
+      construirEstacionesCheckbox(saih);
+      sincronizarUIConConfig();
+      renderTodo();
+
+      const dt = new Date(aemet.generated_at);
+      document.getElementById('updatedLine').textContent = 'Datos de Alertas Málaga actualizados: ' + dt.toLocaleString('es-ES');
+    } catch (e) {
+      document.getElementById('updatedLine').textContent = 'No se pudieron cargar los datos.';
+    }
+  }
+
+  aplicarVisibilidadWidgets();
+  loadQuakes();
+  cargarTodo();
+})();
+</script>
+</body>
+</html>
