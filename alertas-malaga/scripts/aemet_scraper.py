@@ -277,11 +277,18 @@ def _indexar_por_hora(items):
 
 
 def _viento_por_hora(items):
+    """vientoAndRachaMax trae DOS entradas por hora: una con viento
+    (direccion+velocidad) y otra solo con la racha máxima (value suelto,
+    sin direccion/velocidad) - si se pisara la primera con la segunda se
+    perdería el dato de viento, así que se ignoran las entradas sin
+    "velocidad" en vez de sobrescribir ciegamente por periodo."""
     out = {}
     for it in items or []:
         periodo = str(it.get("periodo", ""))
         if not (len(periodo) == 2 and periodo.isdigit()):
             continue
+        if "velocidad" not in it:
+            continue  # esta es la entrada de racha máxima, no la de viento
         vel, direc = it.get("velocidad"), it.get("direccion")
         vel = vel[0] if isinstance(vel, list) and vel else vel
         direc = direc[0] if isinstance(direc, list) and direc else direc
