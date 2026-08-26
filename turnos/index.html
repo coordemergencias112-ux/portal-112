@@ -701,7 +701,6 @@
       '<form id="f-new-turno">' +
         '<div class="field"><label>Tipo</label><div class="seg">' +
           '<button type="button" class="on" data-turno-tipo="turno">Turno</button>' +
-          '<button type="button" data-turno-tipo="guardia">Guardia</button>' +
           '<button type="button" data-turno-tipo="descanso">Descanso</button>' +
         '</div></div>' +
         '<input type="hidden" name="tipo" value="turno">' +
@@ -710,6 +709,15 @@
         '<div class="field-row" data-turno-horas>' +
           '<div class="field"><label>Hora inicio</label><input type="time" name="inicio" required></div>' +
           '<div class="field"><label>Hora fin</label><input type="time" name="fin" required></div>' +
+        '</div>' +
+        '<div class="field">' +
+          '<label style="display:flex;flex-direction:row;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:.86rem;">' +
+            '<input type="checkbox" name="esGuardia" data-guardia-toggle style="width:auto;"> 🛡️ Además está de guardia' +
+          '</label>' +
+        '</div>' +
+        '<div class="field-row" data-guardia-horas style="display:none;">' +
+          '<div class="field"><label>Guardia — inicio</label><input type="time" name="guardiaInicio"></div>' +
+          '<div class="field"><label>Guardia — fin</label><input type="time" name="guardiaFin"></div>' +
         '</div>' +
         '<div class="field"><label>Nota (opcional)</label><input name="nota" placeholder="Ej. Turno de tarde, vacaciones, cambio con..."></div>' +
         '<div class="modal-actions"><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn btn-primary">Guardar</button></div>' +
@@ -720,6 +728,10 @@
     var horasRow = form.querySelector('[data-turno-horas]');
     var inicioInput = form.querySelector('[name=inicio]');
     var finInput = form.querySelector('[name=fin]');
+    var guardiaCheck = form.querySelector('[data-guardia-toggle]');
+    var guardiaRow = form.querySelector('[data-guardia-horas]');
+    var guardiaInicioInput = form.querySelector('[name=guardiaInicio]');
+    var guardiaFinInput = form.querySelector('[name=guardiaFin]');
     Array.prototype.forEach.call(form.querySelectorAll('[data-turno-tipo]'), function(btn){
       btn.addEventListener('click', function(){
         Array.prototype.forEach.call(form.querySelectorAll('[data-turno-tipo]'), function(b){ b.classList.remove('on'); });
@@ -731,10 +743,16 @@
         finInput.required = tipo!=='descanso';
       });
     });
+    guardiaCheck.addEventListener('change', function(){
+      guardiaRow.style.display = guardiaCheck.checked ? '' : 'none';
+      guardiaInicioInput.required = guardiaCheck.checked;
+      guardiaFinInput.required = guardiaCheck.checked;
+    });
     form.addEventListener('submit', function(e){
       e.preventDefault();
       var fd = new FormData(form);
       var tipo = fd.get('tipo');
+      var esGuardia = !!fd.get('esGuardia');
       var t = {
         id: uid('t'),
         personaId: fd.get('personaId'),
@@ -742,12 +760,16 @@
         tipo: tipo,
         inicio: tipo==='descanso' ? '' : fd.get('inicio'),
         fin: tipo==='descanso' ? '' : fd.get('fin'),
+        guardia: esGuardia,
+        guardiaInicio: esGuardia ? fd.get('guardiaInicio') : '',
+        guardiaFin: esGuardia ? fd.get('guardiaFin') : '',
         nota: (fd.get('nota')||'').toString().trim()
       };
       if(!t.fecha) return;
       if(tipo!=='descanso' && (!t.inicio || !t.fin)) return;
+      if(esGuardia && (!t.guardiaInicio || !t.guardiaFin)) return;
       closeModal();
-      var msg = tipo==='descanso' ? 'Descanso añadido' : (tipo==='guardia' ? 'Guardia añadida' : 'Turno añadido');
+      var msg = (tipo==='descanso' ? 'Descanso' : 'Turno') + (esGuardia ? ' + guardia' : '') + ' añadido';
       commit(function(s){
         var e2 = emergencia(emgId);
         e2.turnos.push(t);
@@ -763,12 +785,13 @@
     var p = persona(t.personaId);
     var tTipo = t.tipo||'turno';
     var esDescanso = tTipo==='descanso';
-    var tipoLabel = tTipo==='guardia' ? 'Guardia' : (esDescanso ? 'Descanso' : 'Turno');
+    var tipoLabel = esDescanso ? 'Descanso' : 'Turno';
     openModal(
-      '<h2>'+tipoLabel+' — '+esc(p.nombre)+'</h2>' +
+      '<h2>'+tipoLabel+(t.guardia?' 🛡️':'')+' — '+esc(p.nombre)+'</h2>' +
       '<div class="detail-grid">' +
         '<div><div class="k">Fecha</div><div class="v">'+fmtFechaLarga(t.fecha)+'</div></div>' +
         (esDescanso ? '' : '<div><div class="k">Horario</div><div class="v">'+esc(t.inicio)+'–'+esc(t.fin)+'</div></div>') +
+        (t.guardia ? '<div><div class="k">🛡️ Guardia</div><div class="v">'+esc(t.guardiaInicio)+'–'+esc(t.guardiaFin)+'</div></div>' : '') +
       '</div>' +
       (t.nota ? '<p class="detail-desc">'+esc(t.nota)+'</p>' : '') +
       '<div class="modal-actions">' +
@@ -979,10 +1002,10 @@
     return out;
   }
   /* ---------- horas planificadas: según el cuadrante (turnos), no los fichajes reales ---------- */
-  function turnoDurMin(t){
-    var a = minutesOf(t.inicio), b = minutesOf(t.fin);
+  function durMin(inicio, fin){
+    var a = minutesOf(inicio), b = minutesOf(fin);
     var d = b - a;
-    if(d <= 0) d += 1440; // turno que cruza medianoche (p.ej. 22:00–06:00)
+    if(d <= 0) d += 1440; // cruza medianoche (p.ej. 22:00–06:00)
     return d;
   }
   // Franja según la hora de inicio: mañana 06–14, tarde 14–22, noche 22–06.
@@ -993,19 +1016,21 @@
     return 'noche';
   }
   function horasPlanificadas(emg){
+    // La guardia es independiente del tipo base (turno/descanso), así que se suma
+    // aparte siempre que esté marcada, tenga o no turno ese mismo día.
     var out = {};
     state.personas.forEach(function(p){ out[p.id] = { manana:0, tarde:0, noche:0, turno:0, guardia:0 }; });
     emg.turnos.forEach(function(t){
-      var tipo = t.tipo||'turno';
-      if(tipo==='descanso' || !t.inicio || !t.fin) return;
       var bucket = out[t.personaId];
       if(!bucket) return;
-      var min = turnoDurMin(t);
-      if(tipo==='guardia'){
-        bucket.guardia += min;
-      } else {
+      var tipo = t.tipo||'turno';
+      if(tipo==='turno' && t.inicio && t.fin){
+        var min = durMin(t.inicio, t.fin);
         bucket.turno += min;
         bucket[franjaDe(t.inicio)] += min;
+      }
+      if(t.guardia && t.guardiaInicio && t.guardiaFin){
+        bucket.guardia += durMin(t.guardiaInicio, t.guardiaFin);
       }
     });
     return out;
@@ -1042,13 +1067,13 @@
             var entries = emg.turnos.filter(function(t){ return t.personaId===p.id && t.fecha===d; });
             var chips = entries.map(function(t){
               var tTipo = t.tipo||'turno';
-              if(tTipo==='descanso'){
-                return '<button type="button" class="cal-chip cal-chip-descanso" data-cal-edit="'+t.id+'">Descanso</button>';
-              }
-              if(tTipo==='guardia'){
-                return '<button type="button" class="cal-chip cal-chip-guardia" data-cal-edit="'+t.id+'">🛡️ '+esc(t.inicio)+'–'+esc(t.fin)+'</button>';
-              }
-              return '<button type="button" class="cal-chip" style="background:var(--st-'+colorForPersonaIndex(p.id)+'-soft);color:var(--st-'+colorForPersonaIndex(p.id)+');" data-cal-edit="'+t.id+'">'+esc(t.inicio)+'–'+esc(t.fin)+'</button>';
+              var base = (tTipo==='descanso')
+                ? '<button type="button" class="cal-chip cal-chip-descanso" data-cal-edit="'+t.id+'">Descanso</button>'
+                : '<button type="button" class="cal-chip" style="background:var(--st-'+colorForPersonaIndex(p.id)+'-soft);color:var(--st-'+colorForPersonaIndex(p.id)+');" data-cal-edit="'+t.id+'">'+esc(t.inicio)+'–'+esc(t.fin)+'</button>';
+              var guardiaChip = t.guardia
+                ? '<button type="button" class="cal-chip cal-chip-guardia" data-cal-edit="'+t.id+'">🛡️ '+esc(t.guardiaInicio)+'–'+esc(t.guardiaFin)+'</button>'
+                : '';
+              return base + guardiaChip;
             }).join('');
             var addBtn = isAdmin() ? '<button type="button" class="cal-add" data-cal-add data-cal-persona="'+p.id+'" data-cal-fecha="'+d+'">+</button>' : '';
             return '<td class="cal-cell">'+chips+addBtn+'</td>';
