@@ -5,10 +5,10 @@ Scraper AEMET OpenData para el módulo "Alertas Málaga" del Portal 112.
 
 Descarga:
   - Avisos meteorológicos CAP vigentes (nivel por zona de aviso de Málaga)
-  - Predicción diaria (lluvia / viento) para dos puntos de referencia:
-      Málaga capital (costa) y Ronda (interior/serranía)
+  - Predicción diaria (lluvia / viento) para varios puntos de referencia
+      de la provincia, uno por cada zona de aviso (ver FORECAST_POINTS)
   - Predicción horaria de HOY (temperatura, precipitación, prob. de lluvia
-      y viento por hora) para esos mismos dos puntos
+      y viento por hora) para esos mismos puntos
 
 Escribe un único JSON estático (data/aemet_malaga.json) que la página
 alertas-malaga/index.html consume sin necesitar la API key.
@@ -42,10 +42,21 @@ ZONE_META = {
     "612904C": {"nombre": "Costa - Axarquía", "tipo": "litoral"},
 }
 
-# Puntos de referencia para la previsión (código INE de municipio AEMET)
+# Puntos de referencia para la previsión (código INE de municipio AEMET, uno
+# por cada zona de aviso de ZONE_META para dar cobertura a toda la provincia).
+# Cada id se ha verificado uno a uno contra la propia web de AEMET
+# (aemet.es/es/eltiempo/prediccion/municipios/<slug>-id<id>) antes de usarlo:
+# NO fiarse de códigos INE/idescat "de memoria", AEMET tiene su propio
+# codificador y no siempre coincide - el "29079" que había aquí antes para
+# Ronda era en realidad Periana; el id correcto de Ronda es 29084.
 FORECAST_POINTS = [
     {"id": "29067", "nombre": "Málaga capital", "referencia": "Costa"},
-    {"id": "29079", "nombre": "Ronda", "referencia": "Interior / Serranía"},
+    {"id": "29084", "nombre": "Ronda", "referencia": "Interior / Serranía"},
+    {"id": "29015", "nombre": "Antequera", "referencia": "Comarca de Antequera"},
+    {"id": "29042", "nombre": "Coín", "referencia": "Valle del Guadalhorce"},
+    {"id": "29069", "nombre": "Marbella", "referencia": "Costa del Sol"},
+    {"id": "29094", "nombre": "Vélez-Málaga", "referencia": "Axarquía"},
+    {"id": "29075", "nombre": "Nerja", "referencia": "Costa - Axarquía"},
 ]
 
 NIVEL_ORDEN = {"verde": 0, "amarillo": 1, "naranja": 2, "rojo": 3}
