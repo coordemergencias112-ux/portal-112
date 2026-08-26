@@ -302,11 +302,16 @@ def fetch_forecast_horaria():
             out.append({"id": point["id"], "horas": [], "error": str(e)})
             continue
 
+        # DEBUG temporal (quitar tras diagnosticar el formato real de AEMET horaria):
+        print(f"DEBUG horaria {point['id']} keys={list(dia0.keys())}", file=sys.stderr)
+        for campo in ("temperatura", "precipitacion", "probPrecipitacion", "estadoCielo", "vientoAndRachaMax"):
+            print(f"DEBUG {campo} = {json.dumps(dia0.get(campo))[:700]}", file=sys.stderr)
+
         temps = _indexar_por_hora(dia0.get("temperatura", []))
         precs = _indexar_por_hora(dia0.get("precipitacion", []))
         probs = _indexar_por_hora(dia0.get("probPrecipitacion", []))
         cielos = _indexar_por_hora(dia0.get("estadoCielo", []))
-        vientos = _viento_por_hora(dia0.get("vientoAndRachaMax", []))
+        vientos = _viento_por_hora(dia0.get("viento", []))  # NB: en la horaria el campo se llama "viento", no "vientoAndRachaMax" (eso es de la diaria)
 
         horas_presentes = sorted(set(temps) | set(precs) | set(cielos))
         horas = []

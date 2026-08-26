@@ -29,14 +29,15 @@ PROVINCIA = "Málaga"
 # 'tipo' no sea 'A' (así lo hace explícito el JS del visor original).
 RIO_OVERRIDE_IDS = {"34", "49", "58", "103", "104", "130"}
 
-# Listado OFICIAL de estaciones de embalse y pluviométricas (id, nombre,
-# tipo, lat/lon ETRS89->WGS84), a partir de un CSV maestro de la propia
-# red SAIH Hidrosur. Se usa como fuente de verdad para estas dos
-# categorías (nombre y coordenadas más precisos que los del bloque
-# <script> de la web, y clasificación oficial en vez de heurística):
-# "embalse" para las 7 presas y "pluviometrica" para los 12 pluviómetros
-# dedicados (se excluyen así las estaciones tipo METEOROLÓGICA que
-# también miden lluvia de paso, para no mezclar categorías).
+# Listado OFICIAL de estaciones (id, nombre, lat/lon ETRS89->WGS84, y dos
+# banderas independientes es_embalse / mide_lluvia), a partir del CSV
+# maestro de la propia red SAIH Hidrosur. Se usa como fuente de verdad
+# para nombre/coordenadas y para decidir qué estaciones entran en
+# "embalses" y en "pluviómetros" — mide_lluvia se toma de la columna
+# PLUVIOMETRÍA del CSV (sensor "P"), sea cual sea el tipo principal de la
+# estación (meteorológica, aforo, embalse o distribución), así que una
+# misma estación puede aparecer a la vez como río Y como pluviómetro
+# (p.ej. un aforo con sensor de lluvia), o como embalse Y pluviómetro.
 ESTACIONES_OFICIALES_PATH = os.path.join(os.path.dirname(__file__), "..", "data",
                                           "estaciones_oficiales_embalses_pluviometricas.json")
 
@@ -237,57 +238,67 @@ def main():
     oficiales = cargar_estaciones_oficiales()
     if oficiales:
         print(f"Usando listado oficial de estaciones ({len(oficiales)}: "
-              f"{sum(1 for v in oficiales.values() if v['tipo']=='embalse')} embalses, "
-              f"{sum(1 for v in oficiales.values() if v['tipo']=='pluviometrica')} pluviométricas)")
+              f"{sum(1 for v in oficiales.values() if v['es_embalse'])} embalses, "
+              f"{sum(1 for v in oficiales.values() if v['mide_lluvia'])} con sensor de lluvia)")
 
     rios, embalses, lluvia = [], [], []
     for s in malaga:
         oficial = oficiales.get(s["estacion"])
-        if oficial:
-            # El listado oficial manda: solo estas 19 estaciones cuentan como
-            # embalse/pluviómetro (se excluyen así las meteorológicas que también
-            # miden lluvia de paso, aunque el heurístico de la web las marcaría igual).
-            cat = "embalse" if oficial["tipo"] == "embalse" else "lluvia"
-        elif oficiales:
-            heur = categoria_de(s["tipo"], s["estacion"])
-            cat = heur if heur == "rio" else "otro"  # listado oficial cargado -> ya no vale el heurístico para embalse/lluvia
-        else:
-            cat = categoria_de(s["tipo"], s["estacion"])  # sin listado oficial disponible: heurístico de respaldo
+        es_rio = categoria_de(s["tipo"], s["estacion"]) == "rio"
 
-        lat = oficial["lat"] if oficial else to_float(s["latitud"])
-        lon = oficial["lon"] if oficial else to_float(s["longitud"])
-        nombre = oficial["nombre"] if oficial else s["nombre"].strip()
-        base = {
-            "estacion": s["estacion"],
-            "nombre": nombre,
-            "lat": lat,
-            "lon": lon,
-        }
-        if cat == "rio":
+        if oficial:
+            es_embalse, mide_lluvia = oficial["es_embalse"], oficial["mide_lluvia"]
+        elif oficiales:
+            # listado oficial cargado pero esta estación no sale en él: no se
+            # asume nada por heurística para embalse/lluvia (evita falsos positivos)
+            es_embalse, mide_lluvia = False, False
+        else:
+            # sin listado oficial disponible: heurístico de respaldo (excluyente entre sí)
+            heur = categoria_de(s["tipo"], s["estacion"])
+            es_embalse, mide_lluvia = heur == "embalse", heur == "lluvia"
+
+        # Los ríos siempre usan el nombre/coords tal cual los da la web en vivo
+        # (de eso depende el emparejamiento con el trazado y con aguas_abajo.json).
+        if es_rio:
             nivel_rio = to_float(s["nivel_rio"])
             aviso, prealerta, alerta = to_float(s["aviso"]), to_float(s["prealerta"]), to_float(s["alerta"])
             estado, info = evaluar_rio(nivel_rio, aviso, prealerta, alerta)
-            rios.append({**base, "nivel_rio": nivel_rio, "caudal": to_float(s["caudal"]),
-                         "tendencia": s["tendencia"].strip(), "aviso": aviso, "prealerta": prealerta,
-                         "alerta": alerta, "estado": estado, "info": info,
-                         "rio_base": normaliza_rio(s["nombre"])})
-        elif cat == "embalse":
-            embalses.append({**base, "volumen": to_float(s["volumen"]), "porcentaje": to_float(s["porcentaje"]),
-                              "nivel": to_float(s["nivel"])})
-        elif cat == "lluvia":
-            precip = to_float(s["precip"])
-            precipacum = to_float(s["precipacum"])
-            estado, info = evaluar_lluvia(precip)
-            # Franjas horarias: si la tabla de detalle trae la estación, se usan esos
-            # valores (más completos); si no, se rellenan las dos franjas equivalentes
-            # con lo que ya tenemos del bloque principal, y el resto queda sin dato.
-            franjas = detalle_precip.get(s["estacion"])
-            if franjas is None:
-                franjas = {"ultima_hora": precip, "hora_anterior": None, "acum_12h": None,
-                           "acum_24h": None, "acum_hoy": precipacum, "acum_ayer": None}
-            lluvia.append({**base, "precip": precip, "precipacum": precipacum,
-                            "estado": estado, "info": info, **franjas})
-        # cat == "otro" (EDAR, bombeos...) se descarta: no aporta a un panel de riesgo hidrológico
+            rios.append({
+                "estacion": s["estacion"], "nombre": s["nombre"].strip(),
+                "lat": to_float(s["latitud"]), "lon": to_float(s["longitud"]),
+                "nivel_rio": nivel_rio, "caudal": to_float(s["caudal"]),
+                "tendencia": s["tendencia"].strip(), "aviso": aviso, "prealerta": prealerta,
+                "alerta": alerta, "estado": estado, "info": info,
+                "rio_base": normaliza_rio(s["nombre"]),
+            })
+
+        # Una misma estación puede ser además embalse y/o pluviómetro (no es
+        # excluyente con ser río): un aforo con sensor de lluvia entra en
+        # "ríos" arriba y también aquí en "lluvia".
+        if es_embalse or mide_lluvia:
+            lat = oficial["lat"] if oficial else to_float(s["latitud"])
+            lon = oficial["lon"] if oficial else to_float(s["longitud"])
+            nombre = oficial["nombre"] if oficial else s["nombre"].strip()
+            base = {"estacion": s["estacion"], "nombre": nombre, "lat": lat, "lon": lon}
+
+            if es_embalse:
+                embalses.append({**base, "volumen": to_float(s["volumen"]), "porcentaje": to_float(s["porcentaje"]),
+                                  "nivel": to_float(s["nivel"])})
+            if mide_lluvia:
+                precip = to_float(s["precip"])
+                precipacum = to_float(s["precipacum"])
+                estado, info = evaluar_lluvia(precip)
+                # Franjas horarias: si la tabla de detalle trae la estación, se usan esos
+                # valores (más completos); si no, se rellenan las dos franjas equivalentes
+                # con lo que ya tenemos del bloque principal, y el resto queda sin dato.
+                franjas = detalle_precip.get(s["estacion"])
+                if franjas is None:
+                    franjas = {"ultima_hora": precip, "hora_anterior": None, "acum_12h": None,
+                               "acum_24h": None, "acum_hoy": precipacum, "acum_ayer": None}
+                lluvia.append({**base, "precip": precip, "precipacum": precipacum,
+                                "estado": estado, "info": info, **franjas})
+        # ni río, ni embalse, ni con sensor de lluvia (EDAR, bombeos...): se descarta,
+        # no aporta a un panel de riesgo hidrológico
 
     orden_estado = {"rojo": 0, "naranja": 1, "amarillo": 2, "vigilancia": 3, "verde": 4, "sin_datos": 5}
     rios.sort(key=lambda r: (orden_estado.get(r["estado"], 9), r["nombre"]))
