@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mi Panel</title>
+<script type="module" src="../shared/firebase-sync.js"></script>
 <meta name="theme-color" content="#144c53">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
 <style>
@@ -162,6 +163,17 @@
   .station-grid{ max-height:170px; overflow-y:auto; padding:2px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--surface); }
   .settings-aviso{ font-size:.76rem; color:var(--accent-strong); font-weight:600; margin-left:8px; }
   .settings-aviso.oculto{ display:none; }
+  .modal-overlay{ position:fixed; inset:0; background:rgba(10,14,17,.5); display:flex; align-items:center; justify-content:center; z-index:50; padding:20px; }
+  .modal-overlay.oculto{ display:none; }
+  .modal{ background:var(--surface); width:100%; max-width:380px; border-radius:var(--radius-lg); padding:18px; box-shadow:var(--shadow); }
+  .modal h2{ margin:0 0 6px; font-size:1.05rem; }
+  .modal p{ color:var(--ink-faint); font-size:.8rem; margin:0 0 14px; line-height:1.4; }
+  .modal .field{ margin-bottom:12px; display:flex; flex-direction:column; gap:5px; }
+  .modal .field label{ font-size:.72rem; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; }
+  .modal .field input{ border:1px solid var(--border); border-radius:var(--radius-sm); padding:9px 10px; font-size:.9rem; background:var(--surface-alt); color:var(--ink); width:100%; }
+  .modal-actions{ display:flex; gap:8px; margin-top:14px; }
+  .modal-actions .pill{ flex:1; text-align:center; justify-content:center; }
+  .modal-error{ color:var(--danger); font-size:.78rem; min-height:1.1em; margin:0 0 4px; }
 </style>
 </head>
 <body>
@@ -182,6 +194,7 @@
         <div class="acciones">
           <button class="pill" id="btnCopiarEnlace" type="button">🔗 Copiar enlace de esta configuración</button>
           <button class="pill" id="btnRestablecer" type="button">↺ Restablecer</button>
+          <button class="pill" id="btnCloudSync" type="button">☁️ Conectar</button>
           <span class="settings-aviso oculto" id="settingsAviso"></span>
         </div>
       </div>
@@ -330,6 +343,22 @@
   <footer>Coordinación de Emergencias 112 · Panel personalizado — reutiliza los datos de <a class="back" href="../alertas-malaga/">Alertas Málaga</a>, sin modificarlo</footer>
 </div>
 
+<div class="modal-overlay oculto" id="cloudModal">
+  <div class="modal">
+    <h2>☁️ Sincronizar con la nube</h2>
+    <p>Inicia sesión para que esta configuración se guarde también en la nube y no se pierda si limpias el navegador. Se queda recordada en este dispositivo (y es la misma sesión que Turnos, si ya iniciaste allí).</p>
+    <form id="fCloudLogin">
+      <div class="field"><label>Email</label><input type="email" name="email" required autocomplete="username"></div>
+      <div class="field"><label>Contraseña</label><input type="password" name="password" required autocomplete="current-password"></div>
+      <p class="modal-error" id="cloudLoginError"></p>
+      <div class="modal-actions">
+        <button type="button" class="pill" id="btnCloudCancel">Cancelar</button>
+        <button type="submit" class="pill active">Entrar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script>
 (function(){
@@ -395,6 +424,12 @@
   let config = cargarConfigInicial();
   function guardarConfig(){
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(config)); } catch (e) { /* ignore */ }
+    // Si hay sesión iniciada y esta página no se abrió desde un enlace compartido
+    // (?cfg=), la config también se sube a la nube — ver bloque de sincronización
+    // más abajo para el resto de la lógica (login, hidratación, escucha en vivo).
+    if (!tieneEnlaceCompartido && window.PortalSync && window.PortalSync.isLoggedIn()) {
+      window.PortalSync.saveData(CLOUD_PATH_PANEL, config).catch(() => {});
+    }
   }
 
   function mostrarAviso(texto){
@@ -424,6 +459,86 @@
     history.replaceState(null, '', location.pathname);
     sincronizarUIConConfig();
     renderTodo();
+  });
+
+  // ---------- Sincronización en la nube (Firebase, opcional) ----------
+  // Igual que en Turnos: por defecto todo sigue funcionando solo con localStorage,
+  // esto es un extra. Si hay sesión iniciada (aquí o ya en Turnos — es el mismo
+  // origen, se comparte sola), la config también se guarda en la nube. Si la página
+  // se abrió desde un enlace compartido (?cfg=), ese enlace manda siempre: nunca se
+  // sobrescribe con la nube de otra persona.
+  const CLOUD_PATH_PANEL = 'panelControl/config';
+  const tieneEnlaceCompartido = new URLSearchParams(location.search).has('cfg');
+  let cloudWatchStartedPanel = false;
+
+  window.onPortalAuthReady = function(user){
+    actualizarBotonCloud(user);
+    if (user && !tieneEnlaceCompartido) hydratePanelFromCloud();
+  };
+
+  function actualizarBotonCloud(user){
+    const btn = document.getElementById('btnCloudSync');
+    if (btn) btn.textContent = user ? '☁️ Sincronizado' : '☁️ Conectar';
+  }
+
+  function hydratePanelFromCloud(){
+    if (!window.PortalSync) return;
+    window.PortalSync.loadData(CLOUD_PATH_PANEL).then(remote => {
+      if (remote) {
+        config = mergeConDefaults(remote);
+        guardarConfig();
+        sincronizarUIConConfig();
+        renderTodo();
+      } else {
+        // primera vez que se conecta este dispositivo: sube la config local actual como semilla
+        window.PortalSync.saveData(CLOUD_PATH_PANEL, config).catch(() => {});
+      }
+      startPanelCloudWatch();
+    }).catch(() => { /* sin conexión o similar: se sigue trabajando en local */ });
+  }
+
+  function startPanelCloudWatch(){
+    if (cloudWatchStartedPanel || !window.PortalSync) return;
+    cloudWatchStartedPanel = true;
+    window.PortalSync.watchData(CLOUD_PATH_PANEL, remote => {
+      if (!remote || tieneEnlaceCompartido) return;
+      const nuevo = mergeConDefaults(remote);
+      if (JSON.stringify(nuevo) === JSON.stringify(config)) return;
+      config = nuevo;
+      guardarConfig();
+      sincronizarUIConConfig();
+      renderTodo();
+      mostrarAviso('☁️ Configuración actualizada desde otro dispositivo');
+    });
+  }
+
+  document.getElementById('btnCloudSync').addEventListener('click', () => {
+    if (window.PortalSync && window.PortalSync.isLoggedIn()) {
+      if (confirm('¿Cerrar la sesión de sincronización en este dispositivo?')) window.PortalSync.logout();
+    } else {
+      document.getElementById('cloudLoginError').textContent = '';
+      document.getElementById('cloudModal').classList.remove('oculto');
+    }
+  });
+  document.getElementById('btnCloudCancel').addEventListener('click', () => {
+    document.getElementById('cloudModal').classList.add('oculto');
+  });
+  document.getElementById('fCloudLogin').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const errEl = document.getElementById('cloudLoginError');
+    if (!window.PortalSync) { errEl.textContent = 'No se pudo cargar la sincronización (revisa tu conexión y recarga).'; return; }
+    const fd = new FormData(e.target);
+    const email = (fd.get('email')||'').toString().trim();
+    const password = (fd.get('password')||'').toString();
+    const btn = e.target.querySelector('button[type=submit]');
+    btn.disabled = true; btn.textContent = 'Entrando…';
+    window.PortalSync.login(email, password).then(() => {
+      document.getElementById('cloudModal').classList.add('oculto');
+      mostrarAviso('☁️ Sesión iniciada — sincronizando…');
+    }).catch(() => {
+      errEl.textContent = 'Email o contraseña incorrectos.';
+      btn.disabled = false; btn.textContent = 'Entrar';
+    });
   });
 
   // ---------- Visibilidad de widgets ----------
