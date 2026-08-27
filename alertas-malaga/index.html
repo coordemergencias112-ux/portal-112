@@ -43,7 +43,9 @@
   a.back{ color:var(--accent-strong); text-decoration:none; font-size:.85rem; font-weight:600; }
   a.back:hover{ text-decoration:underline; }
   h1{ font-size:1.4rem; margin:4px 0 2px; }
-  .updated{ color:var(--ink-faint); font-size:.78rem; margin-bottom:20px; }
+  .updated{ color:var(--ink-faint); font-size:.78rem; margin-bottom:20px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .updated.aviso-tardio{ color:var(--nivel-amarillo); font-weight:600; }
+  .updated.aviso-parado{ color:var(--danger); font-weight:700; }
   .cards{ display:grid; grid-template-columns:1fr; gap:18px; }
   @media (min-width:900px){ .cards{ grid-template-columns:1fr 1fr; } .card.full{ grid-column:1 / -1; } }
   .card{
@@ -816,6 +818,32 @@
   document.getElementById('horasViewport').addEventListener('scroll', actualizarBotonesHoras);
 
   // ---------- Carga principal ----------
+  // El workflow que genera avisos/previsión/incendios/SAIH corre cada 30 min y
+  // los tres archivos se comprometen juntos al final del job: si un paso falla,
+  // no se comitea nada y los tres se quedan "congelados" a la vez con el mismo
+  // generated_at antiguo. Por eso basta con vigilar el de aemet_malaga.json.
+  const AVISO_TARDIO_MIN = 60;   // por encima de esto: puede que vaya con retraso normal de Actions
+  const AVISO_PARADO_MIN = 120;  // por encima de esto: probablemente el workflow está fallando
+
+  let ultimaActualizacionDatos = null;
+
+  function actualizarLineaEstado(){
+    const el = document.getElementById('updatedLine');
+    if (!ultimaActualizacionDatos) return;
+    const minutos = Math.round((Date.now() - ultimaActualizacionDatos.getTime()) / 60000);
+    const horaTexto = ultimaActualizacionDatos.toLocaleString('es-ES');
+    let prefijo = '';
+    el.classList.remove('aviso-tardio', 'aviso-parado');
+    if (minutos >= AVISO_PARADO_MIN) {
+      el.classList.add('aviso-parado');
+      prefijo = '🔴 Sin actualizar hace ' + minutos + ' min — revisar el workflow en GitHub Actions. ';
+    } else if (minutos >= AVISO_TARDIO_MIN) {
+      el.classList.add('aviso-tardio');
+      prefijo = '⚠️ Hace ' + minutos + ' min sin actualizar (se esperaba cada 30 min). ';
+    }
+    el.textContent = prefijo + 'Sismos y radar: en vivo · Avisos, previsión, incendios y SAIH actualizados: ' + horaTexto;
+  }
+
   async function loadAemetData(){
     try {
       const [dataRes, geoRes] = await Promise.all([
@@ -827,16 +855,20 @@
       renderZonas(data.avisos);
       renderPrevisionSelector(data.prevision);
       renderHistorial(data.historial);
-      const dt = new Date(data.generated_at);
-      document.getElementById('updatedLine').textContent =
-        'Sismos y radar: en vivo · Avisos, previsión, incendios y SAIH actualizados: ' + dt.toLocaleString('es-ES');
+      ultimaActualizacionDatos = new Date(data.generated_at);
+      actualizarLineaEstado();
     } catch (e) {
       document.getElementById('updatedLine').textContent = 'No se pudieron cargar los avisos/previsión AEMET.';
+      document.getElementById('updatedLine').classList.add('aviso-parado');
       document.getElementById('zonaList').innerHTML = '<div class="empty">Sin datos disponibles.</div>';
       document.getElementById('previsionDias').innerHTML = '<div class="empty">Sin datos disponibles.</div>';
       document.getElementById('historialList').innerHTML = '<div class="empty">Sin datos disponibles.</div>';
     }
   }
+
+  // Revisa la frescura cada minuto, para que una pestaña abierta todo el día
+  // (p. ej. en la sala de coordinación) acabe mostrando el aviso sin recargar.
+  setInterval(actualizarLineaEstado, 60000);
 
   // ---------- Mapa a pantalla completa en otra ventana ----------
   const esMapaFull = new URLSearchParams(location.search).get('mapa') === 'full';
