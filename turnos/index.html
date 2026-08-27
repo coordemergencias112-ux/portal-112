@@ -1,6 +1,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Guardia 112</title>
+<script type="module" src="../shared/firebase-sync.js"></script>
 <style id="app-style">
   :root{
     --ink:#101820;
@@ -325,6 +326,97 @@
 
   var artifactCap = null, downloadsCap = null, readOnly = false;
 
+  /* ---------- sincronización en la nube (Firebase, opcional) ----------
+     No es un requisito para usar la app: por defecto todo sigue funcionando
+     solo con localStorage, igual que antes. Si Kiko inicia sesión (botón ☁️),
+     además se guarda en la nube y se sincroniza entre dispositivos. Así un
+     fallo de red o de Firebase nunca deja la app inutilizable. */
+  var authUser = null;
+  var cloudWatchStarted = false;
+  var CLOUD_PATH = 'turnos/state';
+
+  window.onPortalAuthReady = function(user){
+    var wasLoggedIn = !!authUser;
+    authUser = user;
+    if(user && !wasLoggedIn) hydrateFromCloud();
+    render();
+  };
+
+  function hydrateFromCloud(){
+    if(!window.PortalSync) return;
+    window.PortalSync.loadData(CLOUD_PATH).then(function(remote){
+      if(remote){
+        state = remote;
+        saveState();
+        render();
+      } else {
+        // primera vez que se conecta este dispositivo: sube el estado local actual como semilla
+        window.PortalSync.saveData(CLOUD_PATH, state).catch(function(){});
+      }
+      startCloudWatch();
+    }).catch(function(){ /* sin conexión o similar: se sigue trabajando en local */ });
+  }
+
+  function startCloudWatch(){
+    if(cloudWatchStarted || !window.PortalSync) return;
+    cloudWatchStarted = true;
+    window.PortalSync.watchData(CLOUD_PATH, function(remote){
+      if(!remote) return;
+      // evita repintar si es el eco de nuestro propio guardado
+      if(JSON.stringify(remote) === JSON.stringify(state)) return;
+      state = remote;
+      saveState();
+      render();
+      toast('☁️ Cuadrante actualizado desde otro dispositivo');
+    });
+  }
+
+  function openLoginModal(){
+    openModal(
+      '<h2>☁️ Sincronizar con la nube</h2>' +
+      '<p class="hint" style="margin-top:0;">Inicia sesión para que el cuadrante se guarde también en la nube y puedas verlo desde cualquier dispositivo. Se queda recordado en este navegador.</p>' +
+      '<form id="f-login">' +
+        '<div class="field"><label>Email</label><input type="email" name="email" required autocomplete="username" autofocus></div>' +
+        '<div class="field"><label>Contraseña</label><input type="password" name="password" required autocomplete="current-password"></div>' +
+        '<div id="login-error" style="color:var(--danger);font-size:.8rem;min-height:1.1em;"></div>' +
+        '<div class="modal-actions"><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn btn-primary">Entrar</button></div>' +
+      '</form>'
+    );
+    var form = document.getElementById('f-login');
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var errEl = document.getElementById('login-error');
+      if(!window.PortalSync){ errEl.textContent = 'No se pudo cargar la sincronización (revisa tu conexión y recarga).'; return; }
+      var fd = new FormData(form);
+      var email = (fd.get('email')||'').toString().trim();
+      var password = (fd.get('password')||'').toString();
+      var btn = form.querySelector('button[type=submit]');
+      btn.disabled = true; btn.textContent = 'Entrando…';
+      window.PortalSync.login(email, password).then(function(){
+        closeModal();
+        toast('☁️ Sesión iniciada — sincronizando…');
+      }).catch(function(){
+        errEl.textContent = 'Email o contraseña incorrectos.';
+        btn.disabled = false; btn.textContent = 'Entrar';
+      });
+    });
+  }
+
+  function toggleCloudSync(){
+    if(authUser){
+      if(window.confirm('¿Cerrar la sesión de sincronización en este dispositivo?') && window.PortalSync) window.PortalSync.logout();
+    } else {
+      openLoginModal();
+    }
+  }
+
+  function cloudChip(){
+    if(authUser){
+      return '<button type="button" class="btn btn-ghost btn-sm" data-cloud-toggle title="Sincronizado con la nube · pulsa para cerrar sesión">☁️</button>';
+    }
+    return '<button type="button" class="btn btn-ghost btn-sm" data-cloud-toggle title="Sin sincronizar con la nube · pulsa para conectar">☁️ Conectar</button>';
+  }
+
   var TIPOS = ['Incendio','Accidente de tráfico','Inundación','Rescate acuático','Rescate en altura/confinado','Sanitario','Búsqueda de persona','Riesgo químico','Otro'];
   var PRIORIDADES = ['Alta','Media','Baja'];
   // STAGES = todos los tipos de fichaje que puede haber en el histórico (incluye "en_ruta",
@@ -507,6 +599,13 @@
     render();
     saveUi();
     if(successMsg) toast(successMsg);
+    // Si hay sesión iniciada, se sube también a la nube (mejor esfuerzo: si falla
+    // por falta de conexión, el cambio ya está a salvo en localStorage igualmente).
+    if(authUser && window.PortalSync){
+      window.PortalSync.saveData(CLOUD_PATH, state).catch(function(){
+        toast('⚠️ Guardado en este dispositivo, pero no se pudo sincronizar con la nube');
+      });
+    }
     // Si además esta página corre como artefacto publicado de Claude, se intenta
     // sincronizar también ahí — pero nunca depende de ello para guardar.
     if(artifactCap && !readOnly){
@@ -932,7 +1031,8 @@
     var me = persona(ui.personaActual);
     var html = '<div class="topbar"><div class="topbar-row">' +
       '<div class="brand"><span class="brand-mark">🚨</span><div><h1>Guardia 112</h1></div></div>' +
-      '<div class="persona-chip" style="cursor:default;"><div class="av">'+esc(me.inicial)+'</div><span class="name">'+esc(me.nombre)+'</span></div>' +
+      '<div style="display:flex;align-items:center;gap:6px;">' + cloudChip() +
+      '<div class="persona-chip" style="cursor:default;"><div class="av">'+esc(me.inicial)+'</div><span class="name">'+esc(me.nombre)+'</span></div></div>' +
       '</div>' + statusStripHTML() + '</div>';
 
     html += '<main>';
@@ -1096,7 +1196,8 @@
     var me = persona(ui.personaActual);
     var html = '<div class="topbar"><div class="back-row">' +
       '<button class="btn btn-ghost btn-sm" data-go-home>← Emergencias</button>' +
-      '<div class="persona-chip" style="cursor:default;"><div class="av">'+esc(me.inicial)+'</div><span class="name">'+esc(me.nombre)+'</span></div>' +
+      '<div style="display:flex;align-items:center;gap:6px;">' + cloudChip() +
+      '<div class="persona-chip" style="cursor:default;"><div class="av">'+esc(me.inicial)+'</div><span class="name">'+esc(me.nombre)+'</span></div></div>' +
       '</div></div>';
 
     html += '<main>';
@@ -1193,7 +1294,8 @@
     var f = ui.horasFiltro;
     var html = '<div class="topbar"><div class="back-row">' +
       '<button class="btn btn-ghost btn-sm" data-go-home>← Emergencias</button>' +
-      '<div class="persona-chip" style="cursor:default;"><div class="av">'+esc(me.inicial)+'</div><span class="name">'+esc(me.nombre)+'</span></div>' +
+      '<div style="display:flex;align-items:center;gap:6px;">' + cloudChip() +
+      '<div class="persona-chip" style="cursor:default;"><div class="av">'+esc(me.inicial)+'</div><span class="name">'+esc(me.nombre)+'</span></div></div>' +
       '</div></div>';
 
     html += '<main>';
@@ -1304,6 +1406,7 @@
     t = ev.target.closest('[data-cal-edit]'); if(t){ openVerTurno(t.getAttribute('data-cal-edit'), ui.emgId); return; }
     t = ev.target.closest('[data-cal-del]'); if(t){ closeModal(); deleteTurno(ui.emgId, t.getAttribute('data-cal-del')); return; }
     t = ev.target.closest('[data-cal-more]'); if(t){ ui.calDays = (ui.calDays||4)+1; render(); return; }
+    t = ev.target.closest('[data-cloud-toggle]'); if(t){ toggleCloudSync(); return; }
   }
   function wireEvents(){
     var root = document.getElementById('app-root');
