@@ -64,6 +64,22 @@
   .btn-primary{ background:var(--accent); border-color:var(--accent); color:#fff; }
   .btn-primary:hover{ background:var(--accent-strong); border-color:var(--accent-strong); }
   .empty{ color:var(--ink-faint); font-size:.85rem; text-align:center; padding:30px 0; }
+  .ptel-box{
+    margin-top:28px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+    box-shadow:var(--shadow); padding:18px 18px 16px;
+  }
+  .ptel-h2{ font-size:1rem; margin:0 0 4px; }
+  .ptel-hint{ color:var(--ink-faint); font-size:.82rem; line-height:1.4; margin:0 0 14px; }
+  .ptel-box .buscador{ margin-bottom:12px; }
+  .ptel-resultados{ display:flex; flex-direction:column; gap:8px; max-height:360px; overflow-y:auto; }
+  .ptel-row{
+    display:flex; align-items:baseline; justify-content:space-between; gap:10px;
+    padding:9px 12px; border-radius:var(--radius-sm); background:var(--surface-alt); border:1px solid var(--border);
+  }
+  .ptel-row .pm{ font-weight:600; font-size:.88rem; }
+  .ptel-row .pf{ color:var(--ink-soft); font-size:.78rem; text-align:right; white-space:nowrap; }
+  .ptel-placeholder{ color:var(--ink-faint); font-size:.83rem; padding:10px 2px; }
+  .ptel-noresult{ color:var(--ink-faint); font-size:.83rem; padding:10px 2px; }
   .toast{
     position:fixed; left:50%; bottom:22px; transform:translateX(-50%) translateY(-4px);
     background:var(--ink); color:var(--paper); padding:10px 18px; border-radius:999px;
@@ -87,6 +103,13 @@
   <input type="text" class="buscador" id="buscador" placeholder="🔍 Buscar por nombre, categoría...">
 
   <div class="cards" id="lista"></div>
+
+  <section class="ptel-box">
+    <h2 class="ptel-h2">🧭 PTEL homologados — consulta rápida por municipio</h2>
+    <p class="ptel-hint">Escribe un municipio de Málaga para ver si tiene el Plan Territorial de Emergencia Local homologado y sus fechas, sin abrir el PDF.</p>
+    <input type="text" class="buscador" id="buscadorMunicipio" placeholder="🔎 Escribe un municipio (ej. Ronda, Coín...)">
+    <div id="resultadosMunicipio" class="ptel-resultados"></div>
+  </section>
 
   <footer>Coordinación de Emergencias 112</footer>
 </div>
@@ -121,7 +144,97 @@
       protegido: true,
       archivo: "archivos/Relacion_ID_radios_telefonos_satelites.pdf",
       icono: "🔒"
+    },
+    {
+      titulo: "PTEL homologados — Provincia de Málaga",
+      descripcion: "Listado de los 78 municipios de la provincia de Málaga con Plan Territorial de Emergencia Local (PTEL) homologado, con las fechas de homologación y de las revisiones posteriores. Actualizado a 23/03/2026.",
+      categoria: "Referencia",
+      archivo: "archivos/PTEL_Homologados_Malaga_23-03-2026.pdf",
+      icono: "🧭"
     }
+  ];
+
+  // Datos del PDF "PTEL homologados" volcados aquí para poder consultar un
+  // municipio al vuelo sin tener que abrir el PDF y buscar a mano.
+  var PTEL_MUNICIPIOS = [
+    {municipio:"Antequera", fechas:"10/03/1994 · 01/07/2016"},
+    {municipio:"Estepona", fechas:"07/04/1994 · 23/03/2026"},
+    {municipio:"Marbella", fechas:"15/03/1995 · 24/07/2007 · 25/06/2021"},
+    {municipio:"Torremolinos", fechas:"15/03/1995 · 23/03/2026"},
+    {municipio:"Vélez-Málaga", fechas:"31/10/1995"},
+    {municipio:"Fuengirola", fechas:"10/03/1998 · 22/11/2018"},
+    {municipio:"Ronda", fechas:"06/04/1999"},
+    {municipio:"Benalmádena", fechas:"27/03/2001 · 04/12/2012"},
+    {municipio:"Torrox", fechas:"27/03/2001"},
+    {municipio:"Alhaurín de la Torre", fechas:"22/03/2002"},
+    {municipio:"Álora", fechas:"22/03/2002"},
+    {municipio:"Málaga", fechas:"22/03/2002 · 29/11/2017 · 16/10/2025"},
+    {municipio:"Algarrobo", fechas:"17/02/2004"},
+    {municipio:"Alhaurín el Grande", fechas:"17/02/2004 · 23/03/2026"},
+    {municipio:"Coín", fechas:"17/02/2004 · 29/11/2017"},
+    {municipio:"Mijas", fechas:"17/02/2004 · 10/12/2019 · 23/03/2026"},
+    {municipio:"Rincón de la Victoria", fechas:"17/02/2004"},
+    {municipio:"Teba", fechas:"17/02/2004"},
+    {municipio:"Campillos", fechas:"27/11/2008 · 03/12/2013"},
+    {municipio:"Cártama", fechas:"27/11/2008 · 22/11/2018"},
+    {municipio:"Frigiliana", fechas:"17/02/2010"},
+    {municipio:"Nerja", fechas:"26/10/2010"},
+    {municipio:"Cútar", fechas:"21/12/2011"},
+    {municipio:"Alfarnatejo", fechas:"03/12/2013"},
+    {municipio:"Algatocín", fechas:"03/12/2013"},
+    {municipio:"Almáchar", fechas:"03/12/2013"},
+    {municipio:"Árchez", fechas:"03/12/2013"},
+    {municipio:"Arriate", fechas:"03/12/2013"},
+    {municipio:"El Borge", fechas:"03/12/2013"},
+    {municipio:"Comares", fechas:"03/12/2013"},
+    {municipio:"Gaucín", fechas:"03/12/2013"},
+    {municipio:"Istán", fechas:"03/12/2013 · 23/11/2022"},
+    {municipio:"Mollina", fechas:"03/12/2013"},
+    {municipio:"Parauta", fechas:"03/12/2013"},
+    {municipio:"Salares", fechas:"03/12/2013"},
+    {municipio:"Villanueva del Trabuco", fechas:"03/12/2013"},
+    {municipio:"Alcaucín", fechas:"16/12/2014"},
+    {municipio:"Almargen", fechas:"16/12/2014"},
+    {municipio:"El Burgo", fechas:"16/12/2014 · 23/03/2026"},
+    {municipio:"Fuente de Piedra", fechas:"16/12/2014"},
+    {municipio:"Humilladero", fechas:"16/12/2014"},
+    {municipio:"Jimera de Líbar", fechas:"16/12/2014"},
+    {municipio:"Montecorto", fechas:"16/12/2014"},
+    {municipio:"Almogía", fechas:"01/07/2016"},
+    {municipio:"Benarrabá", fechas:"01/07/2016"},
+    {municipio:"Periana", fechas:"24/11/2016 · 23/03/2026"},
+    {municipio:"Yunquera", fechas:"24/11/2016"},
+    {municipio:"Benamocarra", fechas:"29/11/2017"},
+    {municipio:"Valle de Abdalajís", fechas:"22/11/2018"},
+    {municipio:"Villanueva de Tapia", fechas:"22/11/2018"},
+    {municipio:"Cómpeta", fechas:"10/12/2019"},
+    {municipio:"Ojén", fechas:"10/12/2019"},
+    {municipio:"Totalán", fechas:"10/12/2019"},
+    {municipio:"Benahavís", fechas:"25/06/2021"},
+    {municipio:"Benalauría", fechas:"25/06/2021"},
+    {municipio:"Alameda", fechas:"23/11/2022"},
+    {municipio:"Carratraca", fechas:"23/11/2022"},
+    {municipio:"Casares", fechas:"23/11/2022"},
+    {municipio:"Guaro", fechas:"23/11/2022"},
+    {municipio:"Monda", fechas:"23/11/2022"},
+    {municipio:"Ríogordo", fechas:"23/11/2022"},
+    {municipio:"Casarabonela", fechas:"14/06/2023"},
+    {municipio:"Alpandeire", fechas:"25/04/2024"},
+    {municipio:"Archidona", fechas:"25/04/2024"},
+    {municipio:"Cañete la Real", fechas:"25/04/2024"},
+    {municipio:"Colmenar", fechas:"25/04/2024"},
+    {municipio:"Faraján", fechas:"25/04/2024"},
+    {municipio:"Júzcar", fechas:"25/04/2024"},
+    {municipio:"Montejaque", fechas:"25/04/2024"},
+    {municipio:"Jubrique", fechas:"07/05/2025"},
+    {municipio:"Canillas de Aceituno", fechas:"16/10/2025"},
+    {municipio:"Cartajima", fechas:"16/10/2025"},
+    {municipio:"Genalguacil", fechas:"16/10/2025"},
+    {municipio:"Benamargosa", fechas:"23/03/2026"},
+    {municipio:"Casabermeja", fechas:"23/03/2026"},
+    {municipio:"Pizarra", fechas:"23/03/2026"},
+    {municipio:"Cortes de la Frontera", fechas:"23/03/2026"},
+    {municipio:"Cuevas Bajas", fechas:"23/03/2026"}
   ];
 
   function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
@@ -180,7 +293,31 @@
   });
   document.getElementById("buscador").addEventListener("input", function(e){ render(e.target.value); });
 
+  function normalizar(s){
+    return String(s == null ? "" : s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  }
+
+  function renderMunicipios(filtro){
+    var cont = document.getElementById("resultadosMunicipio");
+    var f = normalizar((filtro || "").trim());
+    if (!f) {
+      cont.innerHTML = '<div class="ptel-placeholder">Hay 78 municipios de Málaga con PTEL homologado. Empieza a escribir un nombre para consultarlo.</div>';
+      return;
+    }
+    var items = PTEL_MUNICIPIOS.filter(function(m){ return normalizar(m.municipio).indexOf(f) !== -1; });
+    if (!items.length) {
+      cont.innerHTML = '<div class="ptel-noresult">Ese municipio no aparece en el listado de PTEL homologados (o revisa cómo lo has escrito).</div>';
+      return;
+    }
+    cont.innerHTML = items.map(function(m){
+      return '<div class="ptel-row"><span class="pm">' + esc(m.municipio) + '</span><span class="pf">' + esc(m.fechas) + '</span></div>';
+    }).join("");
+  }
+
+  document.getElementById("buscadorMunicipio").addEventListener("input", function(e){ renderMunicipios(e.target.value); });
+
   render("");
+  renderMunicipios("");
 })();
 </script>
 </body>
