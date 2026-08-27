@@ -18,17 +18,24 @@ jobs:
         with:
           python-version: "3.12"
 
+      # continue-on-error en cada scraper: si uno falla (p. ej. un fallo de red puntual
+      # del runner contra un host concreto, como ha pasado con FIRMS), los demás siguen
+      # corriendo y el commit final sigue subiendo lo que sí se haya podido actualizar,
+      # en vez de dejar TODO congelado hasta el siguiente ciclo que funcione entero.
       - name: Ejecutar scraper AEMET (avisos y previsión)
+        continue-on-error: true
         env:
           AEMET_API_KEY: ${{ secrets.AEMET_API_KEY }}
         run: python alertas-malaga/scripts/aemet_scraper.py
 
       - name: Ejecutar scraper NASA FIRMS (incendios)
+        continue-on-error: true
         env:
           FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
         run: python alertas-malaga/scripts/firms_scraper.py
 
       - name: Ejecutar scraper SAIH Hidrosur (ríos, embalses, lluvia)
+        continue-on-error: true
         run: python alertas-malaga/scripts/saih_scraper.py
 
       - name: Commit y push si hay cambios
