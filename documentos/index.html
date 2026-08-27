@@ -10,6 +10,7 @@
     --ink:#101820; --ink-soft:#4b5560; --ink-faint:#7c8792;
     --paper:#eef2f1; --surface:#ffffff; --surface-alt:#f5f8f7;
     --border:#d8dfdc; --accent:#1f6f78; --accent-strong:#144c53; --accent-soft:#dbedec;
+    --warn:#c9820a; --warn-soft:#faedd0;
     --shadow: 0 1px 2px rgba(16,24,32,.05), 0 6px 16px rgba(16,24,32,.06);
     --radius-lg:18px; --radius-md:12px; --radius-sm:8px;
     --font-ui: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -19,6 +20,7 @@
       --ink:#eef3f2; --ink-soft:#b7c2c6; --ink-faint:#8892988a;
       --paper:#0b1215; --surface:#131c20; --surface-alt:#182226;
       --border:#263133; --accent:#4fb3ac; --accent-strong:#7dd3cb; --accent-soft:#173634;
+      --warn:#e3a83c; --warn-soft:#3a2c12;
       --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 20px rgba(0,0,0,.35);
     }
   }
@@ -50,6 +52,7 @@
     letter-spacing:.04em; color:var(--accent-strong); background:var(--accent-soft);
     padding:2px 9px; border-radius:999px;
   }
+  .doc-cat.protegido{ color:var(--warn); background:var(--warn-soft); }
   .doc-desc{ color:var(--ink-soft); font-size:.84rem; line-height:1.45; margin:10px 0 14px; }
   .doc-actions{ display:flex; gap:8px; flex-wrap:wrap; }
   .btn{
@@ -110,6 +113,14 @@
       categoria: "Referencia",
       archivo: "archivos/Comarcas_AEMET_Malaga.pdf",
       icono: "🗺️"
+    },
+    {
+      titulo: "Relación ID radios + teléfonos satélites",
+      descripcion: "Identificadores de radio (REJA) y teléfonos vía satélite del dispositivo regional de Protección Civil. Archivo protegido con contraseña — pide la contraseña a Kiko antes de abrirlo.",
+      categoria: "Protegido con contraseña",
+      protegido: true,
+      archivo: "archivos/Relacion_ID_radios_telefonos_satelites.pdf",
+      icono: "🔒"
     }
   ];
 
@@ -151,7 +162,7 @@
     lista.innerHTML = items.map(function(d){
       return '<div class="doc-card">' +
         '<div class="doc-top"><span class="doc-icon">' + d.icono + '</span>' +
-        '<div><div class="doc-titulo">' + esc(d.titulo) + '</div><span class="doc-cat">' + esc(d.categoria) + '</span></div></div>' +
+        '<div><div class="doc-titulo">' + esc(d.titulo) + '</div><span class="doc-cat' + (d.protegido ? ' protegido' : '') + '">' + esc(d.categoria) + '</span></div></div>' +
         '<p class="doc-desc">' + esc(d.descripcion) + '</p>' +
         '<div class="doc-actions">' +
           '<a class="btn btn-primary" href="' + esc(d.archivo) + '" target="_blank" rel="noopener">📄 Abrir</a>' +
