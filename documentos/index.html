@@ -69,15 +69,28 @@
     box-shadow:var(--shadow); padding:18px 18px 16px;
   }
   .ptel-h2{ font-size:1rem; margin:0 0 4px; }
-  .ptel-hint{ color:var(--ink-faint); font-size:.82rem; line-height:1.4; margin:0 0 14px; }
+  .ptel-hint{ color:var(--ink-faint); font-size:.82rem; line-height:1.4; margin:0 0 6px; }
+  .ptel-stats{ color:var(--ink-soft); font-size:.78rem; font-weight:600; margin:0 0 14px; }
   .ptel-box .buscador{ margin-bottom:12px; }
   .ptel-resultados{ display:flex; flex-direction:column; gap:8px; max-height:360px; overflow-y:auto; }
   .ptel-row{
-    display:flex; align-items:baseline; justify-content:space-between; gap:10px;
+    display:flex; flex-direction:column; gap:4px;
     padding:9px 12px; border-radius:var(--radius-sm); background:var(--surface-alt); border:1px solid var(--border);
   }
+  .ptel-row-top{ display:flex; align-items:center; gap:6px; }
+  .ptel-row-bottom{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
   .ptel-row .pm{ font-weight:600; font-size:.88rem; }
-  .ptel-row .pf{ color:var(--ink-soft); font-size:.78rem; text-align:right; white-space:nowrap; }
+  .ptel-row .pf{ color:var(--ink-soft); font-size:.78rem; white-space:nowrap; }
+  .ptel-badge{
+    font-size:.6rem; font-weight:700; text-transform:uppercase; letter-spacing:.03em;
+    color:var(--accent-strong); background:var(--accent-soft); padding:1px 7px; border-radius:999px;
+  }
+  .ptel-share{
+    border:1px solid var(--border); background:var(--surface); color:var(--ink);
+    border-radius:var(--radius-sm); font-size:.74rem; font-weight:600; padding:4px 10px; cursor:pointer;
+    display:inline-flex; align-items:center; gap:4px; flex:none;
+  }
+  .ptel-share:hover{ border-color:var(--accent); }
   .ptel-placeholder{ color:var(--ink-faint); font-size:.83rem; padding:10px 2px; }
   .ptel-noresult{ color:var(--ink-faint); font-size:.83rem; padding:10px 2px; }
   .toast{
@@ -107,6 +120,7 @@
   <section class="ptel-box">
     <h2 class="ptel-h2">🧭 PTEL homologados — consulta rápida por municipio</h2>
     <p class="ptel-hint">Escribe un municipio de Málaga para ver si tiene el Plan Territorial de Emergencia Local homologado y sus fechas, sin abrir el PDF.</p>
+    <p class="ptel-stats" id="ptelStats"></p>
     <input type="text" class="buscador" id="buscadorMunicipio" placeholder="🔎 Escribe un municipio (ej. Ronda, Coín...)">
     <div id="resultadosMunicipio" class="ptel-resultados"></div>
   </section>
@@ -237,6 +251,9 @@
     {municipio:"Cuevas Bajas", fechas:"23/03/2026"}
   ];
 
+  // Total de municipios de la provincia de Málaga, según el documento "Comarcas AEMET".
+  var TOTAL_MUNICIPIOS_MALAGA = 103;
+
   function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 
   function toast(msg){
@@ -259,6 +276,16 @@
     }
     // Sin Web Share API (típico en escritorio): abre WhatsApp Web/Desktop con el enlace ya escrito.
     window.open("https://wa.me/?text=" + encodeURIComponent(titulo + " — " + url), "_blank", "noopener");
+  }
+
+  function compartirMunicipio(municipio, fechas){
+    var texto = "🧭 PTEL homologado — " + municipio + ": " + fechas;
+    var url = urlAbsoluta("archivos/PTEL_Homologados_Malaga_23-03-2026.pdf");
+    if (navigator.share) {
+      navigator.share({ title: "PTEL " + municipio, text: texto, url: url }).catch(function(){ /* el usuario canceló */ });
+      return;
+    }
+    window.open("https://wa.me/?text=" + encodeURIComponent(texto + " — " + url), "_blank", "noopener");
   }
 
   function render(filtro){
@@ -297,6 +324,10 @@
     return String(s == null ? "" : s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
   }
 
+  // La última tanda de homologaciones/revisiones (23/03/2026) es la que trae este PDF:
+  // se marca aparte para verla de un vistazo.
+  function esReciente(fechas){ return /23\/03\/2026$/.test(fechas); }
+
   function renderMunicipios(filtro){
     var cont = document.getElementById("resultadosMunicipio");
     var f = normalizar((filtro || "").trim());
@@ -310,14 +341,35 @@
       return;
     }
     cont.innerHTML = items.map(function(m){
-      return '<div class="ptel-row"><span class="pm">' + esc(m.municipio) + '</span><span class="pf">' + esc(m.fechas) + '</span></div>';
+      return '<div class="ptel-row">' +
+        '<div class="ptel-row-top"><span class="pm">' + esc(m.municipio) + '</span>' +
+          (esReciente(m.fechas) ? '<span class="ptel-badge">🆕 Nuevo</span>' : '') +
+        '</div>' +
+        '<div class="ptel-row-bottom"><span class="pf">' + esc(m.fechas) + '</span>' +
+          '<button type="button" class="ptel-share" data-compartir-municipio="' + esc(m.municipio) + '" data-fechas="' + esc(m.fechas) + '">📤 Compartir</button>' +
+        '</div>' +
+      '</div>';
     }).join("");
   }
 
+  function renderStatsMunicipios(){
+    var el = document.getElementById("ptelStats");
+    if (!el) return;
+    var homologados = PTEL_MUNICIPIOS.length;
+    var pendientes = TOTAL_MUNICIPIOS_MALAGA - homologados;
+    el.textContent = homologados + " de los " + TOTAL_MUNICIPIOS_MALAGA + " municipios de Málaga tienen PTEL homologado — quedan " + pendientes + " sin homologar (no significa que no exista el municipio, solo que no consta homologado en este listado).";
+  }
+
   document.getElementById("buscadorMunicipio").addEventListener("input", function(e){ renderMunicipios(e.target.value); });
+  document.getElementById("resultadosMunicipio").addEventListener("click", function(e){
+    var btn = e.target.closest("[data-compartir-municipio]");
+    if (!btn) return;
+    compartirMunicipio(btn.getAttribute("data-compartir-municipio"), btn.getAttribute("data-fechas"));
+  });
 
   render("");
   renderMunicipios("");
+  renderStatsMunicipios();
 })();
 </script>
 </body>
