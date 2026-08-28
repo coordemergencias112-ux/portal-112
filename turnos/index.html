@@ -145,6 +145,7 @@
   .pill-llegada_pma{background:var(--st-blue-soft);color:var(--st-blue);}
   .pill-salida_pma{background:var(--st-violet-soft);color:var(--st-violet);}
   .pill-llegada_casa{background:var(--st-green-soft);color:var(--st-green);}
+  .pill-guardia{background:var(--st-amber-soft);color:var(--st-amber);font-weight:700;}
 
   .empty-state{
     text-align:center;color:var(--ink-faint);padding:34px 18px;border:1px dashed var(--border);
@@ -314,7 +315,7 @@
   }
   var state = loadState();
   var ui = { view:'home', emgId:null, subtab:'resumen', personaActual:'kiko', addingTurno:false, showCerradas:false,
-    horasFiltro: { personaId:'all', emgId:'all', tipo:'todo' }, calDays: 4 };
+    horasFiltro: { personaId:'all', emgId:'all', tipo:'todo' }, calDays: 4, guardiaFecha:null };
   var horasTimer = null;
   try{
     var savedUi = JSON.parse(sessionStorage.getItem('g112_ui')||'null');
@@ -338,7 +339,8 @@
   window.onPortalAuthReady = function(user){
     var wasLoggedIn = !!authUser;
     authUser = user;
-    if(user && !wasLoggedIn) hydrateFromCloud();
+    if(user && !wasLoggedIn){ hydrateFromCloud(); cargarGuardiaData(); }
+    if(!user){ GUARDIA_DATA = null; if(ui.view==='guardia') goHome(); }
     render();
   };
 
@@ -432,6 +434,44 @@
   ];
   var ACTIVE_STAGES = STAGES.filter(function(s){ return s.key!=='en_ruta'; });
   var STAGE_CYCLE = 4;
+
+  // ---------- Guardia del equipo (ATEM + Guardias) ----------
+  // El cuadrante diario (nombres + TT/GL/G por dia, un ano entero) es informacion
+  // real de personal, asi que NUNCA se guarda en este fichero publico. Vive en la
+  // misma base de datos de Firebase que ya usa la sincronizacion en la nube, en una
+  // ruta que solo se puede leer con sesion iniciada (reglas: auth != null). Sin
+  // sesion, esta seccion simplemente no se carga ni se muestra.
+  var GUARDIA_CODIGOS = { juan:['TT','GL'], fernando:['TT','GL'], ana:['G'], kiko:['G'] };
+  var GUARDIA_PATH = 'guardia/2026';
+  var GUARDIA_DATA = null;      // null = todavia no cargada
+  var guardiaCargando = false;
+
+  function isoFromDate(d){ return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()); }
+  function lunesDeSemana(iso){
+    var d = new Date(iso+'T00:00:00');
+    var offset = (d.getDay()+6)%7; // lunes=0 ... domingo=6
+    d.setDate(d.getDate()-offset);
+    return d;
+  }
+  function codigoGuardia(personaId, iso){
+    if(!GUARDIA_DATA) return null;
+    var dia = GUARDIA_DATA[personaId];
+    return dia ? (dia[iso]||null) : null;
+  }
+  function esDeGuardia(personaId, iso){
+    var codigo = codigoGuardia(personaId, iso);
+    var codigos = GUARDIA_CODIGOS[personaId] || [];
+    return (codigo && codigos.indexOf(codigo)!==-1) ? codigo : null;
+  }
+  function cargarGuardiaData(){
+    if(GUARDIA_DATA || guardiaCargando || !window.PortalSync || !authUser) return;
+    guardiaCargando = true;
+    window.PortalSync.loadData(GUARDIA_PATH).then(function(remote){
+      guardiaCargando = false;
+      GUARDIA_DATA = remote || {};
+      if(ui.view==='home' || ui.view==='guardia') render();
+    }).catch(function(){ guardiaCargando = false; });
+  }
 
   function stageMeta(key){ for(var i=0;i<STAGES.length;i++){ if(STAGES[i].key===key) return STAGES[i]; } return null; }
   function stageOrderIndex(key){
@@ -629,6 +669,7 @@
   function goHome(){ ui.view='home'; ui.emgId=null; saveUi(); render(); }
   function openEmg(id){ ui.view='detail'; ui.emgId=id; ui.subtab='resumen'; saveUi(); render(); }
   function openHoras(){ if(!isAdmin()) return; ui.view='horas'; saveUi(); render(); window.scrollTo(0,0); }
+  function openGuardia(fecha){ ui.view='guardia'; ui.guardiaFecha = fecha || todayISO(); saveUi(); render(); window.scrollTo(0,0); }
   function setSubtab(t){ ui.subtab=t; saveUi(); render(); window.scrollTo(0,0); }
 
   /* ---------- modals ---------- */
@@ -979,6 +1020,8 @@
     var root = document.getElementById('app-root');
     if(ui.view==='horas' && isAdmin()){
       root.innerHTML = renderHoras();
+    } else if(ui.view==='guardia'){
+      root.innerHTML = renderGuardia();
     } else if(ui.view==='detail' && emergencia(ui.emgId)){
       root.innerHTML = renderDetail(emergencia(ui.emgId));
     } else {
@@ -1038,6 +1081,8 @@
     html += '<main>';
     if(readOnly) html += '<div class="banner">🔒 No se pudo sincronizar el último cambio.</div>';
 
+    html += renderGuardiaHoy();
+
     if(isAdmin()) html += renderPanelAdmin();
 
     html += '<div class="section-title"><h2>Emergencias activas</h2><span class="count">'+activas.length+'</span></div>';
@@ -1058,6 +1103,88 @@
       '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:11px;">' +
       '<button class="btn btn-primary btn-block" data-go-horas style="margin-top:2px;">📊 Ver horas trabajadas</button>' +
       '</div>';
+  }
+
+  function renderGuardiaHoy(){
+    if(!authUser){
+      return '<div class="section-title"><h2>🛡️ Guardia de hoy</h2></div>' +
+        '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">' +
+        '<span style="color:var(--ink-faint);font-size:.85rem;">🔒 Inicia sesión para ver quién está de guardia.</span>' +
+        '<button type="button" class="btn btn-sm" data-cloud-toggle>☁️ Iniciar sesión</button>' +
+        '</div>';
+    }
+    if(!GUARDIA_DATA){
+      cargarGuardiaData();
+      return '<div class="section-title"><h2>🛡️ Guardia de hoy</h2></div>' +
+        '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;box-shadow:var(--shadow);color:var(--ink-faint);font-size:.85rem;">Cargando cuadrante…</div>';
+    }
+    var hoy = todayISO();
+    var activos = state.personas.map(function(p){
+      var codigo = esDeGuardia(p.id, hoy);
+      return codigo ? { p:p, codigo:codigo } : null;
+    }).filter(Boolean);
+    var lista = activos.length
+      ? activos.map(function(x){ return '<span class="pill pill-guardia">🛡️ '+esc(x.p.nombre)+'</span>'; }).join(' ')
+      : '<span style="color:var(--ink-faint);font-size:.85rem;">Nadie marcado de guardia hoy en el cuadrante.</span>';
+    return '<div class="section-title"><h2>🛡️ Guardia de hoy</h2></div>' +
+      '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px;">' +
+      '<div style="display:flex;flex-wrap:wrap;gap:8px;">' + lista + '</div>' +
+      '<button type="button" class="btn btn-sm" data-go-guardia style="align-self:flex-start;">📅 Ver semana / consultar otro día</button>' +
+      '</div>';
+  }
+
+  function renderGuardia(){
+    if(!authUser || !GUARDIA_DATA){
+      return '<div class="topbar"><div class="back-row">' +
+        '<button class="btn btn-ghost btn-sm" data-go-home>← Volver</button>' +
+        '</div></div><main><div class="empty-state">🔒 Inicia sesión (☁️) para ver la guardia del equipo.</div></main>';
+    }
+    var fecha = ui.guardiaFecha || todayISO();
+    var lunes = lunesDeSemana(fecha);
+    var dias = [];
+    for(var i=0;i<7;i++){ dias.push(isoFromDate(new Date(lunes.getTime() + i*86400000))); }
+    var hoy = todayISO();
+
+    var html = '<div class="topbar"><div class="back-row">' +
+      '<button class="btn btn-ghost btn-sm" data-go-home>← Volver</button>' +
+      '<div class="persona-chip" style="cursor:default;"><div class="av">🛡️</div><span class="name">Guardia del equipo</span></div>' +
+      '</div></div>';
+
+    html += '<main>';
+    html += '<div class="section-title"><h2>Semana del '+fmtFechaLarga(dias[0])+'</h2></div>';
+    html += '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px;">' +
+      '<button type="button" class="btn btn-sm" data-guardia-semana="-7">‹ Anterior</button>' +
+      '<button type="button" class="btn btn-sm" data-guardia-hoy>Hoy</button>' +
+      '<button type="button" class="btn btn-sm" data-guardia-semana="7">Siguiente ›</button>' +
+      '<input type="date" data-guardia-fecha value="'+esc(fecha)+'" style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px 9px;background:var(--surface-alt);color:var(--ink);font-size:.85rem;">' +
+      '</div>';
+
+    var headerCells = dias.map(function(d){
+      return '<th style="padding:6px 8px;text-align:center;'+(d===hoy?'color:var(--accent-strong);':'')+'">'+fmtCalHeader(d)+'</th>';
+    }).join('');
+    var filas = state.personas.map(function(p){
+      var celdas = dias.map(function(d){
+        var codigo = codigoGuardia(p.id, d);
+        var guardiaCodigo = esDeGuardia(p.id, d);
+        var estilo = 'padding:6px 8px;text-align:center;border-radius:6px;';
+        if(guardiaCodigo) estilo += 'background:var(--st-amber-soft);color:var(--st-amber);font-weight:700;';
+        if(d===hoy) estilo += 'outline:1.5px solid var(--accent);outline-offset:-1.5px;';
+        var contenido = guardiaCodigo ? ('🛡️ '+esc(guardiaCodigo)) :
+          (codigo ? '<span style="color:var(--ink-faint);">'+esc(codigo)+'</span>' : '<span style="color:var(--ink-faint);">—</span>');
+        return '<td style="'+estilo+'">'+contenido+'</td>';
+      }).join('');
+      return '<tr style="border-top:1px solid var(--border);"><td style="padding:6px 8px;font-weight:700;white-space:nowrap;">'+esc(p.nombre)+'</td>'+celdas+'</tr>';
+    }).join('');
+
+    html += '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:.82rem;">' +
+      '<thead><tr style="text-align:left;color:var(--ink-faint);font-size:.66rem;text-transform:uppercase;letter-spacing:.04em;">' +
+      '<th style="padding:6px 8px;">Persona</th>' + headerCells + '</tr></thead>' +
+      '<tbody>' + filas + '</tbody></table></div>';
+
+    html += '<p class="hint">🛡️ = de guardia (TT/GL para Juan Andrés y Fernando · G para Ana Celia y Kiko). Los demás códigos (M, T, V, AP...) son turno normal, vacaciones o permiso — no guardia.</p>';
+    html += '<p class="hint" style="color:var(--ink-faint);">Datos importados a mano el 28/08/2026 desde el Excel ATEM y el Google Sheet de guardias. Si el cuadrante cambia, pide que se actualice aquí — esta app no puede leerlos en directo.</p>';
+    html += '</main>';
+    return html;
   }
 
   function colorForPersonaIndex(id){
@@ -1407,6 +1534,15 @@
     t = ev.target.closest('[data-cal-del]'); if(t){ closeModal(); deleteTurno(ui.emgId, t.getAttribute('data-cal-del')); return; }
     t = ev.target.closest('[data-cal-more]'); if(t){ ui.calDays = (ui.calDays||4)+1; render(); return; }
     t = ev.target.closest('[data-cloud-toggle]'); if(t){ toggleCloudSync(); return; }
+    t = ev.target.closest('[data-go-guardia]'); if(t){ openGuardia(); return; }
+    t = ev.target.closest('[data-guardia-hoy]'); if(t){ openGuardia(); return; }
+    t = ev.target.closest('[data-guardia-semana]'); if(t){
+      var dias = parseInt(t.getAttribute('data-guardia-semana'), 10) || 0;
+      var base = new Date((ui.guardiaFecha||todayISO())+'T00:00:00');
+      base.setDate(base.getDate() + dias);
+      openGuardia(isoFromDate(base));
+      return;
+    }
   }
   function wireEvents(){
     var root = document.getElementById('app-root');
@@ -1414,6 +1550,7 @@
     root.onchange = function(ev){
       var t = ev.target.closest('[data-filter-persona]'); if(t){ ui.horasFiltro.personaId = t.value; render(); return; }
       t = ev.target.closest('[data-filter-emg]'); if(t){ ui.horasFiltro.emgId = t.value; render(); return; }
+      t = ev.target.closest('[data-guardia-fecha]'); if(t && t.value){ openGuardia(t.value); return; }
     };
   }
 
