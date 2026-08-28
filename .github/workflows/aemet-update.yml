@@ -1,8 +1,11 @@
 name: Actualizar Alertas Málaga
 
 on:
+  # GitHub retrasa (a veces horas) los cron que caen justo en :00/:30, que es
+  # cuando más carga tiene la plataforma -- es su propia recomendación oficial
+  # descargarlo a un minuto "raro". Sigue siendo cada 30 min, solo que a :07/:37.
   schedule:
-    - cron: "*/30 * * * *"   # cada 30 minutos
+    - cron: "7,37 * * * *"
   workflow_dispatch: {}       # permite lanzarlo a mano desde la pestaña Actions
 
 permissions:
