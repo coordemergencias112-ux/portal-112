@@ -162,7 +162,9 @@
   .settings-chip input{ accent-color:var(--accent); width:14px; height:14px; }
   .station-grid{ max-height:170px; overflow-y:auto; padding:2px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--surface); }
   .settings-aviso{ font-size:.76rem; color:var(--accent-strong); font-weight:600; margin-left:8px; }
+  .oculto{ display:none; }
   .settings-aviso.oculto{ display:none; }
+  body.modo-vista .settings-card{ display:none; }
   .modal-overlay{ position:fixed; inset:0; background:rgba(10,14,17,.5); display:flex; align-items:center; justify-content:center; z-index:50; padding:20px; }
   .modal-overlay.oculto{ display:none; }
   .modal{ background:var(--surface); width:100%; max-width:380px; border-radius:var(--radius-lg); padding:18px; box-shadow:var(--shadow); }
@@ -185,6 +187,7 @@
     </div>
   </header>
   <p class="updated" id="updatedLine">Cargando datos…</p>
+  <p class="updated oculto" id="avisoVista">👁️ Vista compartida, de solo lectura. <a class="back" href="#" id="linkEditarVista">✏️ Personalizar este panel</a></p>
 
   <div class="cards">
 
@@ -193,12 +196,13 @@
         <h2 style="margin:0">⚙️ Personalizar panel</h2>
         <div class="acciones">
           <button class="pill" id="btnCopiarEnlace" type="button">🔗 Copiar enlace de esta configuración</button>
+          <button class="pill" id="btnCompartirVista" type="button">📤 Compartir vista (sin edición)</button>
           <button class="pill" id="btnRestablecer" type="button">↺ Restablecer</button>
           <button class="pill" id="btnCloudSync" type="button">☁️ Conectar</button>
           <span class="settings-aviso oculto" id="settingsAviso"></span>
         </div>
       </div>
-      <p class="desc">Marca lo que quieras ver en tu panel — reutiliza los mismos datos de Alertas Málaga, sin modificarlo. Se guarda solo en este navegador; usa "Copiar enlace" para llevarte esta misma configuración a otro sitio o compartirla.</p>
+      <p class="desc">Marca lo que quieras ver en tu panel — reutiliza los mismos datos de Alertas Málaga, sin modificarlo. Se guarda solo en este navegador; usa "Copiar enlace" para llevarte esta misma configuración a otro sitio, o "Compartir vista" para mandar un enlace limpio (como Alertas Málaga, sin los controles de edición).</p>
 
       <div class="settings-grid" id="widgetToggles">
         <label class="widget-toggle"><input type="checkbox" data-widget="sismos">🌍 Sismos</label>
@@ -449,6 +453,22 @@
       mostrarAviso('Enlace copiado ✓');
     } catch (e) {
       mostrarAviso('No se pudo copiar solo — usa la URL de la barra de direcciones.');
+    }
+  });
+
+  document.getElementById('btnCompartirVista').addEventListener('click', async () => {
+    const b64 = encodeURIComponent(btoa(JSON.stringify(config)));
+    const url = location.origin + location.pathname + '?cfg=' + b64 + '&vista=1';
+    const titulo = 'Mi Panel — Portal 112';
+    if (navigator.share) {
+      try { await navigator.share({ title: titulo, text: titulo, url }); return; }
+      catch (e) { /* el usuario canceló el diálogo de compartir */ return; }
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      mostrarAviso('Enlace de vista (sin edición) copiado ✓');
+    } catch (e) {
+      window.open('https://wa.me/?text=' + encodeURIComponent(titulo + ' — ' + url), '_blank', 'noopener');
     }
   });
 
@@ -1079,6 +1099,22 @@
     } catch (e) {
       document.getElementById('updatedLine').textContent = 'No se pudieron cargar los datos.';
     }
+  }
+
+  // ---------- Modo "vista compartida" (?vista=1) ----------
+  // Enlace pensado para mandar por WhatsApp: oculta toda la tarjeta de
+  // personalización y deja el panel limpio, con el mismo aspecto que Alertas
+  // Málaga — solo los widgets elegidos, sin controles de edición.
+  const modoVista = new URLSearchParams(location.search).get('vista') === '1';
+  if (modoVista) {
+    document.body.classList.add('modo-vista');
+    document.getElementById('avisoVista').classList.remove('oculto');
+    document.getElementById('linkEditarVista').addEventListener('click', (e) => {
+      e.preventDefault();
+      const params = new URLSearchParams(location.search);
+      params.delete('vista');
+      location.href = location.pathname + '?' + params.toString();
+    });
   }
 
   aplicarVisibilidadWidgets();
