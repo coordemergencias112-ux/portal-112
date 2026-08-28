@@ -4,16 +4,16 @@
 <script type="module" src="../shared/firebase-sync.js"></script>
 <style id="app-style">
   :root{
-    --ink:#101820;
-    --ink-soft:#4b5560;
-    --ink-faint:#7c8792;
-    --paper:#eef2f1;
+    --ink:#101828;
+    --ink-soft:#475467;
+    --ink-faint:#8a94a3;
+    --paper:#f4f6f8;
     --surface:#ffffff;
-    --surface-alt:#f5f8f7;
-    --border:#d8dfdc;
-    --accent:#1f6f78;
-    --accent-strong:#144c53;
-    --accent-soft:#dbedec;
+    --surface-alt:#eef1f4;
+    --border:#d3d9e0;
+    --accent:#2a4a73;
+    --accent-strong:#16304f;
+    --accent-soft:#e2e9f2;
     --danger:#c8402f;
     --danger-soft:#f8e0db;
     --st-none:#8a94a3;      --st-none-soft:#eceff2;
@@ -24,14 +24,14 @@
     --st-green:#1f9d55;     --st-green-soft:#dff5e6;
     --font-ui: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --font-mono: ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-    --shadow: 0 1px 2px rgba(16,24,32,.05), 0 6px 16px rgba(16,24,32,.06);
-    --radius-sm:8px; --radius-md:12px; --radius-lg:18px; --radius-pill:999px;
+    --shadow: 0 1px 2px rgba(16,24,32,.05), 0 4px 12px rgba(16,24,32,.06);
+    --radius-sm:7px; --radius-md:10px; --radius-lg:14px; --radius-pill:999px;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --ink:#eef3f2; --ink-soft:#b7c2c6; --ink-faint:#8892988a;
-      --paper:#0b1215; --surface:#131c20; --surface-alt:#182226;
-      --border:#263133; --accent:#4fb3ac; --accent-strong:#7dd3cb; --accent-soft:#173634;
+      --ink:#eef1f4; --ink-soft:#aeb8c4; --ink-faint:#7c8798;
+      --paper:#0a0e14; --surface:#131922; --surface-alt:#1a212b;
+      --border:#28313d; --accent:#6f9bd1; --accent-strong:#9bc0e8; --accent-soft:#1b2938;
       --danger:#e8695a; --danger-soft:#3a1f1c;
       --st-none:#8f9aa3; --st-none-soft:#1c2529;
       --st-slate:#9a9df0; --st-slate-soft:#20223a;
@@ -39,13 +39,13 @@
       --st-blue:#6f9bf5; --st-blue-soft:#182b47;
       --st-violet:#bd85ea; --st-violet-soft:#2c1f3a;
       --st-green:#5cc98a; --st-green-soft:#153524;
-      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 20px rgba(0,0,0,.35);
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 16px rgba(0,0,0,.35);
     }
   }
   :root[data-theme="dark"]{
-    --ink:#eef3f2; --ink-soft:#b7c2c6; --ink-faint:#88929888;
-    --paper:#0b1215; --surface:#131c20; --surface-alt:#182226;
-    --border:#263133; --accent:#4fb3ac; --accent-strong:#7dd3cb; --accent-soft:#173634;
+    --ink:#eef1f4; --ink-soft:#aeb8c4; --ink-faint:#7c879888;
+    --paper:#0a0e14; --surface:#131922; --surface-alt:#1a212b;
+    --border:#28313d; --accent:#6f9bd1; --accent-strong:#9bc0e8; --accent-soft:#1b2938;
     --danger:#e8695a; --danger-soft:#3a1f1c;
     --st-none:#8f9aa3; --st-none-soft:#1c2529;
     --st-slate:#9a9df0; --st-slate-soft:#20223a;
@@ -53,7 +53,7 @@
     --st-blue:#6f9bf5; --st-blue-soft:#182b47;
     --st-violet:#bd85ea; --st-violet-soft:#2c1f3a;
     --st-green:#5cc98a; --st-green-soft:#153524;
-    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 20px rgba(0,0,0,.35);
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 16px rgba(0,0,0,.35);
   }
 
   *{box-sizing:border-box;}
