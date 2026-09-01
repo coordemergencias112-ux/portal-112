@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-01T07:04:57Z",
-  "data_timestamp": "2026-09-01T08:00:00",
+  "generated_at": "2026-09-01T07:22:18Z",
+  "data_timestamp": "2026-09-01T09:00:00",
   "rios": [
     {
       "estacion": "34",
@@ -22,7 +22,7 @@
       "nombre": "RÍO BENAMARGOSA (S. NEGRO) (MA)",
       "lat": 36.8471,
       "lon": -4.2047,
-      "nivel_rio": 0.04,
+      "nivel_rio": 0.03,
       "caudal": 0.04,
       "tendencia": "0",
       "aviso": 1.7,
@@ -97,9 +97,9 @@
       "nombre": "RÍO GUADALHORCE (ARCHIDONA) (MA)",
       "lat": 37.0821,
       "lon": -4.4554,
-      "nivel_rio": 0.19,
-      "caudal": 0.52,
-      "tendencia": "0",
+      "nivel_rio": 0.31,
+      "caudal": 0.21,
+      "tendencia": "2",
       "aviso": 2.0,
       "prealerta": 3.0,
       "alerta": 5.0,
@@ -173,7 +173,7 @@
       "lat": 36.8867,
       "lon": -4.8492,
       "nivel_rio": 0.09,
-      "caudal": 0.09,
+      "caudal": 0.1,
       "tendencia": "0",
       "aviso": 1.5,
       "prealerta": 2.0,
@@ -200,23 +200,23 @@
       "lon": -4.49513,
       "volumen": 7.51,
       "porcentaje": 34.6,
-      "nivel": 136.9
+      "nivel": 136.89
     },
     {
       "estacion": "16",
       "nombre": "EMBALSE DE LA CONCEPCIÓN (MA)",
       "lat": 36.53643,
       "lon": -4.95889,
-      "volumen": 35.78,
+      "volumen": 35.76,
       "porcentaje": 62.2,
-      "nivel": 93.12
+      "nivel": 93.1
     },
     {
       "estacion": "37",
       "nombre": "EMBALSE DE LA VIÑUELA (MA)",
       "lat": 36.86071,
       "lon": -4.1645,
-      "volumen": 142.38,
+      "volumen": 142.37,
       "porcentaje": 86.6,
       "nivel": 226.17
     },
@@ -234,7 +234,7 @@
       "nombre": "EMBALSE DEL GUADALTEBA (MA)",
       "lat": 36.94159,
       "lon": -4.79908,
-      "volumen": 143.79,
+      "volumen": 143.81,
       "porcentaje": 93.8,
       "nivel": 361.0
     },
@@ -245,7 +245,7 @@
       "lon": -4.42918,
       "volumen": 14.49,
       "porcentaje": 100.0,
-      "nivel": 95.18
+      "nivel": 95.17
     }
   ],
   "lluvia": [
