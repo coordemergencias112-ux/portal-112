@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-02T09:05:54Z",
-  "data_timestamp": "2026-09-02T10:00:00",
+  "generated_at": "2026-09-02T09:24:41Z",
+  "data_timestamp": "2026-09-02T11:00:00",
   "rios": [
     {
       "estacion": "34",
@@ -68,7 +68,7 @@
       "lat": 36.7014,
       "lon": -4.8813,
       "nivel_rio": 0.2,
-      "caudal": 0.56,
+      "caudal": 0.55,
       "tendencia": "0",
       "aviso": 1.0,
       "prealerta": 1.5,
@@ -97,8 +97,8 @@
       "nombre": "RÍO GUADALHORCE (ARCHIDONA) (MA)",
       "lat": 37.0821,
       "lon": -4.4554,
-      "nivel_rio": 0.17,
-      "caudal": 0.07,
+      "nivel_rio": 0.22,
+      "caudal": 0.17,
       "tendencia": "0",
       "aviso": 2.0,
       "prealerta": 3.0,
@@ -127,9 +127,9 @@
       "nombre": "RÍO GUADALHORCE (CÁRTAMA) (MA)",
       "lat": 36.7293,
       "lon": -4.6136,
-      "nivel_rio": 0.05,
-      "caudal": 0.0,
-      "tendencia": "0",
+      "nivel_rio": 0.11,
+      "caudal": 0.14,
+      "tendencia": "1",
       "aviso": 2.5,
       "prealerta": 3.5,
       "alerta": 4.5,
@@ -143,7 +143,7 @@
       "lat": 36.9315,
       "lon": -4.9284,
       "nivel_rio": 0.12,
-      "caudal": 0.41,
+      "caudal": 0.42,
       "tendencia": "0",
       "aviso": 1.5,
       "prealerta": 2.0,
@@ -173,7 +173,7 @@
       "lat": 36.8867,
       "lon": -4.8492,
       "nivel_rio": 0.09,
-      "caudal": 0.11,
+      "caudal": 0.1,
       "tendencia": "0",
       "aviso": 1.5,
       "prealerta": 2.0,
@@ -198,8 +198,8 @@
       "nombre": "EMBALSE DE CASASOLA (MA)",
       "lat": 36.8062,
       "lon": -4.49513,
-      "volumen": 7.48,
-      "porcentaje": 34.4,
+      "volumen": 7.49,
+      "porcentaje": 34.5,
       "nivel": 136.85
     },
     {
@@ -207,9 +207,9 @@
       "nombre": "EMBALSE DE LA CONCEPCIÓN (MA)",
       "lat": 36.53643,
       "lon": -4.95889,
-      "volumen": 35.54,
-      "porcentaje": 61.8,
-      "nivel": 92.96
+      "volumen": 35.51,
+      "porcentaje": 61.7,
+      "nivel": 92.94
     },
     {
       "estacion": "37",
@@ -225,7 +225,7 @@
       "nombre": "EMBALSE DEL GUADALHORCE (MA)",
       "lat": 36.94401,
       "lon": -4.80277,
-      "volumen": 114.57,
+      "volumen": 114.51,
       "porcentaje": 91.1,
       "nivel": 360.64
     },
@@ -249,6 +249,22 @@
     }
   ],
   "lluvia": [
+    {
+      "estacion": "105",
+      "nombre": "LAS GOLONDRINAS (MA)",
+      "lat": 36.6543,
+      "lon": -4.92958,
+      "precip": 0.2,
+      "precipacum": 0.0,
+      "estado": "amarillo",
+      "info": {},
+      "ultima_hora": 0.2,
+      "hora_anterior": 0.0,
+      "acum_12h": 0.0,
+      "acum_24h": 0.0,
+      "acum_hoy": 0.0,
+      "acum_ayer": 0.0
+    },
     {
       "estacion": "36",
       "nombre": "ALCAUCÍN (MA)",
@@ -638,22 +654,6 @@
       "nombre": "LAGUNA DE FUENTE PIEDRA (MA)",
       "lat": 37.1342,
       "lon": -4.72753,
-      "precip": 0.0,
-      "precipacum": 0.0,
-      "estado": "verde",
-      "info": {},
-      "ultima_hora": 0.0,
-      "hora_anterior": null,
-      "acum_12h": null,
-      "acum_24h": null,
-      "acum_hoy": 0.0,
-      "acum_ayer": null
-    },
-    {
-      "estacion": "105",
-      "nombre": "LAS GOLONDRINAS (MA)",
-      "lat": 36.6543,
-      "lon": -4.92958,
       "precip": 0.0,
       "precipacum": 0.0,
       "estado": "verde",
