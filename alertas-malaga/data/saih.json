@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-02T17:02:15Z",
-  "data_timestamp": "2026-09-02T18:00:00",
+  "generated_at": "2026-09-02T17:18:43Z",
+  "data_timestamp": "2026-09-02T19:00:00",
   "rios": [
     {
       "estacion": "34",
@@ -52,8 +52,8 @@
       "nombre": "RÍO GENAL (JUBRIQUE) (MA)",
       "lat": 36.5672,
       "lon": -5.2463,
-      "nivel_rio": 0.11,
-      "caudal": 0.63,
+      "nivel_rio": 0.1,
+      "caudal": 0.61,
       "tendencia": "0",
       "aviso": 1.1,
       "prealerta": 1.6,
@@ -97,9 +97,9 @@
       "nombre": "RÍO GUADALHORCE (ARCHIDONA) (MA)",
       "lat": 37.0821,
       "lon": -4.4554,
-      "nivel_rio": 0.19,
-      "caudal": 0.02,
-      "tendencia": "0",
+      "nivel_rio": 0.16,
+      "caudal": 0.23,
+      "tendencia": "1",
       "aviso": 2.0,
       "prealerta": 3.0,
       "alerta": 5.0,
@@ -127,8 +127,8 @@
       "nombre": "RÍO GUADALHORCE (CÁRTAMA) (MA)",
       "lat": 36.7293,
       "lon": -4.6136,
-      "nivel_rio": 0.03,
-      "caudal": 0.0,
+      "nivel_rio": 0.13,
+      "caudal": 0.03,
       "tendencia": "0",
       "aviso": 2.5,
       "prealerta": 3.5,
@@ -158,7 +158,7 @@
       "lat": 36.5797,
       "lon": -5.3374,
       "nivel_rio": 0.15,
-      "caudal": 0.42,
+      "caudal": 0.43,
       "tendencia": "0",
       "aviso": 2.0,
       "prealerta": 3.0,
@@ -207,9 +207,9 @@
       "nombre": "EMBALSE DE LA CONCEPCIÓN (MA)",
       "lat": 36.53643,
       "lon": -4.95889,
-      "volumen": 35.46,
+      "volumen": 35.44,
       "porcentaje": 61.6,
-      "nivel": 92.91
+      "nivel": 92.9
     },
     {
       "estacion": "37",
@@ -225,16 +225,16 @@
       "nombre": "EMBALSE DEL GUADALHORCE (MA)",
       "lat": 36.94401,
       "lon": -4.80277,
-      "volumen": 114.32,
+      "volumen": 114.28,
       "porcentaje": 90.9,
-      "nivel": 360.61
+      "nivel": 360.6
     },
     {
       "estacion": "29",
       "nombre": "EMBALSE DEL GUADALTEBA (MA)",
       "lat": 36.94159,
       "lon": -4.79908,
-      "volumen": 143.77,
+      "volumen": 143.76,
       "porcentaje": 93.8,
       "nivel": 361.0
     },
