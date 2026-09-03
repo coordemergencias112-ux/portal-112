@@ -55,6 +55,23 @@
   .doc-cat.protegido{ color:var(--warn); background:var(--warn-soft); }
   .doc-desc{ color:var(--ink-soft); font-size:.84rem; line-height:1.45; margin:10px 0 14px; }
   .doc-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+  .doc-grupo-row{
+    display:flex; gap:12px; overflow-x:auto; padding-bottom:2px; margin-top:2px;
+  }
+  .doc-mini{
+    flex:1 1 0; min-width:150px; max-width:220px; display:flex; flex-direction:column; gap:7px;
+  }
+  .doc-mini-img-link{ display:block; border-radius:var(--radius-sm); overflow:hidden; border:1px solid var(--border); background:var(--surface-alt); }
+  .doc-mini-img{ display:block; width:100%; aspect-ratio:900/637; object-fit:cover; }
+  .doc-mini-img-link:hover{ border-color:var(--accent); }
+  .doc-mini-titulo{ font-weight:700; font-size:.82rem; }
+  .doc-mini-actions{ display:flex; gap:6px; }
+  .btn-mini{
+    flex:1; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--surface-alt);
+    color:var(--ink); font-weight:600; font-size:.72rem; padding:6px 7px; cursor:pointer;
+    text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:4px;
+  }
+  .btn-mini:hover{ border-color:var(--accent); }
   .btn{
     border-radius:var(--radius-md); border:1px solid var(--border); background:var(--surface-alt);
     color:var(--ink); font-weight:600; font-size:.84rem; padding:9px 15px; cursor:pointer;
@@ -165,6 +182,18 @@
       categoria: "Referencia",
       archivo: "archivos/PTEL_Homologados_Malaga_23-03-2026.pdf",
       icono: "🧭"
+    },
+    {
+      tipo: "grupo",
+      titulo: "Modelos de Disposición PMA",
+      descripcion: "Tres plantillas con la distribución de zonas del Puesto de Mando Avanzado (comité de operaciones, control de accesos, entidades activadas...) para elegir según la emergencia. Formato póster — cada una pesa varios MB.",
+      categoria: "Plantilla operativa",
+      icono: "🗺️",
+      items: [
+        { titulo: "Modelo 1", archivo: "archivos/Modelo_PMA_Malaga_1.pdf", miniatura: "archivos/miniaturas/modelo_pma_1.png" },
+        { titulo: "Modelo 2", archivo: "archivos/Modelo_PMA_Malaga_2.pdf", miniatura: "archivos/miniaturas/modelo_pma_2.png" },
+        { titulo: "Modelo 3", archivo: "archivos/Modelo_PMA_Malaga_3.pdf", miniatura: "archivos/miniaturas/modelo_pma_3.png" }
+      ]
     }
   ];
 
@@ -288,28 +317,58 @@
     window.open("https://wa.me/?text=" + encodeURIComponent(texto + " — " + url), "_blank", "noopener");
   }
 
+  function textoBusqueda(d){
+    var extra = d.tipo === "grupo" ? d.items.map(function(it){ return it.titulo; }).join(" ") : "";
+    return (d.titulo + " " + d.descripcion + " " + d.categoria + " " + extra).toLowerCase();
+  }
+
+  function renderDocGrupo(d){
+    var minis = d.items.map(function(it){
+      return '<div class="doc-mini">' +
+        '<a class="doc-mini-img-link" href="' + esc(it.archivo) + '" target="_blank" rel="noopener">' +
+          '<img class="doc-mini-img" src="' + esc(it.miniatura) + '" alt="' + esc(it.titulo) + '" loading="lazy">' +
+        '</a>' +
+        '<div class="doc-mini-titulo">' + esc(it.titulo) + '</div>' +
+        '<div class="doc-mini-actions">' +
+          '<a class="btn-mini" href="' + esc(it.archivo) + '" target="_blank" rel="noopener">📄 Abrir</a>' +
+          '<button type="button" class="btn-mini" data-compartir="' + esc(it.archivo) + '" data-titulo="' + esc(d.titulo) + ' — ' + esc(it.titulo) + '">📤</button>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+    return '<div class="doc-card">' +
+      '<div class="doc-top"><span class="doc-icon">' + d.icono + '</span>' +
+      '<div><div class="doc-titulo">' + esc(d.titulo) + '</div><span class="doc-cat">' + esc(d.categoria) + '</span></div></div>' +
+      '<p class="doc-desc">' + esc(d.descripcion) + '</p>' +
+      '<div class="doc-grupo-row">' + minis + '</div>' +
+    '</div>';
+  }
+
+  function renderDocSimple(d){
+    return '<div class="doc-card">' +
+      '<div class="doc-top"><span class="doc-icon">' + d.icono + '</span>' +
+      '<div><div class="doc-titulo">' + esc(d.titulo) + '</div><span class="doc-cat' + (d.protegido ? ' protegido' : '') + '">' + esc(d.categoria) + '</span></div></div>' +
+      '<p class="doc-desc">' + esc(d.descripcion) + '</p>' +
+      '<div class="doc-actions">' +
+        '<a class="btn btn-primary" href="' + esc(d.archivo) + '" target="_blank" rel="noopener">📄 Abrir</a>' +
+        '<a class="btn" href="' + esc(d.archivo) + '" download>⬇ Descargar</a>' +
+        '<button type="button" class="btn" data-compartir="' + esc(d.archivo) + '" data-titulo="' + esc(d.titulo) + '">📤 Compartir</button>' +
+      '</div>' +
+    '</div>';
+  }
+
   function render(filtro){
     var lista = document.getElementById("lista");
     var f = (filtro || "").trim().toLowerCase();
     var items = DOCUMENTOS.filter(function(d){
       if (!f) return true;
-      return (d.titulo + " " + d.descripcion + " " + d.categoria).toLowerCase().indexOf(f) !== -1;
+      return textoBusqueda(d).indexOf(f) !== -1;
     });
     if (!items.length) {
       lista.innerHTML = '<div class="empty">Sin documentos que coincidan con la búsqueda.</div>';
       return;
     }
     lista.innerHTML = items.map(function(d){
-      return '<div class="doc-card">' +
-        '<div class="doc-top"><span class="doc-icon">' + d.icono + '</span>' +
-        '<div><div class="doc-titulo">' + esc(d.titulo) + '</div><span class="doc-cat' + (d.protegido ? ' protegido' : '') + '">' + esc(d.categoria) + '</span></div></div>' +
-        '<p class="doc-desc">' + esc(d.descripcion) + '</p>' +
-        '<div class="doc-actions">' +
-          '<a class="btn btn-primary" href="' + esc(d.archivo) + '" target="_blank" rel="noopener">📄 Abrir</a>' +
-          '<a class="btn" href="' + esc(d.archivo) + '" download>⬇ Descargar</a>' +
-          '<button type="button" class="btn" data-compartir="' + esc(d.archivo) + '" data-titulo="' + esc(d.titulo) + '">📤 Compartir</button>' +
-        '</div>' +
-      '</div>';
+      return d.tipo === "grupo" ? renderDocGrupo(d) : renderDocSimple(d);
     }).join("");
   }
 
