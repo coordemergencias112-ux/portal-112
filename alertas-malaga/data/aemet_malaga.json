@@ -1,11 +1,21 @@
 {
-  "generated_at": "2026-09-04T06:41:44Z",
+  "generated_at": "2026-09-04T07:02:21Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
       "tipo": "interior",
       "nivel": "verde",
-      "avisos": []
+      "avisos": [
+        {
+          "fenomeno": "Temperaturas máximas",
+          "nivel": "amarillo",
+          "evento": "Aviso de temperaturas máximas de nivel amarillo",
+          "severidad": "Moderate",
+          "desde": "2026-09-04T13:00:00+02:00",
+          "hasta": "2026-09-04T20:59:59+02:00",
+          "estado_tiempo": "proximo"
+        }
+      ]
     },
     "612902": {
       "nombre": "Ronda",
@@ -300,8 +310,40 @@
       "id": "29084",
       "nombre": "Ronda",
       "referencia": "Interior / Serranía",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-09-03",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "S",
+          "tempMax": 37,
+          "tempMin": 23
+        },
+        {
+          "fecha": "2026-09-04",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "NO",
+          "tempMax": 36,
+          "tempMin": 23
+        },
+        {
+          "fecha": "2026-09-05",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 25,
+          "vientoDireccion": "SE",
+          "tempMax": 34,
+          "tempMin": 24
+        },
+        {
+          "fecha": "2026-09-06",
+          "probPrecipitacion": 5,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "SE",
+          "tempMax": 35,
+          "tempMin": 22
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 0,
@@ -1807,5 +1849,13 @@
       ]
     }
   ],
-  "historial": []
+  "historial": [
+    {
+      "zona": "Antequera",
+      "fenomeno": "Temperaturas máximas",
+      "nivel": "amarillo",
+      "desde": "2026-09-04T13:00:00+02:00",
+      "hasta": "2026-09-04T20:59:59+02:00"
+    }
+  ]
 }
