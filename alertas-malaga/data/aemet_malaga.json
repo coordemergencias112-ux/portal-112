@@ -1,21 +1,11 @@
 {
-  "generated_at": "2026-09-04T18:41:43Z",
+  "generated_at": "2026-09-04T19:02:23Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
       "tipo": "interior",
-      "nivel": "amarillo",
-      "avisos": [
-        {
-          "fenomeno": "Temperaturas máximas",
-          "nivel": "amarillo",
-          "evento": "Aviso de temperaturas máximas de nivel amarillo",
-          "severidad": "Moderate",
-          "desde": "2026-09-04T13:00:00+02:00",
-          "hasta": "2026-09-04T20:59:59+02:00",
-          "estado_tiempo": "activo"
-        }
-      ]
+      "nivel": "verde",
+      "avisos": []
     },
     "612902": {
       "nombre": "Ronda",
@@ -423,8 +413,40 @@
       "id": "29015",
       "nombre": "Antequera",
       "referencia": "Comarca de Antequera",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-09-04",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 20,
+          "vientoDireccion": "S",
+          "tempMax": 38,
+          "tempMin": 22
+        },
+        {
+          "fecha": "2026-09-05",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 40,
+          "vientoDireccion": "S",
+          "tempMax": 35,
+          "tempMin": 22
+        },
+        {
+          "fecha": "2026-09-06",
+          "probPrecipitacion": 15,
+          "vientoVelocidad": 40,
+          "vientoDireccion": "S",
+          "tempMax": 34,
+          "tempMin": 20
+        },
+        {
+          "fecha": "2026-09-07",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "S",
+          "tempMax": 37,
+          "tempMin": 22
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 8,
