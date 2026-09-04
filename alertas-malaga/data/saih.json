@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-04T18:02:31Z",
-  "data_timestamp": "2026-09-04T19:00:00",
+  "generated_at": "2026-09-04T18:21:43Z",
+  "data_timestamp": "2026-09-04T20:00:00",
   "rios": [
     {
       "estacion": "34",
@@ -8,7 +8,7 @@
       "lat": 36.8602,
       "lon": -4.7172,
       "nivel_rio": 0.6,
-      "caudal": 1.95,
+      "caudal": 1.94,
       "tendencia": "0",
       "aviso": 3.0,
       "prealerta": 4.0,
@@ -22,7 +22,7 @@
       "nombre": "RÍO BENAMARGOSA (S. NEGRO) (MA)",
       "lat": 36.8471,
       "lon": -4.2047,
-      "nivel_rio": 0.02,
+      "nivel_rio": 0.03,
       "caudal": 0.02,
       "tendencia": "0",
       "aviso": 1.7,
@@ -53,7 +53,7 @@
       "lat": 36.5672,
       "lon": -5.2463,
       "nivel_rio": 0.11,
-      "caudal": 0.58,
+      "caudal": 0.68,
       "tendencia": "0",
       "aviso": 1.1,
       "prealerta": 1.6,
@@ -97,9 +97,9 @@
       "nombre": "RÍO GUADALHORCE (ARCHIDONA) (MA)",
       "lat": 37.0821,
       "lon": -4.4554,
-      "nivel_rio": 0.18,
-      "caudal": 0.0,
-      "tendencia": "0",
+      "nivel_rio": 0.1,
+      "caudal": 0.2,
+      "tendencia": "1",
       "aviso": 2.0,
       "prealerta": 3.0,
       "alerta": 5.0,
@@ -113,7 +113,7 @@
       "lat": 37.0401,
       "lon": -4.6958,
       "nivel_rio": 0.06,
-      "caudal": 0.06,
+      "caudal": 0.07,
       "tendencia": "0",
       "aviso": 2.5,
       "prealerta": 3.0,
@@ -143,7 +143,7 @@
       "lat": 36.9315,
       "lon": -4.9284,
       "nivel_rio": 0.11,
-      "caudal": 0.37,
+      "caudal": 0.36,
       "tendencia": "0",
       "aviso": 1.5,
       "prealerta": 2.0,
@@ -158,7 +158,7 @@
       "lat": 36.5797,
       "lon": -5.3374,
       "nivel_rio": 0.15,
-      "caudal": 0.4,
+      "caudal": 0.41,
       "tendencia": "0",
       "aviso": 2.0,
       "prealerta": 3.0,
@@ -198,18 +198,18 @@
       "nombre": "EMBALSE DE CASASOLA (MA)",
       "lat": 36.8062,
       "lon": -4.49513,
-      "volumen": 7.42,
-      "porcentaje": 34.2,
-      "nivel": 136.74
+      "volumen": 7.41,
+      "porcentaje": 34.1,
+      "nivel": 136.73
     },
     {
       "estacion": "16",
       "nombre": "EMBALSE DE LA CONCEPCIÓN (MA)",
       "lat": 36.53643,
       "lon": -4.95889,
-      "volumen": 35.07,
-      "porcentaje": 61.0,
-      "nivel": 92.66
+      "volumen": 35.05,
+      "porcentaje": 60.9,
+      "nivel": 92.65
     },
     {
       "estacion": "37",
@@ -245,7 +245,7 @@
       "lon": -4.42918,
       "volumen": 14.41,
       "porcentaje": 100.0,
-      "nivel": 95.08
+      "nivel": 95.07
     }
   ],
   "lluvia": [
