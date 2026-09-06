@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-06T05:21:45Z",
+  "generated_at": "2026-09-06T05:41:46Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -310,40 +310,8 @@
       "id": "29084",
       "nombre": "Ronda",
       "referencia": "Interior / Serranía",
-      "dias": [
-        {
-          "fecha": "2026-09-05",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 25,
-          "vientoDireccion": "SE",
-          "tempMax": 33,
-          "tempMin": 23
-        },
-        {
-          "fecha": "2026-09-06",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 25,
-          "vientoDireccion": "SE",
-          "tempMax": 35,
-          "tempMin": 22
-        },
-        {
-          "fecha": "2026-09-07",
-          "probPrecipitacion": 5,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "SO",
-          "tempMax": 37,
-          "tempMin": 22
-        },
-        {
-          "fecha": "2026-09-08",
-          "probPrecipitacion": 5,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "O",
-          "tempMax": 35,
-          "tempMin": 23
-        }
-      ],
+      "error": "HTTP Error 500: Internal Server Error",
+      "dias": [],
       "horas_hoy": [
         {
           "hora": 0,
@@ -567,8 +535,40 @@
       "id": "29015",
       "nombre": "Antequera",
       "referencia": "Comarca de Antequera",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-09-05",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 40,
+          "vientoDireccion": "S",
+          "tempMax": 35,
+          "tempMin": 22
+        },
+        {
+          "fecha": "2026-09-06",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 40,
+          "vientoDireccion": "S",
+          "tempMax": 34,
+          "tempMin": 20
+        },
+        {
+          "fecha": "2026-09-07",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 25,
+          "vientoDireccion": "S",
+          "tempMax": 38,
+          "tempMin": 22
+        },
+        {
+          "fecha": "2026-09-08",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "NO",
+          "tempMax": 38,
+          "tempMin": 23
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 0,
@@ -1312,7 +1312,7 @@
           "probPrecipitacion": 0,
           "vientoVelocidad": 10,
           "vientoDireccion": "S",
-          "tempMax": 33,
+          "tempMax": 34,
           "tempMin": 22
         },
         {
