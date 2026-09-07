@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T15:47:11Z",
+  "generated_at": "2026-09-07T16:02:11Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -53,8 +53,40 @@
       "id": "29067",
       "nombre": "Málaga capital",
       "referencia": "Costa",
-      "error": "0",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-09-07",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "S",
+          "tempMax": 32,
+          "tempMin": 22
+        },
+        {
+          "fecha": "2026-09-08",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "SE",
+          "tempMax": 33,
+          "tempMin": 24
+        },
+        {
+          "fecha": "2026-09-09",
+          "probPrecipitacion": 45,
+          "vientoVelocidad": 20,
+          "vientoDireccion": "O",
+          "tempMax": 35,
+          "tempMin": 23
+        },
+        {
+          "fecha": "2026-09-10",
+          "probPrecipitacion": 90,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "SE",
+          "tempMax": 28,
+          "tempMin": 21
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 8,
@@ -206,8 +238,40 @@
       "id": "29084",
       "nombre": "Ronda",
       "referencia": "Interior / Serranía",
-      "error": "0",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-09-07",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "S",
+          "tempMax": 37,
+          "tempMin": 22
+        },
+        {
+          "fecha": "2026-09-08",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 20,
+          "vientoDireccion": "NO",
+          "tempMax": 35,
+          "tempMin": 23
+        },
+        {
+          "fecha": "2026-09-09",
+          "probPrecipitacion": 40,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "NO",
+          "tempMax": 30,
+          "tempMin": 19
+        },
+        {
+          "fecha": "2026-09-10",
+          "probPrecipitacion": 95,
+          "vientoVelocidad": 5,
+          "vientoDireccion": "NE",
+          "tempMax": 28,
+          "tempMin": 18
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 8,
