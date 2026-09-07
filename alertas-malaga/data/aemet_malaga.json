@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T23:02:26Z",
+  "generated_at": "2026-09-07T23:21:47Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -120,41 +120,46 @@
       "id": "29084",
       "nombre": "Ronda",
       "referencia": "Interior / Serranía",
-      "dias": [
+      "error": "HTTP Error 500: Internal Server Error",
+      "dias": [],
+      "horas_hoy": [
         {
-          "fecha": "2026-09-07",
+          "hora": 20,
+          "temp": null,
+          "precip": 0,
           "probPrecipitacion": 0,
+          "estadoCielo": "11",
+          "vientoVelocidad": null,
+          "vientoDireccion": null
+        },
+        {
+          "hora": 21,
+          "temp": 30,
+          "precip": 0,
+          "probPrecipitacion": 0,
+          "estadoCielo": "11n",
           "vientoVelocidad": 10,
-          "vientoDireccion": "S",
-          "tempMax": 37,
-          "tempMin": 22
+          "vientoDireccion": "S"
         },
         {
-          "fecha": "2026-09-08",
+          "hora": 22,
+          "temp": 28,
+          "precip": 0,
           "probPrecipitacion": 0,
-          "vientoVelocidad": 20,
-          "vientoDireccion": "NO",
-          "tempMax": 35,
-          "tempMin": 23
-        },
-        {
-          "fecha": "2026-09-09",
-          "probPrecipitacion": 40,
-          "vientoVelocidad": 20,
-          "vientoDireccion": "NO",
-          "tempMax": 30,
-          "tempMin": 19
-        },
-        {
-          "fecha": "2026-09-10",
-          "probPrecipitacion": 100,
+          "estadoCielo": "11n",
           "vientoVelocidad": 5,
-          "vientoDireccion": "N",
-          "tempMax": 29,
-          "tempMin": 17
+          "vientoDireccion": "SE"
+        },
+        {
+          "hora": 23,
+          "temp": 26,
+          "precip": 0,
+          "probPrecipitacion": 0,
+          "estadoCielo": "11n",
+          "vientoVelocidad": 5,
+          "vientoDireccion": "S"
         }
-      ],
-      "horas_hoy": []
+      ]
     },
     {
       "id": "29015",
