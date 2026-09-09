@@ -165,8 +165,33 @@
     var password = (fd.get('password') || '').toString();
     var btn = e.target.querySelector('button[type=submit]');
     btn.disabled = true; btn.textContent = 'Entrando…';
-    window.PortalSync.login(email, password).catch(function(){
-      errEl.textContent = 'Email o contraseña incorrectos.';
+
+    // Red de seguridad: si la petición a Firebase se queda colgada (red
+    // corporativa que bloquea la conexión en silencio, en vez de rechazarla
+    // con un error) no se puede dejar el botón en "Entrando…" para siempre.
+    var resuelto = false;
+    var loginTimeout = setTimeout(function(){
+      if (resuelto) return;
+      resuelto = true;
+      errEl.textContent = 'La conexión está tardando demasiado. Comprueba tu red e inténtalo de nuevo.';
+      btn.disabled = false; btn.textContent = 'Entrar';
+    }, 12000);
+
+    window.PortalSync.login(email, password).then(function(){
+      if (resuelto) return; // el timeout ya actuó, ignorar éxito tardío
+      resuelto = true;
+      clearTimeout(loginTimeout);
+      // onAuthStateChanged ya se encarga de mostrar la app; esto es solo
+      // una segunda vía por si esa notificación no llegara.
+      mostrarApp();
+    }).catch(function(err){
+      if (resuelto) return;
+      resuelto = true;
+      clearTimeout(loginTimeout);
+      console.error('Portal 112 — error de acceso:', err && err.code, err);
+      errEl.textContent = (err && err.code === 'auth/network-request-failed')
+        ? 'No se pudo conectar — comprueba tu conexión a internet.'
+        : 'Email o contraseña incorrectos.';
       btn.disabled = false; btn.textContent = 'Entrar';
     });
   });
