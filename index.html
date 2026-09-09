@@ -6,13 +6,11 @@
 <title>Portal 112</title>
 <meta name="theme-color" content="#16304f">
 <link rel="manifest" href="manifest.webmanifest">
-<script type="module" src="shared/firebase-sync.js"></script>
 <style>
   :root{
     --ink:#101828; --ink-soft:#475467; --ink-faint:#8a94a3;
     --paper:#f4f6f8; --surface:#ffffff; --surface-alt:#eef1f4;
     --border:#d3d9e0; --accent:#2a4a73; --accent-strong:#16304f; --accent-soft:#e2e9f2;
-    --danger:#c8402f;
     --shadow: 0 1px 2px rgba(16,24,32,.05), 0 4px 12px rgba(16,24,32,.06);
     --radius-lg:14px; --radius-md:10px;
     --font-ui: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -22,41 +20,9 @@
       --ink:#eef1f4; --ink-soft:#aeb8c4; --ink-faint:#7c8798;
       --paper:#0a0e14; --surface:#131922; --surface-alt:#1a212b;
       --border:#28313d; --accent:#6f9bd1; --accent-strong:#9bc0e8; --accent-soft:#1b2938;
-      --danger:#e8695a;
       --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 16px rgba(0,0,0,.35);
     }
   }
-  .oculto{ display:none; }
-  .login-gate{
-    position:fixed; inset:0; background:var(--paper); display:flex; align-items:center;
-    justify-content:center; padding:20px; z-index:10;
-  }
-  .login-card{
-    width:100%; max-width:340px; background:var(--surface); border:1px solid var(--border);
-    border-radius:var(--radius-lg); box-shadow:var(--shadow); padding:28px 24px;
-  }
-  .login-card h1{ font-size:1.25rem; margin:0 0 4px; text-align:center; }
-  .login-card > p{ margin:0 0 18px; color:var(--ink-soft); font-size:.85rem; text-align:center; }
-  .login-field{ margin-bottom:12px; display:flex; flex-direction:column; gap:5px; }
-  .login-field label{ font-size:.72rem; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; }
-  .login-field input{
-    border:1px solid var(--border); border-radius:var(--radius-md); padding:10px 12px; font-size:.9rem;
-    background:var(--surface-alt); color:var(--ink); width:100%; font-family:inherit;
-  }
-  .login-error{ color:var(--danger); font-size:.8rem; min-height:1.1em; margin:0 0 6px; text-align:center; }
-  .login-hint{ color:var(--ink-faint); font-size:.75rem; margin:12px 0 0; text-align:center; }
-  .btn-login{
-    width:100%; padding:11px; border:none; border-radius:var(--radius-md); background:var(--accent);
-    color:#fff; font-weight:700; font-size:.9rem; cursor:pointer; font-family:inherit;
-  }
-  .btn-login:hover{ background:var(--accent-strong); }
-  .btn-login:disabled{ opacity:.6; cursor:default; }
-  .top-bar{ width:100%; max-width:720px; display:flex; justify-content:flex-end; margin-bottom:-14px; }
-  .btn-logout{
-    border:1px solid var(--border); background:var(--surface); color:var(--ink-soft); font-size:.76rem;
-    font-weight:600; padding:6px 12px; border-radius:999px; cursor:pointer; font-family:inherit;
-  }
-  .btn-logout:hover{ border-color:var(--accent); color:var(--ink); }
   *{box-sizing:border-box}
   body{
     margin:0; min-height:100dvh; background:var(--paper); color:var(--ink);
@@ -90,116 +56,16 @@
 </style>
 </head>
 <body>
-  <div class="login-gate" id="loginGate">
-    <div class="login-card">
-      <h1>🔒 Portal 112</h1>
-      <p>Inicia sesión para continuar.</p>
-      <form id="fLogin">
-        <div class="login-field"><label>Email</label><input type="email" name="email" required autocomplete="username" autofocus></div>
-        <div class="login-field"><label>Contraseña</label><input type="password" name="password" required autocomplete="current-password"></div>
-        <p class="login-error" id="loginError"></p>
-        <button type="submit" class="btn-login">Entrar</button>
-      </form>
-      <p class="login-hint" id="loginHint"></p>
-    </div>
-  </div>
+  <header>
+    <h1>Portal 112</h1>
+    <p>Selecciona un módulo</p>
+  </header>
 
-  <div id="app" class="oculto">
-    <div class="top-bar"><button type="button" class="btn-logout" id="btnLogout">⎋ Cerrar sesión</button></div>
-    <header>
-      <h1>Portal 112</h1>
-      <p>Selecciona un módulo</p>
-    </header>
+  <nav class="grid" id="grid"></nav>
 
-    <nav class="grid" id="grid"></nav>
-
-    <footer>Coordinación de Emergencias 112</footer>
-  </div>
+  <footer>Coordinación de Emergencias 112</footer>
 
 <script>
-(function(){
-  "use strict";
-
-  // ---------- Acceso con email/contraseña (Firebase, misma cuenta que Turnos/Mi Panel) ----------
-  // Importante: esto es una pantalla de acceso, no una medida de seguridad real — el Portal
-  // sigue siendo un sitio estático público, así que cualquiera con el enlace directo a un
-  // módulo concreto (o mirando el código fuente) puede llegar a él igualmente. Lo que de
-  // verdad protege los datos sensibles (el cuadrante de guardia, el PDF con contraseña...)
-  // sigue siendo lo de siempre: reglas de Firebase y cifrado, no esta pantalla.
-  var authKnown = false;
-  var failOpenTimer = null;
-  var FAIL_OPEN_MS = 4000;
-
-  function mostrarApp(){
-    document.getElementById('loginGate').classList.add('oculto');
-    document.getElementById('app').classList.remove('oculto');
-  }
-  function mostrarLogin(){
-    document.getElementById('app').classList.add('oculto');
-    document.getElementById('loginGate').classList.remove('oculto');
-  }
-
-  window.onPortalAuthReady = function(user){
-    authKnown = true;
-    if (failOpenTimer) { clearTimeout(failOpenTimer); failOpenTimer = null; }
-    if (user) mostrarApp(); else mostrarLogin();
-  };
-
-  // Si Firebase no responde a tiempo (sin conexión, script bloqueado...) no se bloquea el
-  // acceso: esto es una herramienta de coordinación de emergencias y un fallo de red no
-  // puede dejarla inutilizable para quien la necesite.
-  failOpenTimer = setTimeout(function(){
-    if (!authKnown) {
-      document.getElementById('loginHint').textContent = '⚠️ No se pudo comprobar la sesión (sin conexión) — acceso temporal sin iniciar sesión.';
-      mostrarApp();
-    }
-  }, FAIL_OPEN_MS);
-
-  document.getElementById('fLogin').addEventListener('submit', function(e){
-    e.preventDefault();
-    var errEl = document.getElementById('loginError');
-    errEl.textContent = '';
-    if (!window.PortalSync) { errEl.textContent = 'No se pudo cargar la sincronización — revisa tu conexión y recarga.'; return; }
-    var fd = new FormData(e.target);
-    var email = (fd.get('email') || '').toString().trim();
-    var password = (fd.get('password') || '').toString();
-    var btn = e.target.querySelector('button[type=submit]');
-    btn.disabled = true; btn.textContent = 'Entrando…';
-
-    // Red de seguridad: si la petición a Firebase se queda colgada (red
-    // corporativa que bloquea la conexión en silencio, en vez de rechazarla
-    // con un error) no se puede dejar el botón en "Entrando…" para siempre.
-    var resuelto = false;
-    var loginTimeout = setTimeout(function(){
-      if (resuelto) return;
-      resuelto = true;
-      errEl.textContent = 'La conexión está tardando demasiado. Comprueba tu red e inténtalo de nuevo.';
-      btn.disabled = false; btn.textContent = 'Entrar';
-    }, 12000);
-
-    window.PortalSync.login(email, password).then(function(){
-      if (resuelto) return; // el timeout ya actuó, ignorar éxito tardío
-      resuelto = true;
-      clearTimeout(loginTimeout);
-      // onAuthStateChanged ya se encarga de mostrar la app; esto es solo
-      // una segunda vía por si esa notificación no llegara.
-      mostrarApp();
-    }).catch(function(err){
-      if (resuelto) return;
-      resuelto = true;
-      clearTimeout(loginTimeout);
-      console.error('Portal 112 — error de acceso:', err && err.code, err);
-      errEl.textContent = (err && err.code === 'auth/network-request-failed')
-        ? 'No se pudo conectar — comprueba tu conexión a internet.'
-        : 'Email o contraseña incorrectos.';
-      btn.disabled = false; btn.textContent = 'Entrar';
-    });
-  });
-
-  document.getElementById('btnLogout').addEventListener('click', function(){
-    if (window.PortalSync) window.PortalSync.logout();
-  });
-
   // Añadir módulos aquí según se vayan incorporando.
   var MODULOS = [
     {
@@ -273,7 +139,6 @@
       (m.external ? '<span class="badge-ext">↗ externo</span>' : '');
     grid.appendChild(a);
   });
-})();
 </script>
 </body>
 </html>
