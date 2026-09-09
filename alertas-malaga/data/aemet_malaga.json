@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-09T22:02:23Z",
+  "generated_at": "2026-09-09T22:21:48Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -120,40 +120,8 @@
       "id": "29084",
       "nombre": "Ronda",
       "referencia": "Interior / Serranía",
-      "dias": [
-        {
-          "fecha": "2026-09-09",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 20,
-          "vientoDireccion": "NO",
-          "tempMax": 30,
-          "tempMin": 20
-        },
-        {
-          "fecha": "2026-09-10",
-          "probPrecipitacion": 100,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "S",
-          "tempMax": 28,
-          "tempMin": 17
-        },
-        {
-          "fecha": "2026-09-11",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "SE",
-          "tempMax": 28,
-          "tempMin": 16
-        },
-        {
-          "fecha": "2026-09-12",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 20,
-          "vientoDireccion": "SE",
-          "tempMax": 28,
-          "tempMin": 17
-        }
-      ],
+      "error": "HTTP Error 500: Internal Server Error",
+      "dias": [],
       "horas_hoy": [
         {
           "hora": 20,
@@ -231,7 +199,44 @@
           "tempMin": 15
         }
       ],
-      "horas_hoy": []
+      "horas_hoy": [
+        {
+          "hora": 20,
+          "temp": null,
+          "precip": 0,
+          "probPrecipitacion": 20,
+          "estadoCielo": "16",
+          "vientoVelocidad": null,
+          "vientoDireccion": null
+        },
+        {
+          "hora": 21,
+          "temp": 25,
+          "precip": 0,
+          "probPrecipitacion": 20,
+          "estadoCielo": "11n",
+          "vientoVelocidad": 14,
+          "vientoDireccion": "NO"
+        },
+        {
+          "hora": 22,
+          "temp": 24,
+          "precip": 0,
+          "probPrecipitacion": 20,
+          "estadoCielo": "11n",
+          "vientoVelocidad": 19,
+          "vientoDireccion": "O"
+        },
+        {
+          "hora": 23,
+          "temp": 22,
+          "precip": 0,
+          "probPrecipitacion": 20,
+          "estadoCielo": "11n",
+          "vientoVelocidad": 11,
+          "vientoDireccion": "O"
+        }
+      ]
     },
     {
       "id": "29042",
