@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-10T06:02:16Z",
-  "data_timestamp": "2026-09-10T07:00:00",
+  "generated_at": "2026-09-10T06:22:13Z",
+  "data_timestamp": "2026-09-10T08:00:00",
   "rios": [
     {
       "estacion": "34",
@@ -97,9 +97,9 @@
       "nombre": "RÍO GUADALHORCE (ARCHIDONA) (MA)",
       "lat": 37.0821,
       "lon": -4.4554,
-      "nivel_rio": 0.24,
+      "nivel_rio": 0.14,
       "caudal": 0.43,
-      "tendencia": "0",
+      "tendencia": "1",
       "aviso": 2.0,
       "prealerta": 3.0,
       "alerta": 5.0,
@@ -249,6 +249,22 @@
     }
   ],
   "lluvia": [
+    {
+      "estacion": "6",
+      "nombre": "LOS REALES (MA)",
+      "lat": 36.48485,
+      "lon": -5.20811,
+      "precip": 0.1,
+      "precipacum": 0.0,
+      "estado": "amarillo",
+      "info": {},
+      "ultima_hora": 0.1,
+      "hora_anterior": 0.0,
+      "acum_12h": 0.0,
+      "acum_24h": 0.0,
+      "acum_hoy": 0.0,
+      "acum_ayer": 0.0
+    },
     {
       "estacion": "36",
       "nombre": "ALCAUCÍN (MA)",
@@ -654,22 +670,6 @@
       "nombre": "LAS GOLONDRINAS (MA)",
       "lat": 36.6543,
       "lon": -4.92958,
-      "precip": 0.0,
-      "precipacum": 0.0,
-      "estado": "verde",
-      "info": {},
-      "ultima_hora": 0.0,
-      "hora_anterior": null,
-      "acum_12h": null,
-      "acum_24h": null,
-      "acum_hoy": 0.0,
-      "acum_ayer": null
-    },
-    {
-      "estacion": "6",
-      "nombre": "LOS REALES (MA)",
-      "lat": 36.48485,
-      "lon": -5.20811,
       "precip": 0.0,
       "precipacum": 0.0,
       "estado": "verde",
