@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Agenda viaria · alta de datos</title>
+<meta name="theme-color" content="#16304f">
+<meta name="robots" content="noindex,nofollow">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script type="module" src="../shared/firebase-sync.js"></script>
+<style>
+  :root{
+    --ink:#101828; --ink-soft:#475467; --ink-faint:#8a94a3;
+    --paper:#f4f6f8; --surface:#ffffff; --surface-alt:#eef1f4;
+    --border:#d3d9e0; --accent:#2a4a73; --accent-strong:#16304f; --accent-soft:#e2e9f2;
+    --danger:#c8402f; --danger-soft:#f8e0db;
+    --ok:#1f9d55; --ok-soft:#dff5e6;
+    --warn:#c9820a; --warn-soft:#faedd0;
+    --shadow: 0 1px 2px rgba(16,24,32,.05), 0 4px 12px rgba(16,24,32,.06);
+    --radius-lg:14px; --radius-md:10px; --radius-sm:7px;
+    --font-ui: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#eef1f4; --ink-soft:#aeb8c4; --ink-faint:#7c8798;
+      --paper:#0a0e14; --surface:#131922; --surface-alt:#1a212b;
+      --border:#28313d; --accent:#6f9bd1; --accent-strong:#9bc0e8; --accent-soft:#1b2938;
+      --danger:#e8695a; --danger-soft:#3a1f1c;
+      --ok:#4bbf82; --ok-soft:#12331f;
+      --warn:#e3a83c; --warn-soft:#3a2c12;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 16px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--paper); color:var(--ink); font-family:var(--font-ui);
+    display:flex; flex-direction:column; min-height:100dvh;
+  }
+  header.top{
+    display:flex; align-items:center; gap:12px; padding:12px 18px;
+    background:var(--surface); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:20;
+  }
+  header.top a.back{ text-decoration:none; color:var(--ink-soft); font-size:1.2rem; }
+  header.top h1{ font-size:1.05rem; margin:0; letter-spacing:.01em; }
+  header.top .spacer{ flex:1; }
+  .chip{
+    font-size:.78rem; border:1px solid var(--border); background:var(--surface-alt);
+    border-radius:999px; padding:5px 12px; color:var(--ink-soft); cursor:pointer;
+  }
+  .chip.on{ color:var(--accent-strong); border-color:var(--accent); background:var(--accent-soft); }
+  main{ flex:1; display:grid; grid-template-columns:320px 1fr; gap:0; min-height:0; }
+  @media (max-width:900px){ main{ grid-template-columns:1fr; } }
+  aside{
+    border-right:1px solid var(--border); background:var(--surface); display:flex; flex-direction:column; min-height:0;
+  }
+  @media (max-width:900px){ aside{ border-right:none; border-bottom:1px solid var(--border); max-height:42vh; } }
+  aside .list-head{ padding:12px 14px; display:flex; gap:8px; align-items:center; }
+  aside input.search{
+    flex:1; padding:8px 10px; border:1px solid var(--border); border-radius:var(--radius-sm);
+    background:var(--paper); color:var(--ink); font-size:.85rem;
+  }
+  .btn{
+    border:1px solid var(--border); background:var(--surface); color:var(--ink);
+    border-radius:var(--radius-sm); padding:8px 12px; font-size:.85rem; cursor:pointer; font-family:inherit;
+  }
+  .btn:hover{ border-color:var(--accent); }
+  .btn-primary{ background:var(--accent-strong); border-color:var(--accent-strong); color:#fff; }
+  .btn-danger{ background:var(--danger); border-color:var(--danger); color:#fff; }
+  .btn-sm{ padding:5px 9px; font-size:.78rem; }
+  .evlist{ overflow:auto; flex:1; padding:4px 8px 16px; }
+  .evlist .group{ font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-faint); padding:12px 8px 4px; }
+  .evrow{
+    display:block; width:100%; text-align:left; border:1px solid transparent; background:transparent;
+    border-radius:var(--radius-sm); padding:9px 10px; cursor:pointer; color:inherit; font-family:inherit;
+  }
+  .evrow:hover{ background:var(--surface-alt); }
+  .evrow.sel{ background:var(--accent-soft); border-color:var(--accent); }
+  .evrow .t{ font-weight:600; font-size:.9rem; display:flex; gap:6px; align-items:center; }
+  .evrow .m{ font-size:.75rem; color:var(--ink-soft); margin-top:2px; }
+  .dot{ width:8px; height:8px; border-radius:50%; flex:none; }
+  .st-previsto{ background:#2f6fed; } .st-activo{ background:var(--warn); }
+  .st-finalizado{ background:var(--ink-faint); } .st-cancelado{ background:var(--danger); }
+  section.editor{ overflow:auto; padding:20px; }
+  .editor .empty{ color:var(--ink-faint); text-align:center; padding:60px 20px; }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width:620px){ .grid2{ grid-template-columns:1fr; } }
+  .field{ display:flex; flex-direction:column; gap:4px; margin-bottom:14px; }
+  .field label{ font-size:.78rem; color:var(--ink-soft); font-weight:600; }
+  .field input, .field select, .field textarea{
+    padding:9px 11px; border:1px solid var(--border); border-radius:var(--radius-sm);
+    background:var(--surface); color:var(--ink); font-size:.9rem; font-family:inherit;
+  }
+  .field textarea{ min-height:70px; resize:vertical; }
+  h2.sec{ font-size:.95rem; margin:24px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+  #map{ height:340px; border:1px solid var(--border); border-radius:var(--radius-md); margin-bottom:10px; }
+  .maptools{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+  table.tramos{ width:100%; border-collapse:collapse; font-size:.82rem; }
+  table.tramos th{ text-align:left; font-size:.72rem; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.04em; padding:6px 6px; }
+  table.tramos td{ padding:4px 6px; border-top:1px solid var(--border); vertical-align:top; }
+  table.tramos input{ width:100%; padding:6px 7px; border:1px solid var(--border); border-radius:6px; background:var(--surface); color:var(--ink); font-size:.82rem; font-family:inherit; }
+  table.tramos td.coord{ font-size:.72rem; color:var(--ink-soft); white-space:nowrap; }
+  .row-actions{ display:flex; gap:4px; }
+  .save-bar{ position:sticky; bottom:0; background:var(--surface); border-top:1px solid var(--border); padding:12px 0 4px; margin-top:20px; display:flex; gap:10px; flex-wrap:wrap; }
+  .gate{ max-width:360px; margin:10vh auto; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:26px; box-shadow:var(--shadow); }
+  .gate h2{ margin:0 0 6px; font-size:1.1rem; }
+  .gate p{ margin:0 0 16px; color:var(--ink-soft); font-size:.85rem; }
+  .gate .err{ color:var(--danger); font-size:.8rem; min-height:1.1em; margin-top:6px; }
+  .toast{ position:fixed; left:50%; bottom:24px; transform:translateX(-50%); background:var(--accent-strong); color:#fff; padding:10px 18px; border-radius:999px; font-size:.85rem; box-shadow:var(--shadow); opacity:0; transition:opacity .2s; z-index:50; pointer-events:none; }
+  .toast.show{ opacity:1; }
+  .hint{ font-size:.76rem; color:var(--ink-faint); margin:-6px 0 12px; }
+  .badge{ font-size:.68rem; font-weight:700; border-radius:999px; padding:2px 9px; letter-spacing:.02em; }
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="back" href="../" title="Volver al Portal">‹</a>
+  <h1>Agenda viaria — alta de datos</h1>
+  <span class="spacer"></span>
+  <button class="chip" id="session" hidden>sesión</button>
+</header>
+
+<div id="gate" class="gate">
+  <h2>Acceso restringido</h2>
+  <p>Este panel es solo para dar de alta eventos y cortes de carretera. Inicia sesión con tu cuenta del Portal 112.</p>
+  <form id="f-login">
+    <div class="field"><label>Email</label><input type="email" name="email" required autocomplete="username" autofocus></div>
+    <div class="field"><label>Contraseña</label><input type="password" name="password" required autocomplete="current-password"></div>
+    <button type="submit" class="btn btn-primary" style="width:100%">Entrar</button>
+    <div class="err" id="login-err"></div>
+  </form>
+</div>
+
+<main id="app" hidden>
+  <aside>
+    <div class="list-head">
+      <input class="search" id="search" placeholder="Buscar evento…">
+      <button class="btn btn-primary btn-sm" id="new">+ Nuevo</button>
+    </div>
+    <div class="evlist" id="evlist"></div>
+  </aside>
+  <section class="editor" id="editor">
+    <div class="empty">Selecciona un evento de la lista o crea uno nuevo.</div>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ------------------------------------------------------------------ *
+ *  Agenda viaria — panel de alta (solo Coordinación 112)
+ *  Escribe en Firebase RTDB, ruta  agenda/eventos/<id>
+ *  El visor público (repositorio aparte) solo lee esa misma ruta.
+ * ------------------------------------------------------------------ */
+
+// Los 103 municipios de la provincia de Málaga  [nombre, comarca]
+var MUNICIPIOS = [["Málaga","Área Metropolitana"],["Marbella","Costa del Sol Occidental"],["Estepona","Costa del Sol Occidental"],["Manilva","Costa del Sol Occidental"],["Casares","Costa del Sol Occidental"],["Benahavís","Costa del Sol Occidental"],["Ojén","Costa del Sol Occidental"],["Istán","Costa del Sol Occidental"],["Fuengirola","Costa del Sol Occidental"],["Mijas","Costa del Sol Occidental"],["Benalmádena","Costa del Sol Occidental"],["Torremolinos","Costa del Sol Occidental"],["Vélez-Málaga","Axarquía"],["Torrox","Axarquía"],["Nerja","Axarquía"],["Rincón de la Victoria","Axarquía"],["Algarrobo","Axarquía"],["Frigiliana","Axarquía"],["Cómpeta","Axarquía"],["Canillas de Albaida","Axarquía"],["Canillas de Aceituno","Axarquía"],["Alcaucín","Axarquía"],["La Viñuela","Axarquía"],["Periana","Axarquía"],["Riogordo","Axarquía"],["Alfarnate","Axarquía"],["Alfarnatejo","Axarquía"],["Colmenar","Axarquía"],["Comares","Axarquía"],["Almáchar","Axarquía"],["Benamargosa","Axarquía"],["Benamocarra","Axarquía"],["El Borge","Axarquía"],["Cútar","Axarquía"],["Iznate","Axarquía"],["Moclinejo","Axarquía"],["Salares","Axarquía"],["Sayalonga","Axarquía"],["Sedella","Axarquía"],["Árchez","Axarquía"],["Arenas","Axarquía"],["Totalán","Axarquía"],["Macharaviaya","Axarquía"],["Álora","Valle del Guadalhorce"],["Alhaurín de la Torre","Valle del Guadalhorce"],["Alhaurín el Grande","Valle del Guadalhorce"],["Almogía","Valle del Guadalhorce"],["Alozaina","Valle del Guadalhorce"],["Cártama","Valle del Guadalhorce"],["Casarabonela","Valle del Guadalhorce"],["Coín","Valle del Guadalhorce"],["Guaro","Valle del Guadalhorce"],["Monda","Valle del Guadalhorce"],["Pizarra","Valle del Guadalhorce"],["Carratraca","Valle del Guadalhorce"],["Casabermeja","Valle del Guadalhorce"],["Valle de Abdalajís","Valle del Guadalhorce"],["Tolox","Sierra de las Nieves"],["Yunquera","Sierra de las Nieves"],["El Burgo","Sierra de las Nieves"],["Parauta","Sierra de las Nieves"],["Ronda","Serranía de Ronda"],["Arriate","Serranía de Ronda"],["Benaoján","Serranía de Ronda"],["Montejaque","Serranía de Ronda"],["Cortes de la Frontera","Serranía de Ronda"],["Jimera de Líbar","Serranía de Ronda"],["Alpandeire","Serranía de Ronda"],["Algatocín","Serranía de Ronda"],["Atajate","Serranía de Ronda"],["Benadalid","Serranía de Ronda"],["Benalauría","Serranía de Ronda"],["Benarrabá","Serranía de Ronda"],["Cartajima","Serranía de Ronda"],["Faraján","Serranía de Ronda"],["Gaucín","Serranía de Ronda"],["Genalguacil","Serranía de Ronda"],["Igualeja","Serranía de Ronda"],["Jubrique","Serranía de Ronda"],["Júzcar","Serranía de Ronda"],["Pujerra","Serranía de Ronda"],["Montecorto","Serranía de Ronda"],["Serrato","Serranía de Ronda"],["Cuevas del Becerro","Serranía de Ronda"],["Campillos","Guadalteba"],["Ardales","Guadalteba"],["Teba","Guadalteba"],["Almargen","Guadalteba"],["Cañete la Real","Guadalteba"],["Sierra de Yeguas","Guadalteba"],["Antequera","Comarca de Antequera"],["Archidona","Comarca de Antequera"],["Cuevas Bajas","Comarca de Antequera"],["Cuevas de San Marcos","Comarca de Antequera"],["Fuente de Piedra","Comarca de Antequera"],["Humilladero","Comarca de Antequera"],["Mollina","Comarca de Antequera"],["Villanueva de Algaidas","Comarca de Antequera"],["Villanueva de la Concepción","Comarca de Antequera"],["Villanueva de Tapia","Comarca de Antequera"],["Villanueva del Rosario","Comarca de Antequera"],["Villanueva del Trabuco","Comarca de Antequera"],["Alameda","Comarca de Antequera"]];
+
+var CATEGORIAS = [
+  ["prueba_deportiva","Prueba deportiva","🚴"],
+  ["obras","Obras","🚧"],
+  ["corte_programado","Corte programado","⛔"],
+  ["acto_publico","Acto público / feria","🎪"],
+  ["procesion","Procesión / cabalgata","✝️"],
+  ["manifestacion","Manifestación","📣"],
+  ["meteo","Meteorología / incidencia","🌧️"],
+  ["otro","Otro","📌"]
+];
+var ESTADOS = [["previsto","Previsto"],["activo","En curso"],["finalizado","Finalizado"],["cancelado","Cancelado"]];
+var PATH = 'agenda/eventos';
+var MALAGA_CENTER = [36.72, -4.55];
+
+var $ = function(s,r){ return (r||document).querySelector(s); };
+var eventos = {};        // id -> objeto
+var selId = null;        // id en edición
+var draft = null;        // objeto en edición (copia)
+var map = null, markers = [], routeLine = null;
+var placingRow = -1;     // índice de tramo esperando clic en mapa, -1 = ninguno
+var drawingRoute = false;
+var authUser = null;
+
+/* ---------- utilidades ---------- */
+function toast(msg){ var t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(function(){t.classList.remove('show');},2600); }
+function esc(s){ return (s==null?'':String(s)).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+function newId(){ return 'ev_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+function catMeta(k){ for(var i=0;i<CATEGORIAS.length;i++) if(CATEGORIAS[i][0]===k) return CATEGORIAS[i]; return CATEGORIAS[CATEGORIAS.length-1]; }
+function fmtDay(iso){ if(!iso) return '—'; var d=new Date(iso); if(isNaN(d)) return iso; return d.toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'short'}); }
+function fmtDT(iso){ if(!iso) return '—'; var d=new Date(iso); if(isNaN(d)) return iso; return d.toLocaleString('es-ES',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}); }
+function blankEvento(){
+  return { id:newId(), titulo:'', categoria:'corte_programado', estado:'previsto',
+           inicio:'', fin:'', descripcion:'', enlace:'', municipios:[], tramos:[], recorrido:[] };
+}
+
+/* ---------- sesión / Firebase ---------- */
+window.onPortalAuthReady = function(user){
+  authUser = user || null;
+  var gate = $('#gate'), app = $('#app'), sb = $('#session');
+  if(authUser){
+    gate.hidden = true; app.hidden = false; sb.hidden = false;
+    sb.textContent = '⏻ ' + (authUser.email || 'sesión');
+    startWatch();
+  } else {
+    gate.hidden = false; app.hidden = true; sb.hidden = true;
+  }
+};
+$('#session').addEventListener('click', function(){
+  if(window.confirm('¿Cerrar sesión en este dispositivo?') && window.PortalSync) window.PortalSync.logout();
+});
+$('#f-login').addEventListener('submit', function(e){
+  e.preventDefault();
+  var err = $('#login-err');
+  if(!window.PortalSync){ err.textContent='No se pudo cargar la sincronización. Recarga la página.'; return; }
+  var fd = new FormData(e.target);
+  var b = e.target.querySelector('button'); b.disabled=true; b.textContent='Entrando…';
+  window.PortalSync.login((fd.get('email')||'').trim(), fd.get('password')||'')
+    .then(function(){ err.textContent=''; })
+    .catch(function(){ err.textContent='Email o contraseña incorrectos.'; b.disabled=false; b.textContent='Entrar'; });
+});
+
+var watching = false;
+function startWatch(){
+  if(watching || !window.PortalSync) return;
+  watching = true;
+  window.PortalSync.watchData(PATH, function(remote){
+    eventos = remote || {};
+    renderList();
+    if(selId && eventos[selId] && (!draft || !draft._dirty)){ /* refresco externo */ }
+  });
+}
+
+/* ---------- lista ---------- */
+$('#search').addEventListener('input', renderList);
+$('#new').addEventListener('click', function(){ openEditor(null); });
+
+function renderList(){
+  var q = ($('#search').value||'').toLowerCase().trim();
+  var arr = Object.keys(eventos).map(function(k){ return eventos[k]; }).filter(Boolean);
+  if(q) arr = arr.filter(function(e){
+    return (e.titulo||'').toLowerCase().indexOf(q)>=0 ||
+           (e.municipios||[]).join(' ').toLowerCase().indexOf(q)>=0;
+  });
+  arr.sort(function(a,b){ return (a.inicio||'').localeCompare(b.inicio||''); });
+  var now = new Date().toISOString().slice(0,10);
+  var prox = arr.filter(function(e){ return (e.fin||e.inicio||'') >= now; });
+  var pas  = arr.filter(function(e){ return (e.fin||e.inicio||'') <  now; }).reverse();
+  var host = $('#evlist'); host.innerHTML = '';
+  function block(title, list){
+    if(!list.length) return;
+    var h = document.createElement('div'); h.className='group'; h.textContent = title + ' (' + list.length + ')';
+    host.appendChild(h);
+    list.forEach(function(e){
+      var cm = catMeta(e.categoria);
+      var b = document.createElement('button');
+      b.className = 'evrow' + (e.id===selId ? ' sel':'');
+      b.innerHTML =
+        '<span class="t"><span class="dot st-'+esc(e.estado)+'"></span>'+cm[2]+' '+esc(e.titulo||'(sin título)')+'</span>'+
+        '<span class="m">'+fmtDay(e.inicio)+' · '+esc((e.municipios||[]).slice(0,3).join(', ')||'sin municipios')+'</span>';
+      b.addEventListener('click', function(){ openEditor(e.id); });
+      host.appendChild(b);
+    });
+  }
+  block('Próximos y en curso', prox);
+  block('Finalizados', pas);
+  if(!arr.length) host.innerHTML = '<div class="group">Sin eventos todavía</div>';
+}
+
+/* ---------- editor ---------- */
+function openEditor(id){
+  selId = id;
+  draft = id && eventos[id] ? JSON.parse(JSON.stringify(eventos[id])) : blankEvento();
+  if(!draft.tramos) draft.tramos = [];
+  if(!draft.recorrido) draft.recorrido = [];
+  if(!draft.municipios) draft.municipios = [];
+  placingRow = -1; drawingRoute = false;
+  renderList();
+  renderEditor();
+}
+
+function renderEditor(){
+  var e = draft;
+  var host = $('#editor');
+  var catOpts = CATEGORIAS.map(function(c){ return '<option value="'+c[0]+'"'+(c[0]===e.categoria?' selected':'')+'>'+c[2]+' '+c[1]+'</option>'; }).join('');
+  var estOpts = ESTADOS.map(function(s){ return '<option value="'+s[0]+'"'+(s[0]===e.estado?' selected':'')+'>'+s[1]+'</option>'; }).join('');
+  host.innerHTML =
+    '<div class="grid2">'+
+      '<div class="field" style="grid-column:1/-1"><label>Título del evento</label><input id="f-titulo" value="'+esc(e.titulo)+'" placeholder="Ej.: La Vuelta 2026 — Etapa 8, paso por Málaga"></div>'+
+      '<div class="field"><label>Categoría</label><select id="f-cat">'+catOpts+'</select></div>'+
+      '<div class="field"><label>Estado</label><select id="f-est">'+estOpts+'</select></div>'+
+      '<div class="field"><label>Inicio</label><input id="f-inicio" type="datetime-local" value="'+esc(e.inicio)+'"></div>'+
+      '<div class="field"><label>Fin</label><input id="f-fin" type="datetime-local" value="'+esc(e.fin)+'"></div>'+
+      '<div class="field" style="grid-column:1/-1"><label>Descripción</label><textarea id="f-desc" placeholder="Resumen para el público: recorrido, recomendaciones, teléfonos…">'+esc(e.descripcion)+'</textarea></div>'+
+      '<div class="field" style="grid-column:1/-1"><label>Enlace oficial (opcional)</label><input id="f-enlace" type="url" value="'+esc(e.enlace)+'" placeholder="https://…  bando municipal, web de la prueba…"></div>'+
+    '</div>'+
+
+    '<h2 class="sec">Mapa · puntos de corte y recorrido</h2>'+
+    '<div class="maptools">'+
+      '<button class="btn btn-sm" id="mt-route">✏️ Dibujar recorrido</button>'+
+      '<button class="btn btn-sm" id="mt-undo">↶ Quitar último punto</button>'+
+      '<button class="btn btn-sm" id="mt-clear">🗑️ Borrar recorrido</button>'+
+      '<span class="hint" id="mt-hint" style="margin:0;align-self:center"></span>'+
+    '</div>'+
+    '<div id="map"></div>'+
+
+    '<h2 class="sec">Tramos afectados <button class="btn btn-sm" id="t-add" style="float:right">＋ Añadir tramo</button></h2>'+
+    '<div class="hint">Cada fila es un corte concreto. Pulsa 📍 y luego haz clic en el mapa para fijar su ubicación.</div>'+
+    '<table class="tramos"><thead><tr>'+
+      '<th>Vía / punto</th><th>Municipio</th><th>Corte</th><th>Reapertura</th><th>Nota</th><th>Mapa</th><th></th>'+
+    '</tr></thead><tbody id="t-body"></tbody></table>'+
+
+    '<div class="save-bar">'+
+      '<button class="btn btn-primary" id="save">💾 Guardar</button>'+
+      '<button class="btn" id="cancel">Cancelar</button>'+
+      (selId ? '<span style="flex:1"></span><button class="btn btn-danger" id="del">Eliminar evento</button>' : '')+
+    '</div>'+
+    '<datalist id="dl-muni">'+ MUNICIPIOS.map(function(m){ return '<option value="'+esc(m[0])+'">'+esc(m[1])+'</option>'; }).join('') +'</datalist>';
+
+  // binds de campos simples
+  $('#f-titulo').addEventListener('input', function(){ draft.titulo=this.value; draft._dirty=true; });
+  $('#f-cat').addEventListener('change', function(){ draft.categoria=this.value; });
+  $('#f-est').addEventListener('change', function(){ draft.estado=this.value; });
+  $('#f-inicio').addEventListener('change', function(){ draft.inicio=this.value; });
+  $('#f-fin').addEventListener('change', function(){ draft.fin=this.value; });
+  $('#f-desc').addEventListener('input', function(){ draft.descripcion=this.value; });
+  $('#f-enlace').addEventListener('input', function(){ draft.enlace=this.value; });
+
+  $('#t-add').addEventListener('click', function(){ draft.tramos.push({via:'',municipio:'',corte:'',reapertura:'',nota:'',lat:null,lng:null}); renderTramos(); });
+  $('#mt-route').addEventListener('click', toggleRoute);
+  $('#mt-undo').addEventListener('click', function(){ draft.recorrido.pop(); drawRoute(); });
+  $('#mt-clear').addEventListener('click', function(){ draft.recorrido=[]; drawRoute(); });
+  $('#save').addEventListener('click', save);
+  $('#cancel').addEventListener('click', function(){ selId=null; draft=null; $('#editor').innerHTML='<div class="empty">Selecciona un evento de la lista o crea uno nuevo.</div>'; renderList(); });
+  if($('#del')) $('#del').addEventListener('click', del);
+
+  renderTramos();
+  setTimeout(initMap, 30);
+}
+
+function renderTramos(){
+  var body = $('#t-body'); if(!body) return;
+  body.innerHTML = '';
+  draft.tramos.forEach(function(tr, i){
+    var row = document.createElement('tr');
+    row.innerHTML =
+      '<td><input data-k="via" value="'+esc(tr.via)+'" placeholder="A-357 / Av. de Andalucía"></td>'+
+      '<td><input data-k="municipio" list="dl-muni" value="'+esc(tr.municipio)+'" placeholder="Municipio"></td>'+
+      '<td><input data-k="corte" type="time" value="'+esc(tr.corte)+'"></td>'+
+      '<td><input data-k="reapertura" type="time" value="'+esc(tr.reapertura)+'"></td>'+
+      '<td><input data-k="nota" value="'+esc(tr.nota)+'" placeholder="desvío, sentido…"></td>'+
+      '<td class="coord">'+(tr.lat!=null ? tr.lat.toFixed(4)+', '+tr.lng.toFixed(4) : '<span style="color:var(--ink-faint)">sin fijar</span>')+'</td>'+
+      '<td class="row-actions">'+
+        '<button class="btn btn-sm" data-act="pin" title="Fijar en el mapa">📍</button>'+
+        '<button class="btn btn-sm" data-act="rm" title="Quitar tramo">✕</button>'+
+      '</td>';
+    row.querySelectorAll('input').forEach(function(inp){
+      inp.addEventListener('input', function(){
+        var k=this.getAttribute('data-k'); tr[k]=this.value;
+        if(k==='municipio') syncMunicipios();
+      });
+    });
+    row.querySelector('[data-act="pin"]').addEventListener('click', function(){
+      placingRow = (placingRow===i ? -1 : i);
+      drawingRoute = false;
+      updateHint();
+    });
+    row.querySelector('[data-act="rm"]').addEventListener('click', function(){
+      draft.tramos.splice(i,1); syncMunicipios(); renderTramos(); drawMarkers();
+    });
+    body.appendChild(row);
+  });
+  updateHint();
+  drawMarkers();
+}
+
+function syncMunicipios(){
+  var set = [];
+  draft.tramos.forEach(function(t){ if(t.municipio && set.indexOf(t.municipio)<0) set.push(t.municipio); });
+  draft.municipios = set;
+}
+
+function updateHint(){
+  var h = $('#mt-hint'); if(!h) return;
+  if(drawingRoute) h.textContent = 'Haz clic en el mapa para ir trazando el recorrido.';
+  else if(placingRow>=0) h.textContent = 'Haz clic en el mapa para situar el tramo ' + (placingRow+1) + '.';
+  else h.textContent = '';
+  var rb = $('#mt-route'); if(rb) rb.classList.toggle('btn-primary', drawingRoute);
+}
+
+function toggleRoute(){ drawingRoute = !drawingRoute; placingRow = -1; updateHint(); }
+
+/* ---------- mapa ---------- */
+function initMap(){
+  var el = $('#map'); if(!el || typeof L==='undefined') return;
+  if(map){ map.remove(); map=null; }
+  markers = []; routeLine = null;
+  map = L.map(el, { scrollWheelZoom:true }).setView(MALAGA_CENTER, 9);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19, attribution: '© OpenStreetMap'
+  }).addTo(map);
+  map.on('click', function(ev){
+    var ll = ev.latlng;
+    if(drawingRoute){
+      draft.recorrido.push([+ll.lat.toFixed(5), +ll.lng.toFixed(5)]);
+      drawRoute();
+    } else if(placingRow>=0 && draft.tramos[placingRow]){
+      draft.tramos[placingRow].lat = +ll.lat.toFixed(5);
+      draft.tramos[placingRow].lng = +ll.lng.toFixed(5);
+      placingRow = -1;
+      renderTramos();
+    }
+  });
+  drawMarkers(); drawRoute();
+  fitAll();
+}
+function drawMarkers(){
+  if(!map) return;
+  markers.forEach(function(m){ map.removeLayer(m); });
+  markers = [];
+  (draft.tramos||[]).forEach(function(tr,i){
+    if(tr.lat==null || tr.lng==null) return;
+    var m = L.marker([tr.lat,tr.lng]).addTo(map)
+      .bindTooltip(String(i+1)+'. '+(tr.via||'tramo')+(tr.municipio?(' — '+tr.municipio):''), {permanent:false});
+    markers.push(m);
+  });
+}
+function drawRoute(){
+  if(!map) return;
+  if(routeLine){ map.removeLayer(routeLine); routeLine=null; }
+  if((draft.recorrido||[]).length>1){
+    routeLine = L.polyline(draft.recorrido, { color:'#2a4a73', weight:5, opacity:.8 }).addTo(map);
+  }
+  updateHint();
+}
+function fitAll(){
+  if(!map) return;
+  var pts = [];
+  (draft.tramos||[]).forEach(function(t){ if(t.lat!=null) pts.push([t.lat,t.lng]); });
+  (draft.recorrido||[]).forEach(function(p){ pts.push(p); });
+  if(pts.length) map.fitBounds(pts, { padding:[40,40], maxZoom:14 });
+}
+
+/* ---------- guardar / borrar ---------- */
+function save(){
+  if(!draft.titulo.trim()){ toast('Ponle un título al evento'); return; }
+  if(!draft.inicio){ toast('Indica al menos la fecha de inicio'); return; }
+  syncMunicipios();
+  var obj = JSON.parse(JSON.stringify(draft));
+  delete obj._dirty;
+  obj.actualizado = new Date().toISOString();
+  obj.autor = authUser ? (authUser.email || authUser.uid) : '';
+  window.PortalSync.saveData(PATH + '/' + obj.id, obj)
+    .then(function(){ toast('✔ Guardado'); selId = obj.id; draft._dirty=false; })
+    .catch(function(){ toast('✖ Error al guardar (revisa la conexión)'); });
+}
+function del(){
+  if(!selId) return;
+  if(!window.confirm('¿Eliminar este evento de la agenda? No se puede deshacer.')) return;
+  window.PortalSync.saveData(PATH + '/' + selId, null)
+    .then(function(){
+      toast('Evento eliminado');
+      selId=null; draft=null;
+      $('#editor').innerHTML='<div class="empty">Selecciona un evento de la lista o crea uno nuevo.</div>';
+      renderList();
+    })
+    .catch(function(){ toast('✖ No se pudo eliminar'); });
+}
+</script>
+</body>
+</html>
