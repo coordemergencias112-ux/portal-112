@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-10T21:41:40Z",
+  "generated_at": "2026-09-10T21:50:10Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -197,8 +197,40 @@
       "id": "29015",
       "nombre": "Antequera",
       "referencia": "Comarca de Antequera",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-09-10",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 20,
+          "vientoDireccion": "S",
+          "tempMax": 28,
+          "tempMin": 16
+        },
+        {
+          "fecha": "2026-09-11",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 35,
+          "vientoDireccion": "S",
+          "tempMax": 29,
+          "tempMin": 14
+        },
+        {
+          "fecha": "2026-09-12",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 40,
+          "vientoDireccion": "S",
+          "tempMax": 30,
+          "tempMin": 16
+        },
+        {
+          "fecha": "2026-09-13",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 25,
+          "vientoDireccion": "S",
+          "tempMax": 30,
+          "tempMin": 16
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 20,
@@ -353,44 +385,7 @@
           "tempMin": 22
         }
       ],
-      "horas_hoy": [
-        {
-          "hora": 20,
-          "temp": null,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": null,
-          "vientoDireccion": null
-        },
-        {
-          "hora": 21,
-          "temp": 24,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11n",
-          "vientoVelocidad": 3,
-          "vientoDireccion": "E"
-        },
-        {
-          "hora": 22,
-          "temp": 24,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11n",
-          "vientoVelocidad": 1,
-          "vientoDireccion": "NE"
-        },
-        {
-          "hora": 23,
-          "temp": 23,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11n",
-          "vientoVelocidad": 2,
-          "vientoDireccion": "NO"
-        }
-      ]
+      "horas_hoy": []
     },
     {
       "id": "29094",
