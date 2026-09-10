@@ -99,6 +99,8 @@
   <a class="back" href="../" title="Volver al Portal">‹</a>
   <h1>Agenda de eventos — alta de datos</h1>
   <span class="spacer"></span>
+  <button class="chip" id="share" hidden title="Copiar el enlace de la agenda pública para compartir">🔗 Compartir vista pública</button>
+  <button class="chip" id="open" hidden title="Abrir la agenda pública en otra pestaña">↗ Abrir</button>
   <button class="chip" id="session" hidden>sesión</button>
 </header>
 
@@ -158,6 +160,7 @@ var AMBITOS = [["municipal","Municipal"],["comarcal","Comarcal"],["provincial","
 var ENTRADAS = [["gratuito","Gratuito"],["entrada","Con entrada"],["invitacion","Con invitación / inscripción"]];
 var PATH = 'agenda/eventos';
 var MALAGA_CENTER = [36.72, -4.55];
+var PUBLIC_URL = 'https://coordemergencias112-ux.github.io/agenda-malaga/';
 
 var $ = function(s,r){ return (r||document).querySelector(s); };
 var eventos = {}, selId = null, draft = null;
@@ -183,12 +186,27 @@ function blankEvento(){
 window.onPortalAuthReady = function(user){
   authUser = user || null;
   var gate = $('#gate'), app = $('#app'), sb = $('#session');
+  var extra = [sb, $('#share'), $('#open')];
   if(authUser){
-    gate.hidden = true; app.hidden = false; sb.hidden = false;
+    gate.hidden = true; app.hidden = false;
+    extra.forEach(function(b){ b.hidden = false; });
     sb.textContent = '⏻ ' + (authUser.email || 'sesión');
     startWatch();
-  } else { gate.hidden = false; app.hidden = true; sb.hidden = true; }
+  } else {
+    gate.hidden = false; app.hidden = true;
+    extra.forEach(function(b){ b.hidden = true; });
+  }
 };
+$('#share').addEventListener('click', function(){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(PUBLIC_URL)
+      .then(function(){ toast('🔗 Enlace de la agenda pública copiado'); })
+      .catch(function(){ window.prompt('Copia el enlace de la agenda pública:', PUBLIC_URL); });
+  } else {
+    window.prompt('Copia el enlace de la agenda pública:', PUBLIC_URL);
+  }
+});
+$('#open').addEventListener('click', function(){ window.open(PUBLIC_URL, '_blank', 'noopener'); });
 $('#session').addEventListener('click', function(){
   if(window.confirm('¿Cerrar sesión en este dispositivo?') && window.PortalSync) window.PortalSync.logout();
 });
