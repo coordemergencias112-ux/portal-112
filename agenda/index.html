@@ -9,6 +9,29 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script type="module" src="../shared/firebase-sync.js"></script>
+<script type="module">
+  // Firebase Storage para los PDF adjuntos a cada evento. Reutiliza la misma
+  // app que firebase-sync.js (config pública, no secreta). La seguridad la
+  // ponen las Reglas de Storage: lectura abierta en agenda/, escritura solo
+  // con sesión.
+  import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-storage.js";
+  const cfg = {
+    apiKey: "AIzaSyCzdrnL6qWbG9OHPiQV43mJvgH9i56PkVQ",
+    authDomain: "portal-112-b1754.firebaseapp.com",
+    databaseURL: "https://portal-112-b1754-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "portal-112-b1754",
+    storageBucket: "portal-112-b1754.firebasestorage.app",
+    messagingSenderId: "84139749968",
+    appId: "1:84139749968:web:03fd5a508e32a5ebf25755"
+  };
+  const app = getApps()[0] || initializeApp(cfg);
+  const storage = getStorage(app);
+  window.AgendaStorage = {
+    subir: function(path, file){ return uploadBytes(ref(storage, path), file, { contentType: 'application/pdf' }).then(function(s){ return getDownloadURL(s.ref); }); },
+    borrar: function(path){ return deleteObject(ref(storage, path)); }
+  };
+</script>
 <style>
   :root{
     --ink:#101828; --ink-soft:#475467; --ink-faint:#8a94a3;
@@ -99,8 +122,9 @@
   <a class="back" href="../" title="Volver al Portal">‹</a>
   <h1>Agenda de eventos — alta de datos</h1>
   <span class="spacer"></span>
-  <button class="chip" id="share" hidden title="Copiar el enlace de la agenda pública para compartir">🔗 Compartir vista pública</button>
-  <button class="chip" id="open" hidden title="Abrir la agenda pública en otra pestaña">↗ Abrir</button>
+  <button class="chip" id="vercal" hidden title="Abrir el calendario público en otra pestaña">📅 Ver calendario</button>
+  <button class="chip" id="share" hidden title="Copiar el enlace de la agenda pública para compartir">🔗 Compartir</button>
+  <button class="chip" id="limpiar" hidden title="Borrar documentos de eventos ya pasados">🧹 Limpiar</button>
   <button class="chip" id="session" hidden>sesión</button>
 </header>
 
@@ -179,14 +203,15 @@ function blankEvento(){
            inicio:'', fin:'', todoElDia:false, municipios:[], lugar:'', direccion:'', lat:null, lng:null,
            descripcion:'', programa:[], organizador:'', web:'', telefono:'', entrada:'gratuito',
            entradasUrl:'', publico:'', cartelUrl:'', afeccionTrafico:false, dispositivo:'',
-           tramos:[], recorrido:[] };
+           tramos:[], recorrido:[], documentos:[] };
 }
+function lastDay(e){ return (e.fin || e.inicio || '').slice(0,10); }
 
 /* ---------- sesión / Firebase ---------- */
 window.onPortalAuthReady = function(user){
   authUser = user || null;
   var gate = $('#gate'), app = $('#app'), sb = $('#session');
-  var extra = [sb, $('#share'), $('#open')];
+  var extra = [sb, $('#share'), $('#vercal'), $('#limpiar')];
   if(authUser){
     gate.hidden = true; app.hidden = false;
     extra.forEach(function(b){ b.hidden = false; });
@@ -206,7 +231,8 @@ $('#share').addEventListener('click', function(){
     window.prompt('Copia el enlace de la agenda pública:', PUBLIC_URL);
   }
 });
-$('#open').addEventListener('click', function(){ window.open(PUBLIC_URL, '_blank', 'noopener'); });
+$('#vercal').addEventListener('click', function(){ window.open(PUBLIC_URL, '_blank', 'noopener'); });
+$('#limpiar').addEventListener('click', function(){ purgarDocsPasados(true); });
 $('#session').addEventListener('click', function(){
   if(window.confirm('¿Cerrar sesión en este dispositivo?') && window.PortalSync) window.PortalSync.logout();
 });
@@ -221,11 +247,37 @@ $('#f-login').addEventListener('submit', function(e){
     .catch(function(){ err.textContent='Email o contraseña incorrectos.'; b.disabled=false; b.textContent='Entrar'; });
 });
 
-var watching = false;
+var watching = false, purgaHecha = false;
 function startWatch(){
   if(watching || !window.PortalSync) return;
   watching = true;
-  window.PortalSync.watchData(PATH, function(remote){ eventos = remote || {}; renderList(); });
+  window.PortalSync.watchData(PATH, function(remote){
+    eventos = remote || {};
+    renderList();
+    if(!purgaHecha){ purgaHecha = true; setTimeout(function(){ purgarDocsPasados(false); }, 800); }
+  });
+}
+
+/* Borra los PDF de eventos cuyo último día ya ha pasado. Se ejecuta al abrir
+   el panel (automático) y con el botón 🧹. El evento se conserva como
+   histórico; solo se eliminan sus documentos. */
+function purgarDocsPasados(manual){
+  var hoy = new Date().toISOString().slice(0,10);
+  var ids = Object.keys(eventos).filter(function(id){
+    var e = eventos[id];
+    return e && e.documentos && e.documentos.length && lastDay(e) && lastDay(e) < hoy;
+  });
+  if(!ids.length){ if(manual) toast('No hay documentos de eventos pasados'); return; }
+  var nDocs = 0;
+  ids.forEach(function(id){
+    var e = eventos[id];
+    (e.documentos||[]).forEach(function(d){
+      nDocs++;
+      if(d.path && window.AgendaStorage) window.AgendaStorage.borrar(d.path).catch(function(){});
+    });
+    window.PortalSync.saveData(PATH + '/' + id + '/documentos', null).catch(function(){});
+  });
+  toast('🧹 ' + nDocs + ' documento(s) de ' + ids.length + ' evento(s) pasado(s) eliminados');
 }
 
 /* ---------- lista ---------- */
@@ -269,7 +321,7 @@ function renderList(){
 function openEditor(id){
   selId = id;
   draft = id && eventos[id] ? JSON.parse(JSON.stringify(eventos[id])) : blankEvento();
-  ['municipios','programa','tramos','recorrido'].forEach(function(k){ if(!draft[k]) draft[k]=[]; });
+  ['municipios','programa','tramos','recorrido','documentos'].forEach(function(k){ if(!draft[k]) draft[k]=[]; });
   placingMode = null; drawingRoute = false;
   renderList();
   renderEditor();
@@ -336,6 +388,15 @@ function renderEditor(){
       '<button class="btn btn-sm" id="tramo-add" style="margin-top:6px">＋ Añadir tramo</button>'+
     '</div>'+
 
+    '<h2 class="sec">Documentos (PDF)</h2>'+
+    '<div class="hint">Bandos, planos de corte, programa oficial… Se descargan desde la agenda pública y se borran solos al día siguiente del último día del evento.</div>'+
+    '<div id="doc-list"></div>'+
+    '<div class="maptools" style="align-items:center">'+
+      '<input type="file" id="doc-file" accept="application/pdf,.pdf" multiple>'+
+      '<button class="btn btn-sm" id="doc-up">⬆️ Subir PDF</button>'+
+      '<span class="hint" id="doc-msg" style="margin:0"></span>'+
+    '</div>'+
+
     '<div class="save-bar">'+
       '<button class="btn btn-primary" id="save">💾 Guardar</button>'+
       '<button class="btn" id="cancel">Cancelar</button>'+
@@ -344,8 +405,17 @@ function renderEditor(){
     '<datalist id="dl-muni">'+ MUNICIPIOS.map(function(m){ return '<option value="'+esc(m[0])+'">'+esc(m[1])+'</option>'; }).join('') +'</datalist>';
 
   bind('#f-titulo','input','titulo'); bind('#f-cat','change','categoria'); bind('#f-est','change','estado');
-  bind('#f-amb','change','ambito'); bind('#f-pub','input','publico'); bind('#f-inicio','change','inicio');
+  bind('#f-amb','change','ambito'); bind('#f-pub','input','publico');
   bind('#f-fin','change','fin'); bind('#f-lugar','input','lugar'); bind('#f-dir','input','direccion');
+  (function(){
+    var fi=$('#f-inicio'), ff=$('#f-fin');
+    function syncMin(){ if(fi.value) ff.min = fi.value; }
+    syncMin();
+    fi.addEventListener('change', function(){
+      draft.inicio = this.value; syncMin();
+      if(ff.value && ff.value < this.value){ ff.value=''; draft.fin=''; toast('Se ha borrado el fin: era anterior al inicio'); }
+    });
+  })();
   bind('#f-desc','input','descripcion'); bind('#f-org','input','organizador'); bind('#f-entrada','change','entrada');
   bind('#f-web','input','web'); bind('#f-tel','input','telefono'); bind('#f-enturl','input','entradasUrl');
   bind('#f-disp','input','dispositivo');
@@ -371,11 +441,12 @@ function renderEditor(){
   $('#mt-route').addEventListener('click', function(){ drawingRoute=!drawingRoute; placingMode=null; updateHint(); });
   $('#mt-undo').addEventListener('click', function(){ draft.recorrido.pop(); drawRoute(); });
   $('#mt-clear').addEventListener('click', function(){ draft.recorrido=[]; drawRoute(); });
+  $('#doc-up').addEventListener('click', subirDocs);
   $('#save').addEventListener('click', save);
   $('#cancel').addEventListener('click', function(){ selId=null; draft=null; $('#editor').innerHTML='<div class="empty">Selecciona un evento de la lista o crea uno nuevo.</div>'; renderList(); });
   if($('#del')) $('#del').addEventListener('click', del);
 
-  renderMuniChips(); renderPrograma(); renderTramos();
+  renderMuniChips(); renderPrograma(); renderTramos(); renderDocs();
   setTimeout(initMap, 30);
 
   function bind(sel, evt, key){ var el=$(sel); if(el) el.addEventListener(evt, function(){ draft[key]=this.value; }); }
@@ -402,6 +473,50 @@ function renderPrograma(){
     row.querySelectorAll('input').forEach(function(inp){ inp.addEventListener('input', function(){ p[this.getAttribute('data-k')]=this.value; }); });
     row.querySelector('[data-act="rm"]').addEventListener('click', function(){ draft.programa.splice(i,1); renderPrograma(); });
     body.appendChild(row);
+  });
+}
+
+function fmtKB(n){ return n ? (n<1048576 ? Math.round(n/1024)+' KB' : (n/1048576).toFixed(1)+' MB') : ''; }
+function renderDocs(){
+  var host = $('#doc-list'); if(!host) return;
+  if(!draft.documentos) draft.documentos = [];
+  host.innerHTML = '';
+  if(!draft.documentos.length){ host.innerHTML = '<div class="hint" style="margin:4px 0 8px">Sin documentos.</div>'; return; }
+  draft.documentos.forEach(function(d, i){
+    var row = document.createElement('div'); row.className = 'muni-chip'; row.style.marginBottom = '6px';
+    row.innerHTML = '📄 <a href="'+esc(d.url)+'" target="_blank" rel="noopener" style="color:var(--accent)">'+esc(d.nombre||'documento.pdf')+'</a>'+
+      (d.size ? ' <span style="color:var(--ink-faint)">('+fmtKB(d.size)+')</span>' : '')+
+      ' <button title="Quitar">✕</button>';
+    row.querySelector('button').addEventListener('click', function(){
+      if(!window.confirm('¿Quitar este documento?')) return;
+      if(d.path && window.AgendaStorage) window.AgendaStorage.borrar(d.path).catch(function(){});
+      draft.documentos.splice(i,1); renderDocs();
+      // persiste el borrado también si el evento ya existe
+      if(selId) window.PortalSync.saveData(PATH+'/'+selId+'/documentos', draft.documentos.length?draft.documentos:null).catch(function(){});
+    });
+    host.appendChild(row);
+  });
+}
+function subirDocs(){
+  var inp = $('#doc-file'), msg = $('#doc-msg');
+  if(!window.AgendaStorage){ msg.textContent = 'Almacenamiento no disponible (revisa las Reglas de Storage en Firebase).'; return; }
+  var files = Array.prototype.slice.call(inp.files || []);
+  if(!files.length){ msg.textContent = 'Elige uno o varios PDF primero.'; return; }
+  var pend = files.length, ok = 0;
+  msg.textContent = 'Subiendo…';
+  files.forEach(function(f){
+    if(f.type && f.type.indexOf('pdf') < 0 && !/\.pdf$/i.test(f.name)){ pend--; return; }
+    var safe = f.name.replace(/[^\w.\- ]+/g,'_').slice(-80);
+    var path = 'agenda/' + draft.id + '/' + Date.now() + '_' + safe;
+    window.AgendaStorage.subir(path, f).then(function(url){
+      draft.documentos.push({ nombre:f.name, url:url, path:path, size:f.size, subido:new Date().toISOString() });
+      ok++;
+    }).catch(function(err){
+      msg.textContent = 'Error al subir "' + f.name + '" (¿Reglas de Storage?).';
+    }).finally(function(){
+      pend--;
+      if(pend<=0){ inp.value=''; renderDocs(); if(ok) msg.textContent = ok + ' PDF subido(s). Recuerda Guardar el evento.'; }
+    });
   });
 }
 
@@ -506,6 +621,7 @@ function clean(o){ // quita strings vacíos y arrays vacíos para no ensuciar la
 function save(){
   if(!draft.titulo.trim()){ toast('Ponle un título al evento'); return; }
   if(!draft.inicio){ toast('Indica al menos la fecha de inicio'); return; }
+  if(draft.fin && draft.fin < draft.inicio){ toast('⚠ La fecha de fin es anterior a la de inicio'); return; }
   var obj = clean(draft);
   obj.id = draft.id;
   obj.afeccionTrafico = !!draft.afeccionTrafico;
