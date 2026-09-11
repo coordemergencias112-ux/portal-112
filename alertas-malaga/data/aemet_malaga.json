@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-11T10:41:46Z",
+  "generated_at": "2026-09-11T11:02:21Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -228,8 +228,40 @@
       "id": "29084",
       "nombre": "Ronda",
       "referencia": "Interior / Serranía",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-09-11",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 20,
+          "vientoDireccion": "SE",
+          "tempMax": 29,
+          "tempMin": 16
+        },
+        {
+          "fecha": "2026-09-12",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 35,
+          "vientoDireccion": "SE",
+          "tempMax": 29,
+          "tempMin": 17
+        },
+        {
+          "fecha": "2026-09-13",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 45,
+          "vientoDireccion": "SE",
+          "tempMax": 28,
+          "tempMin": 18
+        },
+        {
+          "fecha": "2026-09-14",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "SE",
+          "tempMax": 29,
+          "tempMin": 17
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 8,
@@ -1317,13 +1349,6 @@
       "nivel": "amarillo",
       "desde": "2026-09-07T13:00:00+02:00",
       "hasta": "2026-09-07T20:59:59+02:00"
-    },
-    {
-      "zona": "Antequera",
-      "fenomeno": "Temperaturas máximas",
-      "nivel": "amarillo",
-      "desde": "2026-09-04T13:00:00+02:00",
-      "hasta": "2026-09-04T20:59:59+02:00"
     }
   ]
 }
