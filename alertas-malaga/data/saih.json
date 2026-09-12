@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-12T06:04:55Z",
-  "data_timestamp": "2026-09-12T07:00:00",
+  "generated_at": "2026-09-12T06:22:14Z",
+  "data_timestamp": "2026-09-12T08:00:00",
   "rios": [
     {
       "estacion": "34",
@@ -53,7 +53,7 @@
       "lat": 36.5672,
       "lon": -5.2463,
       "nivel_rio": 0.11,
-      "caudal": 0.64,
+      "caudal": 0.66,
       "tendencia": "0",
       "aviso": 1.1,
       "prealerta": 1.6,
@@ -97,8 +97,8 @@
       "nombre": "RÍO GUADALHORCE (ARCHIDONA) (MA)",
       "lat": 37.0821,
       "lon": -4.4554,
-      "nivel_rio": 0.1,
-      "caudal": 0.17,
+      "nivel_rio": 0.13,
+      "caudal": 0.02,
       "tendencia": "2",
       "aviso": 2.0,
       "prealerta": 3.0,
@@ -113,7 +113,7 @@
       "lat": 37.0401,
       "lon": -4.6958,
       "nivel_rio": 0.05,
-      "caudal": 0.06,
+      "caudal": 0.05,
       "tendencia": "0",
       "aviso": 2.5,
       "prealerta": 3.0,
@@ -198,9 +198,9 @@
       "nombre": "EMBALSE DE CASASOLA (MA)",
       "lat": 36.8062,
       "lon": -4.49513,
-      "volumen": 7.38,
-      "porcentaje": 34.0,
-      "nivel": 136.68
+      "volumen": 7.37,
+      "porcentaje": 33.9,
+      "nivel": 136.67
     },
     {
       "estacion": "16",
@@ -225,7 +225,7 @@
       "nombre": "EMBALSE DEL GUADALHORCE (MA)",
       "lat": 36.94401,
       "lon": -4.80277,
-      "volumen": 111.81,
+      "volumen": 111.8,
       "porcentaje": 88.9,
       "nivel": 360.23
     },
@@ -234,7 +234,7 @@
       "nombre": "EMBALSE DEL GUADALTEBA (MA)",
       "lat": 36.94159,
       "lon": -4.79908,
-      "volumen": 143.54,
+      "volumen": 143.55,
       "porcentaje": 93.6,
       "nivel": 360.97
     },
@@ -249,6 +249,38 @@
     }
   ],
   "lluvia": [
+    {
+      "estacion": "6",
+      "nombre": "LOS REALES (MA)",
+      "lat": 36.48485,
+      "lon": -5.20811,
+      "precip": 0.1,
+      "precipacum": 0.0,
+      "estado": "amarillo",
+      "info": {},
+      "ultima_hora": 0.1,
+      "hora_anterior": 0.0,
+      "acum_12h": 0.0,
+      "acum_24h": 0.0,
+      "acum_hoy": 0.0,
+      "acum_ayer": 0.0
+    },
+    {
+      "estacion": "25",
+      "nombre": "SANTÓN PITAR (MA)",
+      "lat": 36.80327,
+      "lon": -4.29257,
+      "precip": 0.1,
+      "precipacum": 0.0,
+      "estado": "amarillo",
+      "info": {},
+      "ultima_hora": 0.1,
+      "hora_anterior": 0.0,
+      "acum_12h": 0.0,
+      "acum_24h": 0.0,
+      "acum_hoy": 0.0,
+      "acum_ayer": 0.0
+    },
     {
       "estacion": "36",
       "nombre": "ALCAUCÍN (MA)",
@@ -666,22 +698,6 @@
       "acum_ayer": null
     },
     {
-      "estacion": "6",
-      "nombre": "LOS REALES (MA)",
-      "lat": 36.48485,
-      "lon": -5.20811,
-      "precip": 0.0,
-      "precipacum": 0.0,
-      "estado": "verde",
-      "info": {},
-      "ultima_hora": 0.0,
-      "hora_anterior": null,
-      "acum_12h": null,
-      "acum_24h": null,
-      "acum_hoy": 0.0,
-      "acum_ayer": null
-    },
-    {
       "estacion": "12",
       "nombre": "MAJADA DE LAS LOMAS (MA)",
       "lat": 36.54179,
@@ -926,22 +942,6 @@
       "nombre": "RÍO TURÓN (ARDALES) (MA)",
       "lat": 36.88644,
       "lon": -4.84908,
-      "precip": 0.0,
-      "precipacum": 0.0,
-      "estado": "verde",
-      "info": {},
-      "ultima_hora": 0.0,
-      "hora_anterior": null,
-      "acum_12h": null,
-      "acum_24h": null,
-      "acum_hoy": 0.0,
-      "acum_ayer": null
-    },
-    {
-      "estacion": "25",
-      "nombre": "SANTÓN PITAR (MA)",
-      "lat": 36.80327,
-      "lon": -4.29257,
       "precip": 0.0,
       "precipacum": 0.0,
       "estado": "verde",
