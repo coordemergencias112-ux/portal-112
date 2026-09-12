@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-12T01:21:48Z",
+  "generated_at": "2026-09-12T01:41:34Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -300,8 +300,40 @@
       "id": "29084",
       "nombre": "Ronda",
       "referencia": "Interior / Serranía",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-09-11",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 20,
+          "vientoDireccion": "SE",
+          "tempMax": 29,
+          "tempMin": 16
+        },
+        {
+          "fecha": "2026-09-12",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 25,
+          "vientoDireccion": "SE",
+          "tempMax": 29,
+          "tempMin": 17
+        },
+        {
+          "fecha": "2026-09-13",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 50,
+          "vientoDireccion": "SE",
+          "tempMax": 28,
+          "tempMin": 18
+        },
+        {
+          "fecha": "2026-09-14",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "SE",
+          "tempMax": 29,
+          "tempMin": 17
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 0,
@@ -782,40 +814,8 @@
       "id": "29042",
       "nombre": "Coín",
       "referencia": "Valle del Guadalhorce",
-      "dias": [
-        {
-          "fecha": "2026-09-11",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "E",
-          "tempMax": 31,
-          "tempMin": 19
-        },
-        {
-          "fecha": "2026-09-12",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 20,
-          "vientoDireccion": "E",
-          "tempMax": 31,
-          "tempMin": 20
-        },
-        {
-          "fecha": "2026-09-13",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "SE",
-          "tempMax": 30,
-          "tempMin": 20
-        },
-        {
-          "fecha": "2026-09-14",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "SE",
-          "tempMax": 30,
-          "tempMin": 19
-        }
-      ],
+      "error": "HTTP Error 500: Internal Server Error",
+      "dias": [],
       "horas_hoy": [
         {
           "hora": 0,
