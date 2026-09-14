@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-14T05:05:02Z",
-  "data_timestamp": "2026-09-14T06:00:00",
+  "generated_at": "2026-09-14T05:21:49Z",
+  "data_timestamp": "2026-09-14T07:00:00",
   "rios": [
     {
       "estacion": "34",
@@ -53,7 +53,7 @@
       "lat": 36.5672,
       "lon": -5.2463,
       "nivel_rio": 0.11,
-      "caudal": 0.59,
+      "caudal": 0.61,
       "tendencia": "0",
       "aviso": 1.1,
       "prealerta": 1.6,
@@ -97,9 +97,9 @@
       "nombre": "RÍO GUADALHORCE (ARCHIDONA) (MA)",
       "lat": 37.0821,
       "lon": -4.4554,
-      "nivel_rio": 0.01,
-      "caudal": 0.01,
-      "tendencia": "0",
+      "nivel_rio": 0.24,
+      "caudal": 0.0,
+      "tendencia": "2",
       "aviso": 2.0,
       "prealerta": 3.0,
       "alerta": 5.0,
@@ -143,7 +143,7 @@
       "lat": 36.9315,
       "lon": -4.9284,
       "nivel_rio": 0.11,
-      "caudal": 0.36,
+      "caudal": 0.37,
       "tendencia": "0",
       "aviso": 1.5,
       "prealerta": 2.0,
@@ -173,7 +173,7 @@
       "lat": 36.8867,
       "lon": -4.8492,
       "nivel_rio": 0.1,
-      "caudal": 0.12,
+      "caudal": 0.11,
       "tendencia": "0",
       "aviso": 1.5,
       "prealerta": 2.0,
@@ -198,8 +198,8 @@
       "nombre": "EMBALSE DE CASASOLA (MA)",
       "lat": 36.8062,
       "lon": -4.49513,
-      "volumen": 7.35,
-      "porcentaje": 33.8,
+      "volumen": 7.36,
+      "porcentaje": 33.9,
       "nivel": 136.64
     },
     {
@@ -207,8 +207,8 @@
       "nombre": "EMBALSE DE LA CONCEPCIÓN (MA)",
       "lat": 36.53643,
       "lon": -4.95889,
-      "volumen": 33.23,
-      "porcentaje": 57.8,
+      "volumen": 33.22,
+      "porcentaje": 57.7,
       "nivel": 91.45
     },
     {
@@ -234,7 +234,7 @@
       "nombre": "EMBALSE DEL GUADALTEBA (MA)",
       "lat": 36.94159,
       "lon": -4.79908,
-      "volumen": 143.37,
+      "volumen": 143.38,
       "porcentaje": 93.5,
       "nivel": 360.94
     },
@@ -245,26 +245,10 @@
       "lon": -4.42918,
       "volumen": 14.24,
       "porcentaje": 100.0,
-      "nivel": 94.85
+      "nivel": 94.84
     }
   ],
   "lluvia": [
-    {
-      "estacion": "25",
-      "nombre": "SANTÓN PITAR (MA)",
-      "lat": 36.80327,
-      "lon": -4.29257,
-      "precip": 0.1,
-      "precipacum": 0.0,
-      "estado": "amarillo",
-      "info": {},
-      "ultima_hora": 0.1,
-      "hora_anterior": 0.0,
-      "acum_12h": 0.0,
-      "acum_24h": 0.0,
-      "acum_hoy": 0.0,
-      "acum_ayer": 0.0
-    },
     {
       "estacion": "36",
       "nombre": "ALCAUCÍN (MA)",
@@ -952,6 +936,22 @@
       "acum_24h": null,
       "acum_hoy": 0.0,
       "acum_ayer": null
+    },
+    {
+      "estacion": "25",
+      "nombre": "SANTÓN PITAR (MA)",
+      "lat": 36.80327,
+      "lon": -4.29257,
+      "precip": 0.0,
+      "precipacum": 0.1,
+      "estado": "verde",
+      "info": {},
+      "ultima_hora": 0.0,
+      "hora_anterior": 0.1,
+      "acum_12h": 0.1,
+      "acum_24h": 0.1,
+      "acum_hoy": 0.1,
+      "acum_ayer": 0.0
     },
     {
       "estacion": "1",
