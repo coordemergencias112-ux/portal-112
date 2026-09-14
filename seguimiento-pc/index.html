@@ -1,0 +1,698 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Seguimiento PC Málaga</title>
+<script type="module" src="../shared/firebase-sync.js"></script>
+<style id="app-style">
+  :root{
+    --ink:#101828; --ink-soft:#475467; --ink-faint:#8a94a3;
+    --paper:#f4f6f8; --surface:#ffffff; --surface-alt:#eef1f4;
+    --border:#d3d9e0; --accent:#2a4a73; --accent-strong:#16304f; --accent-soft:#e2e9f2;
+    --danger:#c8402f; --danger-soft:#f8e0db;
+    --st-pendiente:#c9820a; --st-pendiente-soft:#faedd0;
+    --st-tramite:#2f6fed; --st-tramite-soft:#e2ebfd;
+    --st-resuelto:#1f9d55; --st-resuelto-soft:#dff5e6;
+    --st-archivado:#8a94a3; --st-archivado-soft:#eceff2;
+    --font-ui: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    --shadow: 0 1px 2px rgba(16,24,32,.05), 0 4px 12px rgba(16,24,32,.06);
+    --radius-sm:7px; --radius-md:10px; --radius-lg:14px; --radius-pill:999px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#eef1f4; --ink-soft:#aeb8c4; --ink-faint:#7c8798;
+      --paper:#0a0e14; --surface:#131922; --surface-alt:#1a212b;
+      --border:#28313d; --accent:#6f9bd1; --accent-strong:#9bc0e8; --accent-soft:#1b2938;
+      --danger:#e8695a; --danger-soft:#3a1f1c;
+      --st-pendiente:#e3a83c; --st-pendiente-soft:#3a2c12;
+      --st-tramite:#6f9bf5; --st-tramite-soft:#182b47;
+      --st-resuelto:#5cc98a; --st-resuelto-soft:#153524;
+      --st-archivado:#8f9aa3; --st-archivado-soft:#1c2529;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 16px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--paper);color:var(--ink);font-family:var(--font-ui);-webkit-font-smoothing:antialiased;min-height:100vh;}
+  #app-root{max-width:720px;margin:0 auto;padding:0 0 96px;min-height:100vh;}
+  button,input,select,textarea{font-family:inherit;}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  @media (prefers-reduced-motion: reduce){ *{animation-duration:.001ms !important; transition-duration:.001ms !important;} }
+
+  .oculto{display:none;}
+  .login-gate{position:fixed;inset:0;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:20px;z-index:10;}
+  .login-card{width:100%;max-width:340px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:28px 24px;}
+  .login-card h1{font-size:1.2rem;margin:0 0 4px;text-align:center;}
+  .login-card > p{margin:0 0 18px;color:var(--ink-soft);font-size:.85rem;text-align:center;}
+  .login-field{margin-bottom:12px;display:flex;flex-direction:column;gap:5px;}
+  .login-field label{font-size:.72rem;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;}
+  .login-field input{border:1px solid var(--border);border-radius:var(--radius-md);padding:10px 12px;font-size:.9rem;background:var(--surface-alt);color:var(--ink);width:100%;}
+  .login-error{color:var(--danger);font-size:.8rem;min-height:1.1em;margin:0 0 6px;text-align:center;}
+  .login-hint{color:var(--ink-faint);font-size:.72rem;margin:12px 0 0;text-align:center;line-height:1.5;}
+  .btn-login{width:100%;padding:11px;border:none;border-radius:var(--radius-md);background:var(--accent);color:#fff;font-weight:700;font-size:.9rem;cursor:pointer;}
+  .btn-login:hover{background:var(--accent-strong);}
+  .btn-login:disabled{opacity:.6;cursor:default;}
+
+  .topbar{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--border);padding:14px 16px 10px;}
+  .topbar-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .brand{display:flex;align-items:baseline;gap:8px;}
+  .brand-mark{font-size:1.1rem;}
+  .brand h1{font-size:1.1rem;margin:0;font-weight:700;letter-spacing:-.01em;}
+  .back-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+
+  main{padding:16px;}
+  .banner{display:flex;align-items:flex-start;gap:8px;background:var(--danger-soft);color:var(--danger);border-radius:var(--radius-md);padding:11px 13px;font-size:.82rem;font-weight:600;margin-bottom:14px;}
+  .banner ul{margin:6px 0 0;padding-left:18px;font-weight:500;}
+  .banner a{color:inherit;text-decoration:underline;cursor:pointer;}
+
+  .resumen-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
+  .resumen-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:10px 8px;text-align:center;cursor:pointer;}
+  .resumen-card.active{border-color:var(--accent);}
+  .resumen-card .n{font-size:1.25rem;font-weight:800;font-family:var(--font-mono);}
+  .resumen-card .l{font-size:.66rem;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.03em;margin-top:2px;}
+
+  .toolbar{display:flex;gap:8px;margin-bottom:14px;}
+  .toolbar input[type=search]{flex:1;border:1px solid var(--border);border-radius:var(--radius-pill);padding:9px 14px;font-size:.85rem;background:var(--surface);color:var(--ink);}
+
+  .card-list{display:flex;flex-direction:column;gap:10px;}
+  .exp-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 14px 12px;box-shadow:var(--shadow);cursor:pointer;display:flex;flex-direction:column;gap:7px;}
+  .exp-card:hover{border-color:var(--accent);}
+  .exp-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+  .exp-asunto{font-weight:700;font-size:.98rem;letter-spacing:-.005em;}
+  .exp-meta{color:var(--ink-soft);font-size:.78rem;display:flex;flex-wrap:wrap;gap:9px;}
+  .exp-meta span{display:inline-flex;align-items:center;gap:4px;}
+  .exp-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+
+  .badge{display:inline-flex;align-items:center;gap:5px;font-size:.66rem;font-weight:700;padding:3px 9px;border-radius:var(--radius-pill);text-transform:uppercase;letter-spacing:.03em;flex:none;}
+  .badge-pendiente{background:var(--st-pendiente-soft);color:var(--st-pendiente);}
+  .badge-tramite{background:var(--st-tramite-soft);color:var(--st-tramite);}
+  .badge-resuelto{background:var(--st-resuelto-soft);color:var(--st-resuelto);}
+  .badge-archivado{background:var(--st-archivado-soft);color:var(--st-archivado);}
+  .badge-alerta{background:var(--danger-soft);color:var(--danger);}
+  .badge-prioridad-alta{background:var(--danger-soft);color:var(--danger);}
+  .badge-prioridad-media{background:var(--st-pendiente-soft);color:var(--st-pendiente);}
+  .badge-prioridad-baja{background:var(--st-archivado-soft);color:var(--ink-soft);}
+
+  .empty-state{text-align:center;color:var(--ink-faint);padding:34px 18px;border:1px dashed var(--border);border-radius:var(--radius-lg);font-size:.88rem;}
+
+  .fab{position:fixed;right:18px;bottom:24px;z-index:30;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-pill);padding:13px 20px;font-weight:700;font-size:.9rem;box-shadow:var(--shadow);cursor:pointer;display:flex;align-items:center;gap:8px;}
+  .fab:hover{background:var(--accent-strong);}
+
+  .btn{border-radius:var(--radius-md);border:1px solid var(--border);background:var(--surface);color:var(--ink);font-weight:600;font-size:.85rem;padding:9px 14px;cursor:pointer;}
+  .btn:hover{border-color:var(--accent);}
+  .btn-primary{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .btn-primary:hover{background:var(--accent-strong);border-color:var(--accent-strong);}
+  .btn-danger{background:var(--surface);border-color:var(--danger);color:var(--danger);}
+  .btn-danger:hover{background:var(--danger-soft);}
+  .btn-sm{padding:6px 10px;font-size:.76rem;border-radius:var(--radius-sm);}
+  .btn-block{width:100%;}
+  .btn-ghost{background:transparent;border-color:transparent;color:var(--ink-soft);}
+
+  .detail-header{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow);}
+  .detail-title{font-size:1.15rem;font-weight:800;letter-spacing:-.01em;margin:2px 0 4px;}
+  .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;font-size:.82rem;}
+  .detail-grid .k{color:var(--ink-faint);font-size:.66rem;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;}
+  .detail-grid .v{color:var(--ink);font-weight:600;}
+  .detail-desc{margin-top:10px;font-size:.86rem;color:var(--ink-soft);line-height:1.45;white-space:pre-wrap;}
+  .detail-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
+
+  .section-title{display:flex;align-items:center;justify-content:space-between;margin:20px 0 10px;}
+  .section-title h2{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);margin:0;font-weight:700;}
+
+  .extra-list{display:flex;flex-direction:column;gap:6px;}
+  .extra-row{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px;font-size:.82rem;}
+  .extra-row .lbl{font-weight:700;color:var(--ink-soft);min-width:110px;flex:none;}
+  .extra-row .val{flex:1;}
+  .extra-row .rm{background:none;border:none;color:var(--ink-faint);cursor:pointer;font-size:.9rem;padding:2px 4px;}
+  .extra-row .rm:hover{color:var(--danger);}
+
+  .nota-list{display:flex;flex-direction:column;gap:0;margin-top:10px;border-top:1px solid var(--border);}
+  .nota-item{padding:10px 2px;border-bottom:1px solid var(--border);font-size:.84rem;}
+  .nota-item .ts{font-family:var(--font-mono);font-size:.72rem;color:var(--ink-faint);margin-bottom:3px;}
+  .nota-item .tx{white-space:pre-wrap;}
+
+  .modal-overlay{position:fixed;inset:0;background:rgba(10,14,17,.5);display:flex;align-items:flex-end;justify-content:center;z-index:50;padding:0;}
+  @media (min-width:560px){.modal-overlay{align-items:center;padding:20px;}}
+  .modal{background:var(--surface);width:100%;max-width:560px;max-height:92vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:18px 18px 22px;box-shadow:var(--shadow);}
+  @media (min-width:560px){.modal{border-radius:var(--radius-lg);}}
+  .modal h2{margin:0 0 14px;font-size:1.05rem;}
+  .field{margin-bottom:12px;display:flex;flex-direction:column;gap:5px;}
+  .field label{font-size:.72rem;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;}
+  .field input, .field select, .field textarea{border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 10px;font-size:.9rem;background:var(--surface-alt);color:var(--ink);width:100%;}
+  .field textarea{resize:vertical;min-height:64px;}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .modal-actions{display:flex;gap:8px;margin-top:16px;}
+  .modal-actions .btn{flex:1;}
+  .hint{font-size:.72rem;color:var(--ink-faint);margin-top:10px;line-height:1.5;}
+
+  .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:var(--radius-pill);font-size:.82rem;font-weight:600;box-shadow:var(--shadow);z-index:80;opacity:0;pointer-events:none;transition:opacity .2s ease, transform .2s ease;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-4px);}
+
+  .estado-full{text-align:center;padding:60px 20px;color:var(--ink-soft);font-size:.9rem;}
+  .estado-full .sp{font-size:1.8rem;margin-bottom:10px;}
+</style>
+
+<script id="app-state" type="application/json">{"expedientes":[],"opciones":{"tiposDocumento":["Petición de ayuda (PEM)","Petición de datos de llamadas","Oficio","Informe","Correo / comunicación","Otro"],"tiposSeguimiento":["Solicitud de ayuda","Solicitud de datos","Trámite administrativo","Seguimiento interno","Coordinación con otro organismo","Otro"]},"avisoDias":5}</script>
+<div id="app-root"></div>
+
+<script id="app-runtime">
+(function(){
+  'use strict';
+
+  var STATE_KEY = 'pc112_state_v1';
+  function loadLocalState(){
+    try{ var s = localStorage.getItem(STATE_KEY); if(s) return JSON.parse(s); }catch(e){}
+    return JSON.parse(document.getElementById('app-state').textContent);
+  }
+  function saveLocalState(){ try{ localStorage.setItem(STATE_KEY, JSON.stringify(state)); }catch(e){} }
+  var state = loadLocalState();
+  var ui = { view:'home', expId:null, filtro:'abiertos', busqueda:'' };
+
+  var CLOUD_PATH = 'seguimientoPC/state';
+  var authUser = null, authKnown = false, cloudWatchStarted = false;
+  var loadErrorShown = false;
+
+  // Este módulo es privado de verdad: a diferencia de Guardia 112, aquí NO hay modo
+  // "sin sesión" — sin iniciar sesión no se ve ni se guarda nada, ni siquiera en local.
+  window.onPortalAuthReady = function(user){
+    authKnown = true;
+    authUser = user;
+    if(user){ hydrateFromCloud(); startCloudWatch(); }
+    else { cloudWatchStarted = false; }
+    render();
+  };
+
+  function hydrateFromCloud(){
+    if(!window.PortalSync) return;
+    window.PortalSync.loadData(CLOUD_PATH).then(function(remote){
+      loadErrorShown = false;
+      if(remote){ state = remote; saveLocalState(); }
+      else { window.PortalSync.saveData(CLOUD_PATH, state).catch(function(){}); }
+      render();
+    }).catch(function(){
+      loadErrorShown = true; // no dejamos la pantalla colgada: se muestra aviso con reintento
+      render();
+    });
+  }
+  function startCloudWatch(){
+    if(cloudWatchStarted || !window.PortalSync) return;
+    cloudWatchStarted = true;
+    window.PortalSync.watchData(CLOUD_PATH, function(remote){
+      if(!remote) return;
+      if(JSON.stringify(remote) === JSON.stringify(state)) return;
+      state = remote; saveLocalState(); render();
+      toast('☁️ Actualizado desde otro dispositivo');
+    });
+  }
+  function persist(successMsg){
+    saveLocalState();
+    if(authUser && window.PortalSync){
+      window.PortalSync.saveData(CLOUD_PATH, state).catch(function(){
+        toast('⚠️ No se pudo sincronizar con la nube (sin conexión)');
+      });
+    }
+    if(successMsg) toast(successMsg);
+  }
+
+  /* ---------- helpers ---------- */
+  function uid(p){ return p + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  function pad2(n){ return (n<10?'0':'')+n; }
+  function todayISO(){ var d=new Date(); return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()); }
+  function fmtFechaCorta(iso){
+    if(!iso) return '—';
+    var meses=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+    var p=iso.split('-'); return (+p[2])+' '+meses[(+p[1])-1]+' '+p[0];
+  }
+  function fmtTs(ts){
+    var d = new Date(ts);
+    return fmtFechaCorta(d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate())) + ' · ' + pad2(d.getHours())+':'+pad2(d.getMinutes());
+  }
+  function diasDesde(ts){ return Math.floor((Date.now()-ts)/86400000); }
+  function expediente(id){ for(var i=0;i<state.expedientes.length;i++){ if(state.expedientes[i].id===id) return state.expedientes[i]; } return null; }
+  function estadoAbierto(e){ return e.estado==='Pendiente' || e.estado==='En trámite'; }
+  function ultimaActividad(e){ return e.actualizado || e.creado; }
+  function diasInactivo(e){ return diasDesde(ultimaActividad(e)); }
+  function estaEnAviso(e){ return estadoAbierto(e) && diasInactivo(e) >= (state.avisoDias||5); }
+
+  function badgeEstado(estado){
+    var map = { 'Pendiente':'pendiente', 'En trámite':'tramite', 'Resuelto':'resuelto', 'Archivado':'archivado' };
+    var cls = map[estado] || 'archivado';
+    return '<span class="badge badge-'+cls+'">'+esc(estado)+'</span>';
+  }
+  function badgePrioridad(p){
+    if(!p) return '';
+    var cls = p==='Alta' ? 'alta' : (p==='Media' ? 'media' : 'baja');
+    return '<span class="badge badge-prioridad-'+cls+'">'+esc(p)+'</span>';
+  }
+
+  /* ---------- navegación ---------- */
+  function goHome(){ ui.view='home'; ui.expId=null; render(); }
+  function openExp(id){ ui.view='detail'; ui.expId=id; render(); window.scrollTo(0,0); }
+
+  /* ---------- modales genéricos ---------- */
+  function openModal(html){
+    closeModal();
+    var wrap = document.createElement('div');
+    wrap.className='modal-overlay'; wrap.id='pc-modal';
+    wrap.innerHTML = '<div class="modal">'+html+'</div>';
+    wrap.addEventListener('click', function(e){
+      if(e.target===wrap){ closeModal(); return; }
+      handleAppClick(e);
+    });
+    document.body.appendChild(wrap);
+  }
+  function closeModal(){ var m=document.getElementById('pc-modal'); if(m) m.remove(); }
+
+  var pendingToast=null;
+  function toast(msg){
+    var el = document.getElementById('pc-toast');
+    if(!el) return;
+    el.textContent = msg; el.classList.add('show');
+    clearTimeout(el._t);
+    el._t = setTimeout(function(){ el.classList.remove('show'); }, 2600);
+  }
+
+  /* ---------- opciones extensibles (tipoDocumento / tipoSeguimiento) ---------- */
+  function selectOpciones(name, lista, seleccionado){
+    var opts = lista.map(function(o){ return '<option value="'+esc(o)+'"'+(o===seleccionado?' selected':'')+'>'+esc(o)+'</option>'; }).join('');
+    return '<select name="'+name+'">' + opts + '<option value="__nuevo__">+ Añadir nueva opción…</option></select>';
+  }
+  function resolverNuevaOpcion(form, name, listaKey){
+    var sel = form.querySelector('[name="'+name+'"]');
+    if(sel.value === '__nuevo__'){
+      var nueva = (window.prompt('Nueva opción para "'+name+'":')||'').trim();
+      if(!nueva) return null;
+      if(state.opciones[listaKey].indexOf(nueva)===-1) state.opciones[listaKey].push(nueva);
+      return nueva;
+    }
+    return sel.value;
+  }
+
+  /* ---------- crear / editar expediente ---------- */
+  function formExpedienteHTML(e){
+    e = e || {};
+    return '' +
+      '<div class="field"><label>Asunto</label><input name="asunto" required placeholder="Ej. Petición de ayuda PEM incendio Sierra Norte" value="'+esc(e.asunto)+'" autofocus></div>' +
+      '<div class="field-row">' +
+        '<div class="field"><label>Tipo de documento</label>'+selectOpciones('tipoDocumento', state.opciones.tiposDocumento, e.tipoDocumento)+'</div>' +
+        '<div class="field"><label>Tipo de seguimiento</label>'+selectOpciones('tipoSeguimiento', state.opciones.tiposSeguimiento, e.tipoSeguimiento)+'</div>' +
+      '</div>' +
+      '<div class="field-row">' +
+        '<div class="field"><label>Entidad / solicitante</label><input name="entidad" placeholder="Ayuntamiento, juzgado..." value="'+esc(e.entidad)+'"></div>' +
+        '<div class="field"><label>Referencia / expediente</label><input name="referencia" placeholder="Nº oficio, expediente..." value="'+esc(e.referencia)+'"></div>' +
+      '</div>' +
+      '<div class="field-row">' +
+        '<div class="field"><label>Prioridad</label><select name="prioridad">'+['Alta','Media','Baja'].map(function(p){return '<option'+(p===(e.prioridad||'Media')?' selected':'')+'>'+p+'</option>';}).join('')+'</select></div>' +
+        '<div class="field"><label>Fecha de entrada</label><input type="date" name="fechaEntrada" value="'+esc(e.fechaEntrada||todayISO())+'"></div>' +
+      '</div>' +
+      '<div class="field"><label>Descripción</label><textarea name="descripcion" placeholder="Detalles...">'+esc(e.descripcion)+'</textarea></div>';
+  }
+
+  function openNuevoExpediente(){
+    openModal(
+      '<h2>Nuevo expediente</h2>' +
+      '<form id="f-nuevo-exp">' + formExpedienteHTML({}) +
+        '<div class="modal-actions"><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn btn-primary">Crear</button></div>' +
+      '</form>'
+    );
+    var form = document.getElementById('f-nuevo-exp');
+    form.addEventListener('submit', function(ev){
+      ev.preventDefault();
+      var fd = new FormData(form);
+      var asunto = (fd.get('asunto')||'').toString().trim();
+      if(!asunto) return;
+      var tipoDocumento = resolverNuevaOpcion(form, 'tipoDocumento', 'tiposDocumento');
+      var tipoSeguimiento = resolverNuevaOpcion(form, 'tipoSeguimiento', 'tiposSeguimiento');
+      var now = Date.now();
+      var nuevo = {
+        id: uid('e'),
+        asunto: asunto,
+        tipoDocumento: tipoDocumento || '',
+        tipoSeguimiento: tipoSeguimiento || '',
+        entidad: (fd.get('entidad')||'').toString().trim(),
+        referencia: (fd.get('referencia')||'').toString().trim(),
+        prioridad: fd.get('prioridad') || 'Media',
+        estado: 'Pendiente',
+        fechaEntrada: fd.get('fechaEntrada') || todayISO(),
+        fechaSalida: null,
+        descripcion: (fd.get('descripcion')||'').toString().trim(),
+        extras: [],
+        notas: [],
+        creado: now,
+        actualizado: now
+      };
+      state.expedientes.unshift(nuevo);
+      closeModal();
+      persist('Expediente creado');
+      render();
+      openExp(nuevo.id);
+    });
+  }
+
+  function openEditarExpediente(id){
+    var e = expediente(id); if(!e) return;
+    openModal(
+      '<h2>Editar expediente</h2>' +
+      '<form id="f-editar-exp">' + formExpedienteHTML(e) +
+        '<div class="modal-actions"><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn btn-primary">Guardar</button></div>' +
+      '</form>'
+    );
+    var form = document.getElementById('f-editar-exp');
+    form.addEventListener('submit', function(ev){
+      ev.preventDefault();
+      var fd = new FormData(form);
+      var asunto = (fd.get('asunto')||'').toString().trim();
+      if(!asunto) return;
+      var tipoDocumento = resolverNuevaOpcion(form, 'tipoDocumento', 'tiposDocumento');
+      var tipoSeguimiento = resolverNuevaOpcion(form, 'tipoSeguimiento', 'tiposSeguimiento');
+      e.asunto = asunto;
+      e.tipoDocumento = tipoDocumento || e.tipoDocumento;
+      e.tipoSeguimiento = tipoSeguimiento || e.tipoSeguimiento;
+      e.entidad = (fd.get('entidad')||'').toString().trim();
+      e.referencia = (fd.get('referencia')||'').toString().trim();
+      e.prioridad = fd.get('prioridad') || e.prioridad;
+      e.fechaEntrada = fd.get('fechaEntrada') || e.fechaEntrada;
+      e.descripcion = (fd.get('descripcion')||'').toString().trim();
+      e.actualizado = Date.now();
+      closeModal();
+      persist('Expediente actualizado');
+      render();
+    });
+  }
+
+  function confirmarEliminar(id){
+    var e = expediente(id); if(!e) return;
+    if(!window.confirm('¿Eliminar el expediente "'+e.asunto+'"? Esta acción no se puede deshacer.')) return;
+    state.expedientes = state.expedientes.filter(function(x){ return x.id!==id; });
+    persist('Expediente eliminado');
+    goHome();
+  }
+
+  function cambiarEstado(id, nuevoEstado){
+    var e = expediente(id); if(!e) return;
+    e.estado = nuevoEstado;
+    e.actualizado = Date.now();
+    if(nuevoEstado==='Resuelto' && !e.fechaSalida) e.fechaSalida = todayISO();
+    if(nuevoEstado!=='Resuelto' && nuevoEstado!=='Archivado') e.fechaSalida = null;
+    persist('Estado actualizado: '+nuevoEstado);
+    render();
+  }
+
+  /* ---------- notas de seguimiento ---------- */
+  function openNuevaNota(id){
+    openModal(
+      '<h2>Añadir nota de seguimiento</h2>' +
+      '<form id="f-nota">' +
+        '<div class="field"><textarea name="texto" required placeholder="Qué se ha hecho / novedad..." autofocus></textarea></div>' +
+        '<div class="modal-actions"><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn btn-primary">Añadir</button></div>' +
+      '</form>'
+    );
+    var form = document.getElementById('f-nota');
+    form.addEventListener('submit', function(ev){
+      ev.preventDefault();
+      var texto = (new FormData(form).get('texto')||'').toString().trim();
+      if(!texto) return;
+      var e = expediente(id); if(!e) return;
+      e.notas.unshift({ id: uid('n'), ts: Date.now(), texto: texto });
+      e.actualizado = Date.now();
+      closeModal();
+      persist('Nota añadida');
+      render();
+    });
+  }
+
+  /* ---------- campos personalizados ---------- */
+  function openNuevoCampo(id){
+    openModal(
+      '<h2>Añadir campo personalizado</h2>' +
+      '<form id="f-campo">' +
+        '<div class="field"><label>Nombre del campo</label><input name="label" required placeholder="Ej. Nº de personas afectadas" autofocus></div>' +
+        '<div class="field"><label>Valor</label><input name="valor" required placeholder="Valor"></div>' +
+        '<div class="modal-actions"><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn btn-primary">Añadir</button></div>' +
+      '</form>'
+    );
+    var form = document.getElementById('f-campo');
+    form.addEventListener('submit', function(ev){
+      ev.preventDefault();
+      var fd = new FormData(form);
+      var label = (fd.get('label')||'').toString().trim();
+      var valor = (fd.get('valor')||'').toString().trim();
+      if(!label || !valor) return;
+      var e = expediente(id); if(!e) return;
+      e.extras.push({ id: uid('x'), label: label, valor: valor });
+      e.actualizado = Date.now();
+      closeModal();
+      persist('Campo añadido');
+      render();
+    });
+  }
+  function eliminarCampo(expId, campoId){
+    var e = expediente(expId); if(!e) return;
+    e.extras = e.extras.filter(function(x){ return x.id!==campoId; });
+    persist();
+    render();
+  }
+
+  /* ---------- ajustes (umbral de aviso) ---------- */
+  function openAjustes(){
+    openModal(
+      '<h2>⚙️ Ajustes</h2>' +
+      '<form id="f-ajustes">' +
+        '<div class="field"><label>Avisar de inactividad tras (días)</label><input type="number" name="avisoDias" min="1" max="60" value="'+(state.avisoDias||5)+'"></div>' +
+        '<p class="hint">Un expediente abierto (Pendiente o En trámite) sin ninguna nota ni cambio en más de estos días aparecerá destacado como "sin novedades".</p>' +
+        '<div class="modal-actions"><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn btn-primary">Guardar</button></div>' +
+      '</form>'
+    );
+    var form = document.getElementById('f-ajustes');
+    form.addEventListener('submit', function(ev){
+      ev.preventDefault();
+      var n = parseInt(new FormData(form).get('avisoDias'), 10);
+      if(n && n>0) state.avisoDias = n;
+      closeModal();
+      persist('Ajustes guardados');
+      render();
+    });
+  }
+
+  /* ---------- render: home ---------- */
+  function filtrarExpedientes(){
+    var list = state.expedientes.slice();
+    if(ui.filtro==='abiertos') list = list.filter(estadoAbierto);
+    else if(ui.filtro!=='todos') list = list.filter(function(e){ return e.estado===ui.filtro; });
+    var q = ui.busqueda.trim().toLowerCase();
+    if(q){
+      list = list.filter(function(e){
+        return (e.asunto+' '+e.entidad+' '+e.referencia+' '+e.descripcion+' '+e.tipoDocumento+' '+e.tipoSeguimiento).toLowerCase().indexOf(q) !== -1;
+      });
+    }
+    list.sort(function(a,b){ return ultimaActividad(b)-ultimaActividad(a); });
+    return list;
+  }
+
+  function expCardHTML(e){
+    var aviso = estaEnAviso(e);
+    return '<div class="exp-card" data-open-exp="'+e.id+'">' +
+      '<div class="exp-top"><span class="exp-asunto">'+esc(e.asunto)+'</span>'+badgeEstado(e.estado)+'</div>' +
+      '<div class="exp-meta">' +
+        (e.tipoDocumento?'<span>📄 '+esc(e.tipoDocumento)+'</span>':'') +
+        (e.entidad?'<span>🏛️ '+esc(e.entidad)+'</span>':'') +
+        '<span>📅 '+fmtFechaCorta(e.fechaEntrada)+'</span>' +
+      '</div>' +
+      '<div class="exp-bottom">' +
+        badgePrioridad(e.prioridad) +
+        (aviso ? '<span class="badge badge-alerta">⏱️ '+diasInactivo(e)+' días sin novedades</span>' : '<span style="font-size:.72rem;color:var(--ink-faint);">Última actividad hace '+diasInactivo(e)+'d</span>') +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderHome(){
+    var todos = state.expedientes;
+    var pendientes = todos.filter(function(e){return e.estado==='Pendiente';}).length;
+    var tramite = todos.filter(function(e){return e.estado==='En trámite';}).length;
+    var resueltos = todos.filter(function(e){return e.estado==='Resuelto';}).length;
+    var enAviso = todos.filter(estaEnAviso).sort(function(a,b){return diasInactivo(b)-diasInactivo(a);});
+
+    var html = '<div class="topbar"><div class="topbar-row">' +
+      '<div class="brand"><span class="brand-mark">🚨</span><h1>Seguimiento PC Málaga</h1></div>' +
+      '<div style="display:flex;gap:4px;">' +
+        '<button type="button" class="btn btn-ghost btn-sm" data-ajustes title="Ajustes">⚙️</button>' +
+        '<button type="button" class="btn btn-ghost btn-sm" data-logout title="Cerrar sesión">⎋</button>' +
+      '</div>' +
+    '</div></div>';
+
+    html += '<main>';
+    if(enAviso.length){
+      html += '<div class="banner">⚠️ '+enAviso.length+' expediente(s) sin novedades hace tiempo' +
+        '<ul>' + enAviso.slice(0,5).map(function(e){ return '<li><a data-open-exp="'+e.id+'">'+esc(e.asunto)+'</a> — '+diasInactivo(e)+' días</li>'; }).join('') + '</ul>' +
+      '</div>';
+    }
+
+    html += '<div class="resumen-grid">' +
+      '<div class="resumen-card'+(ui.filtro==='abiertos'?' active':'')+'" data-filtro="abiertos"><div class="n">'+(pendientes+tramite)+'</div><div class="l">Abiertos</div></div>' +
+      '<div class="resumen-card'+(ui.filtro==='Pendiente'?' active':'')+'" data-filtro="Pendiente"><div class="n">'+pendientes+'</div><div class="l">Pendientes</div></div>' +
+      '<div class="resumen-card'+(ui.filtro==='En trámite'?' active':'')+'" data-filtro="En trámite"><div class="n">'+tramite+'</div><div class="l">En trámite</div></div>' +
+      '<div class="resumen-card'+(ui.filtro==='todos'?' active':'')+'" data-filtro="todos"><div class="n">'+todos.length+'</div><div class="l">Todos</div></div>' +
+    '</div>';
+
+    html += '<div class="toolbar"><input type="search" placeholder="Buscar por asunto, entidad, referencia..." value="'+esc(ui.busqueda)+'" data-buscar></div>';
+
+    var lista = filtrarExpedientes();
+    html += lista.length
+      ? '<div class="card-list">'+lista.map(expCardHTML).join('')+'</div>'
+      : '<div class="empty-state">No hay expedientes en esta vista.'+(state.expedientes.length?'':'<br>Crea el primero para empezar a llevar el seguimiento.')+'</div>';
+    html += '</main>';
+    html += '<button class="fab" data-nuevo-exp>＋ Nuevo expediente</button>';
+    return html;
+  }
+
+  /* ---------- render: detalle ---------- */
+  function renderDetail(){
+    var e = expediente(ui.expId);
+    if(!e) return renderHome();
+    var html = '<div class="topbar"><div class="back-row">' +
+      '<button class="btn btn-ghost btn-sm" data-go-home>← Volver</button>' +
+      '<button class="btn btn-ghost btn-sm" data-logout title="Cerrar sesión">⎋</button>' +
+    '</div></div>';
+
+    html += '<main>';
+    html += '<div class="detail-header">' +
+      '<div class="exp-top"><span class="detail-title">'+esc(e.asunto)+'</span>'+badgeEstado(e.estado)+'</div>' +
+      (estaEnAviso(e) ? '<span class="badge badge-alerta" style="margin-top:4px;">⏱️ '+diasInactivo(e)+' días sin novedades</span>' : '') +
+      '<div class="detail-grid">' +
+        '<div><div class="k">Tipo de documento</div><div class="v">'+esc(e.tipoDocumento||'—')+'</div></div>' +
+        '<div><div class="k">Tipo de seguimiento</div><div class="v">'+esc(e.tipoSeguimiento||'—')+'</div></div>' +
+        '<div><div class="k">Entidad / solicitante</div><div class="v">'+esc(e.entidad||'—')+'</div></div>' +
+        '<div><div class="k">Referencia</div><div class="v">'+esc(e.referencia||'—')+'</div></div>' +
+        '<div><div class="k">Prioridad</div><div class="v">'+esc(e.prioridad||'—')+'</div></div>' +
+        '<div><div class="k">Fecha de entrada</div><div class="v">'+fmtFechaCorta(e.fechaEntrada)+'</div></div>' +
+        '<div><div class="k">Fecha de salida</div><div class="v">'+(e.fechaSalida?fmtFechaCorta(e.fechaSalida):'—')+'</div></div>' +
+        '<div><div class="k">Última actividad</div><div class="v">'+fmtTs(ultimaActividad(e))+'</div></div>' +
+      '</div>' +
+      (e.descripcion ? '<div class="detail-desc">'+esc(e.descripcion)+'</div>' : '') +
+      '<div class="detail-actions">' +
+        '<button type="button" class="btn btn-sm" data-editar-exp="'+e.id+'">✏️ Editar</button>' +
+        (e.estado!=='En trámite' ? '<button type="button" class="btn btn-sm" data-estado="En trámite" data-exp="'+e.id+'">▶️ Poner en trámite</button>' : '') +
+        (e.estado!=='Resuelto' ? '<button type="button" class="btn btn-sm" data-estado="Resuelto" data-exp="'+e.id+'">✅ Marcar resuelto</button>' : '') +
+        (e.estado!=='Archivado' ? '<button type="button" class="btn btn-sm" data-estado="Archivado" data-exp="'+e.id+'">🗄️ Archivar</button>' : '') +
+        (e.estado==='Archivado' || e.estado==='Resuelto' ? '<button type="button" class="btn btn-sm" data-estado="Pendiente" data-exp="'+e.id+'">↩️ Reabrir</button>' : '') +
+        '<button type="button" class="btn btn-sm btn-danger" data-eliminar-exp="'+e.id+'">🗑️ Eliminar</button>' +
+      '</div>' +
+    '</div>';
+
+    html += '<div class="section-title"><h2>Campos personalizados</h2><button type="button" class="btn btn-sm" data-nuevo-campo="'+e.id+'">＋ Añadir</button></div>';
+    html += e.extras.length
+      ? '<div class="extra-list">'+e.extras.map(function(x){
+          return '<div class="extra-row"><span class="lbl">'+esc(x.label)+'</span><span class="val">'+esc(x.valor)+'</span><button type="button" class="rm" data-rm-campo="'+e.id+'|'+x.id+'">✕</button></div>';
+        }).join('')+'</div>'
+      : '<div class="empty-state">Sin campos adicionales.</div>';
+
+    html += '<div class="section-title"><h2>Seguimiento / actividad</h2><button type="button" class="btn btn-sm btn-primary" data-nueva-nota="'+e.id+'">＋ Nota</button></div>';
+    html += e.notas.length
+      ? '<div class="nota-list">'+e.notas.map(function(n){
+          return '<div class="nota-item"><div class="ts">'+fmtTs(n.ts)+'</div><div class="tx">'+esc(n.texto)+'</div></div>';
+        }).join('')+'</div>'
+      : '<div class="empty-state">Todavía no hay notas de seguimiento.</div>';
+
+    html += '</main>';
+    return html;
+  }
+
+  /* ---------- render principal ---------- */
+  function render(){
+    var root = document.getElementById('app-root');
+    if(!authKnown){
+      root.innerHTML = '<div class="estado-full"><div class="sp">⏳</div>Comprobando sesión…</div>';
+      return;
+    }
+    if(!authUser){
+      root.innerHTML = renderLoginGate();
+      bindLoginForm();
+      return;
+    }
+    if(loadErrorShown){
+      root.innerHTML = '<div class="estado-full">' +
+        '<div class="sp">⚠️</div>No se pudo cargar desde la nube (revisa tu conexión).' +
+        '<div style="margin-top:14px;"><button type="button" class="btn btn-primary" data-reintentar>Reintentar</button></div>' +
+        '</div>';
+      var r = document.querySelector('[data-reintentar]');
+      if(r) r.addEventListener('click', function(){ loadErrorShown=false; render(); hydrateFromCloud(); });
+      return;
+    }
+    root.innerHTML = (ui.view==='detail' ? renderDetail() : renderHome()) +
+      '<div class="toast" id="pc-toast"></div>';
+    bindAppClicks();
+  }
+
+  function renderLoginGate(){
+    return '<div class="login-gate"><div class="login-card">' +
+      '<h1>🔒 Seguimiento PC Málaga</h1>' +
+      '<p>Acceso privado — inicia sesión para continuar.</p>' +
+      '<form id="f-login-gate">' +
+        '<div class="login-field"><label>Email</label><input type="email" name="email" required autocomplete="username" autofocus></div>' +
+        '<div class="login-field"><label>Contraseña</label><input type="password" name="password" required autocomplete="current-password"></div>' +
+        '<p class="login-error" id="login-gate-error"></p>' +
+        '<button type="submit" class="btn-login">Entrar</button>' +
+      '</form>' +
+      '<p class="login-hint">Este módulo no muestra ni guarda nada sin iniciar sesión — a diferencia de otros módulos del Portal, aquí no hay modo sin conexión.</p>' +
+    '</div></div>';
+  }
+  function bindLoginForm(){
+    var form = document.getElementById('f-login-gate');
+    if(!form) return;
+    form.addEventListener('submit', function(ev){
+      ev.preventDefault();
+      var errEl = document.getElementById('login-gate-error');
+      errEl.textContent = '';
+      if(!window.PortalSync){ errEl.textContent = 'No se pudo cargar la sincronización — revisa tu conexión y recarga.'; return; }
+      var fd = new FormData(form);
+      var email = (fd.get('email')||'').toString().trim();
+      var password = (fd.get('password')||'').toString();
+      var btn = form.querySelector('button[type=submit]');
+      btn.disabled = true; btn.textContent = 'Entrando…';
+
+      var resuelto = false;
+      var to = setTimeout(function(){
+        if(resuelto) return; resuelto = true;
+        errEl.textContent = 'La conexión está tardando demasiado. Inténtalo de nuevo.';
+        btn.disabled = false; btn.textContent = 'Entrar';
+      }, 12000);
+
+      window.PortalSync.login(email, password).then(function(){
+        if(resuelto) return; resuelto = true; clearTimeout(to);
+      }).catch(function(err){
+        if(resuelto) return; resuelto = true; clearTimeout(to);
+        errEl.textContent = 'Email o contraseña incorrectos.';
+        btn.disabled = false; btn.textContent = 'Entrar';
+      });
+    });
+  }
+
+  /* ---------- delegación de eventos ---------- */
+  function handleAppClick(ev){
+    var t;
+    t = ev.target.closest('[data-close]'); if(t){ closeModal(); return; }
+    t = ev.target.closest('[data-go-home]'); if(t){ goHome(); return; }
+    t = ev.target.closest('[data-logout]'); if(t){ if(window.confirm('¿Cerrar sesión en este dispositivo?') && window.PortalSync) window.PortalSync.logout(); return; }
+    t = ev.target.closest('[data-ajustes]'); if(t){ openAjustes(); return; }
+    t = ev.target.closest('[data-nuevo-exp]'); if(t){ openNuevoExpediente(); return; }
+    t = ev.target.closest('[data-open-exp]'); if(t){ openExp(t.getAttribute('data-open-exp')); return; }
+    t = ev.target.closest('[data-editar-exp]'); if(t){ openEditarExpediente(t.getAttribute('data-editar-exp')); return; }
+    t = ev.target.closest('[data-eliminar-exp]'); if(t){ confirmarEliminar(t.getAttribute('data-eliminar-exp')); return; }
+    t = ev.target.closest('[data-estado]'); if(t){ cambiarEstado(t.getAttribute('data-exp'), t.getAttribute('data-estado')); return; }
+    t = ev.target.closest('[data-nueva-nota]'); if(t){ openNuevaNota(t.getAttribute('data-nueva-nota')); return; }
+    t = ev.target.closest('[data-nuevo-campo]'); if(t){ openNuevoCampo(t.getAttribute('data-nuevo-campo')); return; }
+    t = ev.target.closest('[data-rm-campo]'); if(t){ var parts=t.getAttribute('data-rm-campo').split('|'); eliminarCampo(parts[0], parts[1]); return; }
+    t = ev.target.closest('[data-filtro]'); if(t){ ui.filtro = t.getAttribute('data-filtro'); render(); return; }
+  }
+  function bindAppClicks(){
+    var root = document.getElementById('app-root');
+    root.addEventListener('click', handleAppClick);
+    var buscador = root.querySelector('[data-buscar]');
+    if(buscador){
+      buscador.addEventListener('input', function(){ ui.busqueda = buscador.value; render(); var el=document.querySelector('[data-buscar]'); if(el){ el.focus(); el.setSelectionRange(el.value.length, el.value.length); } });
+    }
+  }
+
+  render();
+})();
+</script>
