@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-14T11:02:25Z",
+  "generated_at": "2026-09-14T11:22:32Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -1153,40 +1153,8 @@
       "id": "29075",
       "nombre": "Nerja",
       "referencia": "Costa - Axarquía",
-      "dias": [
-        {
-          "fecha": "2026-09-14",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "SE",
-          "tempMax": 27,
-          "tempMin": 21
-        },
-        {
-          "fecha": "2026-09-15",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "S",
-          "tempMax": 28,
-          "tempMin": 21
-        },
-        {
-          "fecha": "2026-09-16",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 5,
-          "vientoDireccion": "S",
-          "tempMax": 28,
-          "tempMin": 21
-        },
-        {
-          "fecha": "2026-09-17",
-          "probPrecipitacion": 25,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "SE",
-          "tempMax": 27,
-          "tempMin": 21
-        }
-      ],
+      "error": "HTTP Error 500: Internal Server Error",
+      "dias": [],
       "horas_hoy": [
         {
           "hora": 8,

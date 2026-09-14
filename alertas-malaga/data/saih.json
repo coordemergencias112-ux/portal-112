@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-14T11:02:32Z",
-  "data_timestamp": "2026-09-14T12:00:00",
+  "generated_at": "2026-09-14T11:22:37Z",
+  "data_timestamp": "2026-09-14T13:00:00",
   "rios": [
     {
       "estacion": "34",
@@ -23,7 +23,7 @@
       "lat": 36.8471,
       "lon": -4.2047,
       "nivel_rio": 0.02,
-      "caudal": 0.01,
+      "caudal": 0.02,
       "tendencia": "0",
       "aviso": 1.7,
       "prealerta": 2.3,
@@ -53,7 +53,7 @@
       "lat": 36.5672,
       "lon": -5.2463,
       "nivel_rio": 0.12,
-      "caudal": 0.71,
+      "caudal": 0.72,
       "tendencia": "0",
       "aviso": 1.1,
       "prealerta": 1.6,
@@ -97,7 +97,7 @@
       "nombre": "RÍO GUADALHORCE (ARCHIDONA) (MA)",
       "lat": 37.0821,
       "lon": -4.4554,
-      "nivel_rio": 0.04,
+      "nivel_rio": 0.05,
       "caudal": 0.0,
       "tendencia": "0",
       "aviso": 2.0,
@@ -127,7 +127,7 @@
       "nombre": "RÍO GUADALHORCE (CÁRTAMA) (MA)",
       "lat": 36.7293,
       "lon": -4.6136,
-      "nivel_rio": 0.01,
+      "nivel_rio": 0.03,
       "caudal": 0.0,
       "tendencia": "0",
       "aviso": 2.5,
@@ -143,7 +143,7 @@
       "lat": 36.9315,
       "lon": -4.9284,
       "nivel_rio": 0.11,
-      "caudal": 0.37,
+      "caudal": 0.35,
       "tendencia": "0",
       "aviso": 1.5,
       "prealerta": 2.0,
@@ -191,7 +191,7 @@
       "lon": -4.80325,
       "volumen": 44.2,
       "porcentaje": 66.5,
-      "nivel": 336.15
+      "nivel": 336.16
     },
     {
       "estacion": "19",
@@ -207,8 +207,8 @@
       "nombre": "EMBALSE DE LA CONCEPCIÓN (MA)",
       "lat": 36.53643,
       "lon": -4.95889,
-      "volumen": 33.17,
-      "porcentaje": 57.7,
+      "volumen": 33.16,
+      "porcentaje": 57.6,
       "nivel": 91.41
     },
     {
@@ -225,9 +225,9 @@
       "nombre": "EMBALSE DEL GUADALHORCE (MA)",
       "lat": 36.94401,
       "lon": -4.80277,
-      "volumen": 111.52,
+      "volumen": 111.47,
       "porcentaje": 88.7,
-      "nivel": 360.19
+      "nivel": 360.18
     },
     {
       "estacion": "29",
@@ -249,6 +249,22 @@
     }
   ],
   "lluvia": [
+    {
+      "estacion": "22",
+      "nombre": "MÁLAGA - PASEO DE LA FAROLA (MA)",
+      "lat": 36.71636,
+      "lon": -4.41273,
+      "precip": 0.3,
+      "precipacum": 0.0,
+      "estado": "amarillo",
+      "info": {},
+      "ultima_hora": 0.3,
+      "hora_anterior": 0.0,
+      "acum_12h": 0.0,
+      "acum_24h": 0.0,
+      "acum_hoy": 0.0,
+      "acum_ayer": 0.0
+    },
     {
       "estacion": "36",
       "nombre": "ALCAUCÍN (MA)",
@@ -686,22 +702,6 @@
       "nombre": "MAJADA DE LAS LOMAS (MA)",
       "lat": 36.54179,
       "lon": -5.47226,
-      "precip": 0.0,
-      "precipacum": 0.0,
-      "estado": "verde",
-      "info": {},
-      "ultima_hora": 0.0,
-      "hora_anterior": null,
-      "acum_12h": null,
-      "acum_24h": null,
-      "acum_hoy": 0.0,
-      "acum_ayer": null
-    },
-    {
-      "estacion": "22",
-      "nombre": "MÁLAGA - PASEO DE LA FAROLA (MA)",
-      "lat": 36.71636,
-      "lon": -4.41273,
       "precip": 0.0,
       "precipacum": 0.0,
       "estado": "verde",
