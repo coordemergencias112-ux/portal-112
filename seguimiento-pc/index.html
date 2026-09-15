@@ -1,7 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Seguimiento PC Málaga</title>
-<script type="module" src="../shared/firebase-sync.js"></script>
 <style id="app-style">
   :root{
     --ink:#101828; --ink-soft:#475467; --ink-faint:#8a94a3;
@@ -37,20 +36,6 @@
   button,input,select,textarea{font-family:inherit;}
   :focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
   @media (prefers-reduced-motion: reduce){ *{animation-duration:.001ms !important; transition-duration:.001ms !important;} }
-
-  .oculto{display:none;}
-  .login-gate{position:fixed;inset:0;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:20px;z-index:10;}
-  .login-card{width:100%;max-width:340px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:28px 24px;}
-  .login-card h1{font-size:1.2rem;margin:0 0 4px;text-align:center;}
-  .login-card > p{margin:0 0 18px;color:var(--ink-soft);font-size:.85rem;text-align:center;}
-  .login-field{margin-bottom:12px;display:flex;flex-direction:column;gap:5px;}
-  .login-field label{font-size:.72rem;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em;}
-  .login-field input{border:1px solid var(--border);border-radius:var(--radius-md);padding:10px 12px;font-size:.9rem;background:var(--surface-alt);color:var(--ink);width:100%;}
-  .login-error{color:var(--danger);font-size:.8rem;min-height:1.1em;margin:0 0 6px;text-align:center;}
-  .login-hint{color:var(--ink-faint);font-size:.72rem;margin:12px 0 0;text-align:center;line-height:1.5;}
-  .btn-login{width:100%;padding:11px;border:none;border-radius:var(--radius-md);background:var(--accent);color:#fff;font-weight:700;font-size:.9rem;cursor:pointer;}
-  .btn-login:hover{background:var(--accent-strong);}
-  .btn-login:disabled{opacity:.6;cursor:default;}
 
   .topbar{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--border);padding:14px 16px 10px;}
   .topbar-row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
@@ -146,9 +131,6 @@
 
   .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:var(--radius-pill);font-size:.82rem;font-weight:600;box-shadow:var(--shadow);z-index:80;opacity:0;pointer-events:none;transition:opacity .2s ease, transform .2s ease;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(-4px);}
-
-  .estado-full{text-align:center;padding:60px 20px;color:var(--ink-soft);font-size:.9rem;}
-  .estado-full .sp{font-size:1.8rem;margin-bottom:10px;}
 </style>
 
 <script id="app-state" type="application/json">{"expedientes":[],"opciones":{"tiposDocumento":["Petición de ayuda (PEM)","Petición de datos de llamadas","Oficio","Informe","Correo / comunicación","Otro"],"tiposSeguimiento":["Solicitud de ayuda","Solicitud de datos","Trámite administrativo","Seguimiento interno","Coordinación con otro organismo","Otro"]},"avisoDias":5}</script>
@@ -167,49 +149,10 @@
   var state = loadLocalState();
   var ui = { view:'home', expId:null, filtro:'abiertos', busqueda:'' };
 
-  var CLOUD_PATH = 'seguimientoPC/state';
-  var authUser = null, authKnown = false, cloudWatchStarted = false;
-  var loadErrorShown = false;
-
-  // Este módulo es privado de verdad: a diferencia de Guardia 112, aquí NO hay modo
-  // "sin sesión" — sin iniciar sesión no se ve ni se guarda nada, ni siquiera en local.
-  window.onPortalAuthReady = function(user){
-    authKnown = true;
-    authUser = user;
-    if(user){ hydrateFromCloud(); startCloudWatch(); }
-    else { cloudWatchStarted = false; }
-    render();
-  };
-
-  function hydrateFromCloud(){
-    if(!window.PortalSync) return;
-    window.PortalSync.loadData(CLOUD_PATH).then(function(remote){
-      loadErrorShown = false;
-      if(remote){ state = remote; saveLocalState(); }
-      else { window.PortalSync.saveData(CLOUD_PATH, state).catch(function(){}); }
-      render();
-    }).catch(function(){
-      loadErrorShown = true; // no dejamos la pantalla colgada: se muestra aviso con reintento
-      render();
-    });
-  }
-  function startCloudWatch(){
-    if(cloudWatchStarted || !window.PortalSync) return;
-    cloudWatchStarted = true;
-    window.PortalSync.watchData(CLOUD_PATH, function(remote){
-      if(!remote) return;
-      if(JSON.stringify(remote) === JSON.stringify(state)) return;
-      state = remote; saveLocalState(); render();
-      toast('☁️ Actualizado desde otro dispositivo');
-    });
-  }
+  // Módulo 100% local: todo vive solo en este navegador (localStorage), sin login
+  // ni sincronización con ningún sitio — así nadie más puede ver estos datos.
   function persist(successMsg){
     saveLocalState();
-    if(authUser && window.PortalSync){
-      window.PortalSync.saveData(CLOUD_PATH, state).catch(function(){
-        toast('⚠️ No se pudo sincronizar con la nube (sin conexión)');
-      });
-    }
     if(successMsg) toast(successMsg);
   }
 
@@ -514,10 +457,7 @@
 
     var html = '<div class="topbar"><div class="topbar-row">' +
       '<div class="brand"><span class="brand-mark">🚨</span><h1>Seguimiento PC Málaga</h1></div>' +
-      '<div style="display:flex;gap:4px;">' +
-        '<button type="button" class="btn btn-ghost btn-sm" data-ajustes title="Ajustes">⚙️</button>' +
-        '<button type="button" class="btn btn-ghost btn-sm" data-logout title="Cerrar sesión">⎋</button>' +
-      '</div>' +
+      '<button type="button" class="btn btn-ghost btn-sm" data-ajustes title="Ajustes">⚙️</button>' +
     '</div></div>';
 
     html += '<main>';
@@ -551,7 +491,6 @@
     if(!e) return renderHome();
     var html = '<div class="topbar"><div class="back-row">' +
       '<button class="btn btn-ghost btn-sm" data-go-home>← Volver</button>' +
-      '<button class="btn btn-ghost btn-sm" data-logout title="Cerrar sesión">⎋</button>' +
     '</div></div>';
 
     html += '<main>';
@@ -600,71 +539,9 @@
   /* ---------- render principal ---------- */
   function render(){
     var root = document.getElementById('app-root');
-    if(!authKnown){
-      root.innerHTML = '<div class="estado-full"><div class="sp">⏳</div>Comprobando sesión…</div>';
-      return;
-    }
-    if(!authUser){
-      root.innerHTML = renderLoginGate();
-      bindLoginForm();
-      return;
-    }
-    if(loadErrorShown){
-      root.innerHTML = '<div class="estado-full">' +
-        '<div class="sp">⚠️</div>No se pudo cargar desde la nube (revisa tu conexión).' +
-        '<div style="margin-top:14px;"><button type="button" class="btn btn-primary" data-reintentar>Reintentar</button></div>' +
-        '</div>';
-      var r = document.querySelector('[data-reintentar]');
-      if(r) r.addEventListener('click', function(){ loadErrorShown=false; render(); hydrateFromCloud(); });
-      return;
-    }
     root.innerHTML = (ui.view==='detail' ? renderDetail() : renderHome()) +
       '<div class="toast" id="pc-toast"></div>';
     bindAppClicks();
-  }
-
-  function renderLoginGate(){
-    return '<div class="login-gate"><div class="login-card">' +
-      '<h1>🔒 Seguimiento PC Málaga</h1>' +
-      '<p>Acceso privado — inicia sesión para continuar.</p>' +
-      '<form id="f-login-gate">' +
-        '<div class="login-field"><label>Email</label><input type="email" name="email" required autocomplete="username" autofocus></div>' +
-        '<div class="login-field"><label>Contraseña</label><input type="password" name="password" required autocomplete="current-password"></div>' +
-        '<p class="login-error" id="login-gate-error"></p>' +
-        '<button type="submit" class="btn-login">Entrar</button>' +
-      '</form>' +
-      '<p class="login-hint">Este módulo no muestra ni guarda nada sin iniciar sesión — a diferencia de otros módulos del Portal, aquí no hay modo sin conexión.</p>' +
-    '</div></div>';
-  }
-  function bindLoginForm(){
-    var form = document.getElementById('f-login-gate');
-    if(!form) return;
-    form.addEventListener('submit', function(ev){
-      ev.preventDefault();
-      var errEl = document.getElementById('login-gate-error');
-      errEl.textContent = '';
-      if(!window.PortalSync){ errEl.textContent = 'No se pudo cargar la sincronización — revisa tu conexión y recarga.'; return; }
-      var fd = new FormData(form);
-      var email = (fd.get('email')||'').toString().trim();
-      var password = (fd.get('password')||'').toString();
-      var btn = form.querySelector('button[type=submit]');
-      btn.disabled = true; btn.textContent = 'Entrando…';
-
-      var resuelto = false;
-      var to = setTimeout(function(){
-        if(resuelto) return; resuelto = true;
-        errEl.textContent = 'La conexión está tardando demasiado. Inténtalo de nuevo.';
-        btn.disabled = false; btn.textContent = 'Entrar';
-      }, 12000);
-
-      window.PortalSync.login(email, password).then(function(){
-        if(resuelto) return; resuelto = true; clearTimeout(to);
-      }).catch(function(err){
-        if(resuelto) return; resuelto = true; clearTimeout(to);
-        errEl.textContent = 'Email o contraseña incorrectos.';
-        btn.disabled = false; btn.textContent = 'Entrar';
-      });
-    });
   }
 
   /* ---------- delegación de eventos ---------- */
@@ -672,7 +549,6 @@
     var t;
     t = ev.target.closest('[data-close]'); if(t){ closeModal(); return; }
     t = ev.target.closest('[data-go-home]'); if(t){ goHome(); return; }
-    t = ev.target.closest('[data-logout]'); if(t){ if(window.confirm('¿Cerrar sesión en este dispositivo?') && window.PortalSync) window.PortalSync.logout(); return; }
     t = ev.target.closest('[data-ajustes]'); if(t){ openAjustes(); return; }
     t = ev.target.closest('[data-nuevo-exp]'); if(t){ openNuevoExpediente(); return; }
     t = ev.target.closest('[data-open-exp]'); if(t){ openExp(t.getAttribute('data-open-exp')); return; }
