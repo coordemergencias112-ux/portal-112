@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-16T17:02:25Z",
+  "generated_at": "2026-09-16T17:22:08Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -68,7 +68,7 @@
           "probPrecipitacion": 0,
           "vientoVelocidad": 25,
           "vientoDireccion": "E",
-          "tempMax": 30,
+          "tempMax": 27,
           "tempMin": 20
         },
         {
@@ -77,7 +77,7 @@
           "vientoVelocidad": 30,
           "vientoDireccion": "E",
           "tempMax": 28,
-          "tempMin": 22
+          "tempMin": 21
         },
         {
           "fecha": "2026-09-18",
@@ -247,40 +247,8 @@
       "id": "29084",
       "nombre": "Ronda",
       "referencia": "Interior / Serranía",
-      "dias": [
-        {
-          "fecha": "2026-09-16",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 20,
-          "vientoDireccion": "O",
-          "tempMax": 33,
-          "tempMin": 20
-        },
-        {
-          "fecha": "2026-09-17",
-          "probPrecipitacion": 100,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "SE",
-          "tempMax": 28,
-          "tempMin": 17
-        },
-        {
-          "fecha": "2026-09-18",
-          "probPrecipitacion": 85,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "SE",
-          "tempMax": 28,
-          "tempMin": 15
-        },
-        {
-          "fecha": "2026-09-19",
-          "probPrecipitacion": 55,
-          "vientoVelocidad": 25,
-          "vientoDireccion": "SE",
-          "tempMax": 26,
-          "tempMin": 17
-        }
-      ],
+      "error": "HTTP Error 500: Internal Server Error",
+      "dias": [],
       "horas_hoy": [
         {
           "hora": 8,
@@ -808,7 +776,7 @@
           "probPrecipitacion": 0,
           "vientoVelocidad": 30,
           "vientoDireccion": "SO",
-          "tempMax": 31,
+          "tempMax": 27,
           "tempMin": 23
         },
         {
@@ -816,7 +784,7 @@
           "probPrecipitacion": 100,
           "vientoVelocidad": 25,
           "vientoDireccion": "SE",
-          "tempMax": 27,
+          "tempMax": 28,
           "tempMin": 22
         },
         {
