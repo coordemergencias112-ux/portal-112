@@ -1,26 +1,26 @@
 {
-  "generated_at": "2026-09-17T16:42:13Z",
+  "generated_at": "2026-09-17T17:02:20Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
       "tipo": "interior",
-      "nivel": "amarillo",
+      "nivel": "naranja",
       "avisos": [
-        {
-          "fenomeno": "Lluvias",
-          "nivel": "amarillo",
-          "evento": "Aviso de lluvias de nivel amarillo",
-          "severidad": "Moderate",
-          "desde": "2026-09-17T12:00:00+02:00",
-          "hasta": "2026-09-17T19:59:59+02:00",
-          "estado_tiempo": "activo"
-        },
         {
           "fenomeno": "Tormentas",
           "nivel": "amarillo",
           "evento": "Aviso de tormentas de nivel amarillo",
           "severidad": "Moderate",
           "desde": "2026-09-17T12:00:00+02:00",
+          "hasta": "2026-09-17T19:59:59+02:00",
+          "estado_tiempo": "activo"
+        },
+        {
+          "fenomeno": "Lluvias",
+          "nivel": "naranja",
+          "evento": "Aviso de lluvias de nivel naranja",
+          "severidad": "Severe",
+          "desde": "2026-09-17T18:00:00+02:00",
           "hasta": "2026-09-17T19:59:59+02:00",
           "estado_tiempo": "activo"
         }
@@ -1355,6 +1355,13 @@
     }
   ],
   "historial": [
+    {
+      "zona": "Antequera",
+      "fenomeno": "Lluvias",
+      "nivel": "naranja",
+      "desde": "2026-09-17T18:00:00+02:00",
+      "hasta": "2026-09-17T19:59:59+02:00"
+    },
     {
       "zona": "Antequera",
       "fenomeno": "Lluvias",
