@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-17T20:22:09Z",
+  "generated_at": "2026-09-17T20:42:29Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -43,8 +43,40 @@
       "id": "29067",
       "nombre": "Málaga capital",
       "referencia": "Costa",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-09-17",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "SE",
+          "tempMax": 28,
+          "tempMin": 21
+        },
+        {
+          "fecha": "2026-09-18",
+          "probPrecipitacion": 95,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "SE",
+          "tempMax": 28,
+          "tempMin": 20
+        },
+        {
+          "fecha": "2026-09-19",
+          "probPrecipitacion": 40,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "SE",
+          "tempMax": 29,
+          "tempMin": 20
+        },
+        {
+          "fecha": "2026-09-20",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "S",
+          "tempMax": 30,
+          "tempMin": 20
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 14,
