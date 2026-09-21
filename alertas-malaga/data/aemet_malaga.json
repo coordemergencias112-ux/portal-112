@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-21T17:02:20Z",
+  "generated_at": "2026-09-21T17:21:43Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -413,40 +413,8 @@
       "id": "29015",
       "nombre": "Antequera",
       "referencia": "Comarca de Antequera",
-      "dias": [
-        {
-          "fecha": "2026-09-21",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 25,
-          "vientoDireccion": "S",
-          "tempMax": 28,
-          "tempMin": 19
-        },
-        {
-          "fecha": "2026-09-22",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 25,
-          "vientoDireccion": "S",
-          "tempMax": 30,
-          "tempMin": 15
-        },
-        {
-          "fecha": "2026-09-23",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 25,
-          "vientoDireccion": "S",
-          "tempMax": 30,
-          "tempMin": 17
-        },
-        {
-          "fecha": "2026-09-24",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "S",
-          "tempMax": 31,
-          "tempMin": 17
-        }
-      ],
+      "error": "HTTP Error 500: Internal Server Error",
+      "dias": [],
       "horas_hoy": [
         {
           "hora": 8,
@@ -789,7 +757,7 @@
           "probPrecipitacion": 0,
           "vientoVelocidad": 20,
           "vientoDireccion": "E",
-          "tempMax": 29,
+          "tempMax": 27,
           "tempMin": 22
         },
         {
