@@ -187,19 +187,23 @@ def fetch_avisos():
     return zones_out, vistos_ahora
 
 
+def _leer_json_previo(ruta_json_previo):
+    if os.path.exists(ruta_json_previo):
+        try:
+            with open(ruta_json_previo, encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:  # noqa: BLE001
+            return {}
+    return {}
+
+
 def build_historial(vistos_ahora, ruta_json_previo):
     """Mantiene una lista con los avisos no-verdes de los últimos
     HISTORIAL_DIAS días, leyendo el JSON ya publicado (si existe) y
     añadiendo lo nuevo visto en esta pasada. Así el historial sobrevive
     aunque AEMET dé de baja el CAP en cuanto expira."""
     now = datetime.now(timezone.utc)
-    previo = []
-    if os.path.exists(ruta_json_previo):
-        try:
-            with open(ruta_json_previo, encoding="utf-8") as f:
-                previo = json.load(f).get("historial", [])
-        except Exception:  # noqa: BLE001
-            previo = []
+    previo = _leer_json_previo(ruta_json_previo).get("historial", [])
 
     nuevos = [
         {
@@ -361,7 +365,20 @@ def main():
     out_path = os.path.join(out_dir, "aemet_malaga.json")
 
     print("Descargando avisos AEMET...")
-    avisos, vistos_ahora = fetch_avisos()
+    # El endpoint de avisos_cap de AEMET es el más inestable de los tres que
+    # usamos (a veces corta la conexión en seco, "RemoteDisconnected", durante
+    # horas seguidas). Si falla, no tiene sentido tirar abajo todo el script:
+    # se conservan los últimos avisos publicados y se sigue con la previsión,
+    # que depende de otro endpoint totalmente distinto y suele ir bien.
+    avisos_error = None
+    try:
+        avisos, vistos_ahora = fetch_avisos()
+    except Exception as e:  # noqa: BLE001
+        print(f"AVISO: fallo al descargar avisos AEMET, se conservan los últimos publicados: {e}", file=sys.stderr)
+        avisos_error = str(e)
+        avisos = _leer_json_previo(out_path).get("avisos", {})
+        vistos_ahora = []
+
     print("Descargando previsión diaria...")
     prevision = fetch_forecast()
     print("Descargando previsión horaria (hoy)...")
@@ -374,6 +391,7 @@ def main():
     payload = {
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "avisos": avisos,
+        "avisos_error": avisos_error,
         "prevision": prevision,
         "historial": historial,
     }
