@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-23T12:22:21Z",
+  "generated_at": "2026-09-23T12:44:15Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -68,7 +68,7 @@
       "id": "29042",
       "nombre": "Coín",
       "referencia": "Valle del Guadalhorce",
-      "error": "HTTP Error 500: Internal Server Error",
+      "error": "0",
       "dias": [],
       "horas_hoy": []
     },
@@ -84,7 +84,7 @@
       "id": "29094",
       "nombre": "Vélez-Málaga",
       "referencia": "Axarquía",
-      "error": "AEMET /prediccion/especifica/municipio/diaria/29094 -> {'descripcion': 'Error al obtener los datos', 'estado': 404}",
+      "error": "HTTP Error 500: Internal Server Error",
       "dias": [],
       "horas_hoy": []
     },
