@@ -866,9 +866,17 @@
     }
   }
 
-  // Revisa la frescura cada minuto, para que una pestaña abierta todo el día
-  // (p. ej. en la sala de coordinación) acabe mostrando el aviso sin recargar.
+  // Revisa la frescura cada minuto (contador local), para que una pestaña abierta
+  // todo el día (p. ej. en la sala de coordinación) muestre el tiempo transcurrido
+  // sin recargar la página entera.
   setInterval(actualizarLineaEstado, 60000);
+
+  // Y además vuelve a pedir los datos de verdad cada 5 min: si no hiciéramos esto,
+  // una pestaña abierta muchas horas seguiría mostrando la hora de la primera
+  // carga para siempre y acabaría disparando la alarma roja en falso aunque el
+  // workflow llevara todo el día actualizando con normalidad. Incendios y SAIH
+  // se comitean junto con avisos/previsión, así que se refrescan a la vez.
+  setInterval(function(){ loadAemetData(); loadIncendios(); loadSaih(); }, 5 * 60000);
 
   // ---------- Mapa a pantalla completa en otra ventana ----------
   const esMapaFull = new URLSearchParams(location.search).get('mapa') === 'full';
