@@ -197,6 +197,7 @@
         <button class="pill" data-estado="activo">Activos ahora</button>
         <button class="pill" data-estado="proximo">Próximos</button>
       </div>
+      <div id="avisosErrorNotice" style="display:none;border-radius:8px;padding:8px 10px;font-size:.85rem;margin-bottom:8px;background:var(--nivel-amarillo-bg,#faedd0);color:var(--nivel-amarillo,#c9820a);font-weight:600;"></div>
       <div class="zona-list" id="zonaList"><div class="empty">Cargando avisos…</div></div>
     </div>
 
@@ -857,6 +858,17 @@
       renderHistorial(data.historial);
       ultimaActualizacionDatos = new Date(data.generated_at);
       actualizarLineaEstado();
+
+      // avisos_error: la previsión y demás sí se han podido renovar, pero AEMET
+      // no respondió al pedirle los avisos por zona — se sigue mostrando el
+      // último dato conocido, marcado con este aviso en vez de fallar en silencio.
+      const notice = document.getElementById('avisosErrorNotice');
+      if (data.avisos_error) {
+        notice.style.display = '';
+        notice.textContent = '⚠️ AEMET no respondió al pedir los avisos — mostrando el último dato conocido.';
+      } else {
+        notice.style.display = 'none';
+      }
     } catch (e) {
       document.getElementById('updatedLine').textContent = 'No se pudieron cargar los avisos/previsión AEMET.';
       document.getElementById('updatedLine').classList.add('aviso-parado');
