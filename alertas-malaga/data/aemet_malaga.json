@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-24T22:02:31Z",
+  "generated_at": "2026-09-24T22:16:42Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -121,41 +121,46 @@
       "id": "29084",
       "nombre": "Ronda",
       "referencia": "Interior / Serranía",
-      "dias": [
+      "error": "HTTP Error 500: Internal Server Error",
+      "dias": [],
+      "horas_hoy": [
         {
-          "fecha": "2026-09-24",
+          "hora": 20,
+          "temp": null,
+          "precip": 0,
           "probPrecipitacion": 0,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "E",
-          "tempMax": 31,
-          "tempMin": 21
+          "estadoCielo": "11",
+          "vientoVelocidad": null,
+          "vientoDireccion": null
         },
         {
-          "fecha": "2026-09-25",
+          "hora": 21,
+          "temp": 25,
+          "precip": 0,
           "probPrecipitacion": 0,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "E",
-          "tempMax": 34,
-          "tempMin": 19
+          "estadoCielo": "11n",
+          "vientoVelocidad": 4,
+          "vientoDireccion": "O"
         },
         {
-          "fecha": "2026-09-26",
+          "hora": 22,
+          "temp": 23,
+          "precip": 0,
           "probPrecipitacion": 0,
-          "vientoVelocidad": 20,
-          "vientoDireccion": "SE",
-          "tempMax": 32,
-          "tempMin": 20
+          "estadoCielo": "11n",
+          "vientoVelocidad": 3,
+          "vientoDireccion": "N"
         },
         {
-          "fecha": "2026-09-27",
+          "hora": 23,
+          "temp": 21,
+          "precip": 0,
           "probPrecipitacion": 0,
-          "vientoVelocidad": 20,
-          "vientoDireccion": "SE",
-          "tempMax": 29,
-          "tempMin": 19
+          "estadoCielo": "11n",
+          "vientoVelocidad": 2,
+          "vientoDireccion": "N"
         }
-      ],
-      "horas_hoy": []
+      ]
     },
     {
       "id": "29015",
