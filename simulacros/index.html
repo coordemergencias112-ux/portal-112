@@ -207,7 +207,10 @@
     return base;
   }
   var state = load();
-  var ui = { view:'home', simId:null, buscar:'', grupo:'todos', buscarCat:'', estadoFiltro:'todos' };
+  // "Ver solo los seleccionados" se recuerda entre visitas (es una preferencia, no un dato del simulacro).
+  var PREF_KEY = 'sim112_ui_v1';
+  function cargarPref(){ try{ return JSON.parse(localStorage.getItem(PREF_KEY)||'{}')||{}; }catch(e){ return {}; } }
+  var ui = { view:'home', simId:null, buscar:'', grupo:'todos', buscarCat:'', soloSel: !!cargarPref().soloSel };
   // Los ayuntamientos se agrupan aparte del resto de organismos (son más de cien).
   function esAyto(o){ return /^(ALVPC\s*\/|Ayuntamiento)/i.test(o.nombre||''); }
   function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){ toast('⚠️ No se pudo guardar en este navegador'); } }
@@ -559,13 +562,10 @@
     if(grupo==='org' && esAyto(o)) return false;
     var q=norm(buscar).trim();
     if(q && norm(o.nombre+' '+o.destinatario).indexOf(q) === -1) return false;
-    // filtro por estado dentro del simulacro abierto
-    var ef=ui.estadoFiltro;
-    if(ef && ef!=='todos'){
-      var s=sim(ui.simId), p=s ? s.participantes.filter(function(x){ return x.opId===o.id; })[0] : null;
-      if(ef==='sel') return !!p;
-      if(ef==='nosel') return !p;
-      return !!p && p.estado===ef;
+    // "Ver solo los seleccionados": únicamente los operativos invitados a este simulacro
+    if(ui.soloSel){
+      var s=sim(ui.simId);
+      if(!s || !s.participantes.some(function(x){ return x.opId===o.id; })) return false;
     }
     return true;
   }
@@ -577,25 +577,6 @@
       r.hidden=!v; if(v) n++;
     });
     var c=document.getElementById('contFiltro'); if(c) c.textContent = n+' visibles';
-  }
-  // Opciones del filtro de estado, con cuántos hay en cada uno.
-  function opcionesEstadoFiltro(s){
-    var cuenta={}, ps=s.participantes.filter(function(p){ return op(p.opId); });
-    ESTADOS.forEach(function(e){ cuenta[e]=ps.filter(function(p){ return p.estado===e; }).length; });
-    var lista=[['todos','Todos los operativos'],['sel','Seleccionados ('+ps.length+')'],['nosel','Sin seleccionar ('+(state.catalogo.length-ps.length)+')']]
-      .concat(ESTADOS.map(function(e){ return [e, e+' ('+cuenta[e]+')']; }));
-    return lista.map(function(x){ return '<option value="'+esc(x[0])+'"'+(ui.estadoFiltro===x[0]?' selected':'')+'>'+esc(x[1])+'</option>'; }).join('');
-  }
-  function aplicarEstadoVisibles(){
-    var s=sim(ui.simId); if(!s) return;
-    var nuevo=document.getElementById('bulkEstado').value;
-    var objetivo=s.participantes.filter(function(p){ var o=op(p.opId); return o && filaVisible(o) && p.estado!==nuevo; });
-    if(!objetivo.length){ toast('No hay invitados visibles que cambiar'); return; }
-    if(objetivo.length>1 && !window.confirm('Se pondrán '+objetivo.length+' invitados en «'+nuevo+'». ¿Continuar?')) return;
-    objetivo.forEach(function(p){
-      p.estado=nuevo; p.fechaEnvio=(nuevo==='Enviada'||nuevo==='Confirmada') ? (p.fechaEnvio||todayISO()) : null;
-    });
-    persist(objetivo.length+' invitado'+(objetivo.length===1?'':'s')+' → '+nuevo); rerender();
   }
   function catVisible(o){ var q=norm(ui.buscarCat).trim(); return !q || norm(o.nombre+' '+o.destinatario).indexOf(q) !== -1; }
   function aplicarFiltroCat(){
@@ -643,19 +624,15 @@
     if(!hayLogo) h+='<div class="warn-box" style="margin-top:12px">ℹ️ Aún no hay membrete cargado (logotipo, firma, pie). Impórtalo en ⚙️ Ajustes para que las cartas salgan completas.</div>';
 
     h+='<div class="section-title"><h2>Operativos invitados ('+r.total+' de '+state.catalogo.length+')</h2>' +
-      '<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-sm btn-primary" data-new-op-sim>＋ Añadir destinatario</button><button class="btn btn-sm" data-sel-all title="Marca todos los que se ven con el filtro actual">Marcar visibles</button><button class="btn btn-sm" data-sel-none title="Desmarca los que se ven con el filtro actual">Quitar visibles</button></div></div>';
+      '<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-sm btn-primary" data-new-op-sim>＋ Añadir destinatario</button></div></div>';
     var visibles=state.catalogo.filter(function(o){ return filaVisible(o); }).length;
     h+='<div class="toolbar-ops" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px">' +
       '<input type="search" id="buscarOps" placeholder="Buscar operativo o ayuntamiento…" value="'+esc(ui.buscar)+'" style="flex:1;min-width:180px;border:1px solid var(--border);border-radius:var(--radius-pill);padding:8px 14px;font-size:.85rem;background:var(--surface);color:var(--ink)">' +
       '<select id="grupoOps" style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px;font-size:.8rem;background:var(--surface);color:var(--ink)">' +
         [['todos','Todos'],['org','Organismos'],['ayto','Ayuntamientos']].map(function(g){ return '<option value="'+g[0]+'"'+(ui.grupo===g[0]?' selected':'')+'>'+g[1]+'</option>'; }).join('') +
       '</select>' +
-      '<select id="estadoOps" title="Filtrar por estado" style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px;font-size:.8rem;background:var(--surface);color:var(--ink)">' + opcionesEstadoFiltro(s) + '</select>' +
-      '<span id="contFiltro" class="hint" style="margin:0">'+visibles+' visibles</span></div>' +
-      '<div class="toolbar-bulk" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:-2px 0 10px;font-size:.8rem;color:var(--ink-soft)">' +
-        '<span>Poner a los invitados visibles en:</span>' +
-        '<select id="bulkEstado" style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 8px;font-size:.8rem;background:var(--surface);color:var(--ink)">'+ESTADOS.map(function(e){return '<option>'+e+'</option>';}).join('')+'</select>' +
-        '<button class="btn btn-sm" data-bulk-estado>Aplicar</button></div>';
+      '<label class="check" style="margin:0;white-space:nowrap;font-weight:600"><input type="checkbox" id="soloSel"'+(ui.soloSel?' checked':'')+'> Ver solo los seleccionados ('+s.participantes.filter(function(p){ return op(p.opId); }).length+')</label>' +
+      '<span id="contFiltro" class="hint" style="margin:0">'+visibles+' visibles</span></div>';
     h+='<div class="list">'+state.catalogo.map(function(o){ return opRowHTML(s,o); }).join('')+'</div>';
 
     h+='<div class="section-title"><h2>Generar cartas</h2></div><div class="card"><div class="actions" style="margin-top:0">' +
@@ -970,7 +947,7 @@
     c.id=uid('s'); c.nombre=s.nombre+' (copia)'; c.fecha=''; c.creado=Date.now();
     c.participantes=c.participantes.map(function(p){ return {opId:p.opId, estado:'Pendiente', fechaEnvio:null}; });
     state.simulacros.push(c); persist('Duplicado — pon la nueva fecha en «Editar datos»');
-    ui.simId=c.id; ui.estadoFiltro='todos'; render();
+    ui.simId=c.id; render();
   }
   function eliminarSim(){
     var s=sim(ui.simId); if(!s) return;
@@ -1016,8 +993,7 @@
     if((t=ev.target.closest('[data-close]'))){ closeModal(); return; }
     if((t=ev.target.closest('[data-go]'))){ ui.view=t.getAttribute('data-go'); if(ui.view==='home') ui.simId=null; render(); return; }
     if((t=ev.target.closest('[data-new-sim]'))){ openNuevoSim(); return; }
-    if((t=ev.target.closest('[data-open]'))){ ui.view='sim'; ui.simId=t.getAttribute('data-open'); ui.estadoFiltro='todos'; render(); return; }
-    if((t=ev.target.closest('[data-bulk-estado]'))){ aplicarEstadoVisibles(); return; }
+    if((t=ev.target.closest('[data-open]'))){ ui.view='sim'; ui.simId=t.getAttribute('data-open'); render(); return; }
     if((t=ev.target.closest('[data-edit-sim]'))){ openEditarSim(); return; }
     if((t=ev.target.closest('[data-edit-texto]'))){ openEditarTexto(); return; }
     if((t=ev.target.closest('[data-edit-firma]'))){ openEditarFirma(); return; }
@@ -1028,8 +1004,6 @@
     if((t=ev.target.closest('[data-guardar-plantilla]'))){ guardarPlantillaPart(); return; }
     if((t=ev.target.closest('[data-dup-sim]'))){ duplicarSim(); return; }
     if((t=ev.target.closest('[data-del-sim]'))){ eliminarSim(); return; }
-    if((t=ev.target.closest('[data-sel-all]'))){ var s=sim(ui.simId); state.catalogo.forEach(function(o){ if(filaVisible(o) && !s.participantes.some(function(p){return p.opId===o.id;})) s.participantes.push({opId:o.id,estado:'Pendiente',fechaEnvio:null}); }); persist(); rerender(); return; }
-    if((t=ev.target.closest('[data-sel-none]'))){ var s2=sim(ui.simId); s2.participantes=s2.participantes.filter(function(p){ var o=op(p.opId); return !(o && filaVisible(o)); }); persist(); rerender(); return; }
     if((t=ev.target.closest('[data-preview]'))){ openVistaPrevia(t.getAttribute('data-preview')); return; }
     if((t=ev.target.closest('[data-dl]'))){ var a=t.getAttribute('data-dl').split('|'); closeModal(); descargarUna(ui.simId,a[1],a[0]); return; }
     if((t=ev.target.closest('[data-dl-all]'))){ descargarTodas(ui.simId,t.getAttribute('data-dl-all')); return; }
@@ -1049,7 +1023,11 @@
     if((t=ev.target.closest('[data-estado-op]'))){ setEstado(t.getAttribute('data-estado-op'), t.value); return; }
     if(ev.target.id==='fileImport' && ev.target.files[0]){ importar(ev.target.files[0]); ev.target.value=''; }
     if(ev.target.id==='grupoOps'){ ui.grupo=ev.target.value; aplicarFiltroFilas(); return; }
-    if(ev.target.id==='estadoOps'){ ui.estadoFiltro=ev.target.value; aplicarFiltroFilas(); return; }
+    if(ev.target.id==='soloSel'){
+      ui.soloSel=ev.target.checked;
+      try{ localStorage.setItem(PREF_KEY, JSON.stringify({soloSel:ui.soloSel})); }catch(e){}
+      aplicarFiltroFilas(); return;
+    }
   });
   document.getElementById('app-root').addEventListener('input', function(ev){
     if(ev.target.id==='buscarOps'){ ui.buscar=ev.target.value; aplicarFiltroFilas(); }
