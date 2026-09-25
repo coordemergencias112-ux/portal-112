@@ -101,6 +101,7 @@
   .paper .two{display:grid;grid-template-columns:38% 62%;gap:8px;margin-bottom:16px}
   .paper .dest div{min-height:1em}
   .paper p{text-align:justify;text-indent:2em;margin:0 0 10px}
+  .paper .li{text-align:justify;padding-left:3.2em;text-indent:-1em;margin:0 0 4px}
   .paper .sig{text-align:center;margin-top:18px}
   .paper .sig .fdo{margin-top:34px}
   .paper .ft{display:flex;justify-content:space-between;align-items:flex-end;margin-top:28px;font-size:9px;color:#333}
@@ -220,6 +221,23 @@
       borrador: s.borrador ? ' '+String(state.plantilla.borrador||'').trim() : ''
     };
   }
+  // Participación solicitada a este destinatario: texto libre, una línea por renglón.
+  // Las líneas que empiezan por "-" salen como viñeta; el resto, como párrafo.
+  // Vale la de este simulacro si se ha cambiado; si no, la predeterminada del operativo.
+  function participacionDe(part, o){
+    if(part && part.participacion != null) return part.participacion;
+    return (o && o.participacion) || '';
+  }
+  function bloquesDe(s, part, o, v){
+    function limpio(t){ return String(t||'').replace(/\s+/g,' ').trim(); }
+    var out=[{k:'p',text:limpio(fill(s.p1,v))}, {k:'p',text:limpio(fill(s.p2,v))}];
+    lines(participacionDe(part,o)).forEach(function(l){
+      var m=l.match(/^[-–•*]\s*(.*)$/);
+      out.push(m ? {k:'li',text:limpio(m[1])} : {k:'p',text:limpio(l)});
+    });
+    out.push({k:'p',text:limpio(fill(s.p3,v))});
+    return out.filter(function(b){ return b.text; });
+  }
   // Datos ya resueltos de una carta concreta (los usan la vista previa, el Word y el PDF).
   function cartaDe(s, part){
     var v=vars(s), m=state.membrete, o=op(part.opId);
@@ -229,7 +247,7 @@
       asunto: s.asunto || ('Simulacro '+s.nombre),
       dest: lines(o ? o.destinatario : ''),
       destNombre: o ? o.nombre : '',
-      parrafos: [fill(s.p1,v), fill(s.p2,v), fill(s.p3,v)].map(function(t){return t.replace(/\s+/g,' ').trim();}).filter(Boolean),
+      bloques: bloquesDe(s, part, o, v),
       // La firma puede cambiarse por simulacro; si está vacía se usa la de Ajustes.
       cargo: s.firmaCargo || m.firmaCargo || '', firmante: s.firmaNombre || m.firmaNombre || '',
       pie: (m.pie||[]).filter(Boolean), logo: m.logo||'', sello: m.sello||''
@@ -246,7 +264,7 @@
       '<div class="hd">'+(L.logo?'<img alt="" src="'+esc(L.logo)+'">':'<span></span>')+'<div>'+L.cabecera.map(function(t){return '<b>'+esc(t)+'</b>';}).join('')+'</div></div>' +
       '<div class="two"><div><div>Fecha: '+esc(L.fecha)+'</div><div style="height:12px"></div><div>Asunto: '+esc(L.asunto)+'</div></div>' +
       '<div class="dest">'+(L.dest.length?L.dest.map(function(t){return '<div>'+esc(t)+'</div>';}).join(''):'<div style="color:#c8402f">⚠️ Sin destinatario</div>')+'</div></div>' +
-      L.parrafos.map(function(t){return '<p>'+esc(t)+'</p>';}).join('') +
+      L.bloques.map(function(b){ return b.k==='li' ? '<div class="li">- '+esc(b.text)+'</div>' : '<p>'+esc(b.text)+'</p>'; }).join('') +
       '<div class="sig"><div>'+esc(L.cargo)+'</div><div class="fdo">'+esc(L.firmante)+'</div></div>' +
       '<div class="ft"><div>'+L.pie.map(function(t){return '<div>'+esc(t)+'</div>';}).join('')+'</div>'+(L.sello?'<img alt="" src="'+esc(L.sello)+'">':'')+'</div>' +
     '</div>';
@@ -299,8 +317,15 @@
       ]),
       para('')
     ];
-    L.parrafos.forEach(function(t){
-      children.push(new D.Paragraph({children:[run(t)],alignment:D.AlignmentType.JUSTIFIED,spacing:{after:200,line:312},indent:{firstLine:567}}));
+    L.bloques.forEach(function(b, i){
+      if(b.k==='li'){
+        var sigueLista = L.bloques[i+1] && L.bloques[i+1].k==='li';
+        children.push(new D.Paragraph({children:[run('- '+b.text)],alignment:D.AlignmentType.JUSTIFIED,spacing:{after:sigueLista?60:200,line:312},indent:{left:1134,hanging:284}}));
+      } else {
+        // un párrafo que introduce una lista queda pegado a ella
+        var introLista = L.bloques[i+1] && L.bloques[i+1].k==='li';
+        children.push(new D.Paragraph({children:[run(b.text)],alignment:D.AlignmentType.JUSTIFIED,spacing:{after:introLista?80:200,line:312},indent:{firstLine:567}}));
+      }
     });
     children.push(para(L.cargo,{align:D.AlignmentType.CENTER,spacing:{before:400}}));
     children.push(para(L.firmante,{align:D.AlignmentType.CENTER,spacing:{before:700}}));
@@ -359,7 +384,27 @@
     doc.splitTextToSize('Asunto: '+L.asunto, dx-mL-6).forEach(function(s){ doc.text(s,mL,y2); y2+=5.2; });
     var y=Math.max(y1,y2)+12;
     doc.setFontSize(11);
-    L.parrafos.forEach(function(t){ y=drawJustified(doc,t,mL,y,cw,10,5.6)+3; });
+    L.bloques.forEach(function(b, i){
+      var sig=L.bloques[i+1], listaSigue = sig && sig.k==='li';
+      if(b.k==='li'){
+        // viñeta con sangría francesa: "- " en x+10 y el texto alineado un poco más adentro
+        var lx=mL+10, tx=lx+doc.getTextWidth('- ');
+        var ls=wrapWords(doc,b.text,function(){return cw-(tx-mL);});
+        ls.forEach(function(ws,j){
+          if(j===0) doc.text('-', lx, y);
+          var w=cw-(tx-mL);
+          if(j===ls.length-1){ doc.text(ws.join(' '),tx,y); }
+          else {
+            var tw=ws.reduce(function(a,s){return a+doc.getTextWidth(s);},0), gap=(w-tw)/Math.max(ws.length-1,1), cx=tx;
+            ws.forEach(function(s){ doc.text(s,cx,y); cx+=doc.getTextWidth(s)+gap; });
+          }
+          y+=5.6;
+        });
+        y+= (sig && sig.k==='li') ? 0.8 : 3;
+      } else {
+        y=drawJustified(doc,b.text,mL,y,cw,10,5.6)+(listaSigue?0.8:3);
+      }
+    });
     y+=8;
     doc.text(L.cargo, W/2, y, {align:'center'}); y+=22;
     doc.text(L.firmante, W/2, y, {align:'center'});
@@ -464,8 +509,11 @@
       '<div class="op-main"><div class="op-name">'+esc(o.nombre)+'</div>' +
       '<div class="op-dest">'+(dl.length?esc(dl.slice(0,3).join('\n')):'<span style="color:var(--warn);font-weight:600">⚠️ Sin destinatario — pulsa ✏️ para rellenarlo</span>')+'</div>';
     if(sel){
+      var pt=lines(participacionDe(part,o)), propia=part.participacion!=null;
+      h+='<div class="op-dest" style="color:var(--accent-strong)">👥 '+(pt.length?esc(pt[0].slice(0,90))+(pt[0].length>90?'…':'')+(pt.length>1?' (+'+(pt.length-1)+' líneas)':'')+(propia?' · propia de este simulacro':''):'<i>Sin participación solicitada</i>')+'</div>';
       h+='<div class="op-tools"><select data-estado-op="'+o.id+'" aria-label="Estado">'+ESTADOS.map(function(e){return '<option'+(e===part.estado?' selected':'')+'>'+e+'</option>';}).join('')+'</select>' +
         (part.fechaEnvio?'<span style="font-size:.72rem;color:var(--ink-faint)">'+esc(fmtDia(part.fechaEnvio))+'</span>':'') +
+        '<button class="btn btn-sm" data-edit-part="'+o.id+'">👥 Participación</button>' +
         '<button class="btn btn-sm" data-preview="'+o.id+'">👁 Ver</button>' +
         '<button class="btn btn-sm" data-dl="docx|'+o.id+'">📝 Word</button>' +
         '<button class="btn btn-sm" data-dl="pdf|'+o.id+'">📕 PDF</button>' +
@@ -512,7 +560,8 @@
     h+='<div class="section-title"><h2>Catálogo ('+state.catalogo.length+')</h2><button class="btn btn-sm btn-primary" data-new-op>＋ Añadir</button></div>';
     h+='<div class="list">'+state.catalogo.map(function(o){
       var dl=lines(o.destinatario);
-      return '<div class="op-row"><div class="op-main"><div class="op-name">'+esc(o.nombre)+'</div><div class="op-dest">'+(dl.length?esc(dl.join('\n')):'<span style="color:var(--warn);font-weight:600">⚠️ Sin destinatario</span>')+'</div></div>' +
+      return '<div class="op-row"><div class="op-main"><div class="op-name">'+esc(o.nombre)+'</div>' + '<div class="op-dest">'+(dl.length?esc(dl.join('\n')):'<span style="color:var(--warn);font-weight:600">⚠️ Sin destinatario</span>')+'</div>' +
+        (lines(o.participacion).length?'<div class="op-dest" style="color:var(--accent-strong);margin-top:4px">👥 '+esc(lines(o.participacion).join(' · ').slice(0,140))+'</div>':'')+'</div>' +
         '<div style="display:flex;gap:4px"><button class="btn btn-sm" data-edit-op="'+o.id+'">✏️</button><button class="btn btn-sm btn-danger" data-del-op="'+o.id+'">🗑️</button></div></div>';
     }).join('')+'</div></main>';
     return h;
@@ -604,6 +653,29 @@
       persist('Texto guardado'); closeModal(); rerender();
     });
   }
+  function openEditarParticipacion(opId){
+    var s=sim(ui.simId), o=op(opId); if(!s||!o) return;
+    var part=s.participantes.filter(function(p){return p.opId===opId;})[0]; if(!part) return;
+    var tieneDef=!!lines(o.participacion).length;
+    openModal('<h2>👥 Participación solicitada</h2><p class="hint" style="margin-top:0"><b>'+esc(o.nombre)+'</b> — se imprime en la carta después del segundo párrafo.</p><form id="f-part">' +
+      '<div class="field"><label>Texto (una línea por renglón)</label><textarea name="texto" rows="7" placeholder="Le solicitamos la participación de:&#10;- Unidad de Protección Civil&#10;- Guardia Civil">'+esc(participacionDe(part,o))+'</textarea>' +
+      '<p class="hint">Las líneas que empiezan por <b>-</b> salen como viñeta; las demás, como párrafo normal. Vale una sola frase («Le solicitamos la participación de la Agrupación de Voluntarios de su municipio.») o una frase de introducción seguida de una lista. Déjalo vacío si no hay que pedir participación.</p></div>' +
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"><button type="button" class="btn btn-sm" data-ins-part="Le solicitamos la participación de:">Insertar «…participación de:»</button><button type="button" class="btn btn-sm" data-ins-part="- ">Añadir viñeta</button></div>' +
+      '<label class="check"><input type="checkbox" name="predet"'+(tieneDef?'':' checked')+'> Guardar como predeterminada de este operativo (para futuros simulacros)</label>' +
+      '<div class="modal-actions"><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn btn-primary">Guardar</button></div></form>', true);
+    document.getElementById('f-part').addEventListener('submit', function(e){
+      e.preventDefault(); var fd=new FormData(e.target);
+      var txt=(fd.get('texto')||'').toString().replace(/\s+$/,'');
+      if(fd.get('predet')){ o.participacion=txt; delete part.participacion; }
+      else part.participacion=txt;
+      persist('Participación guardada'); closeModal(); rerender();
+    });
+  }
+  function insertarEnParticipacion(txt){
+    var ta=document.querySelector('#f-part textarea'); if(!ta) return;
+    var pre=ta.value && !/\n$/.test(ta.value) ? '\n' : '';
+    ta.value+=pre+txt; ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
+  }
   function openEditarFirma(){
     var s=sim(ui.simId); if(!s) return;
     var m=state.membrete;
@@ -637,14 +709,17 @@
       '<div class="field"><label>Nombre del operativo</label><input name="nombre" required value="'+esc(o.nombre)+'" placeholder="Ej. Cruz Roja — Unidad de Emergencias"></div>' +
       '<div class="field"><label>Destinatario (una línea por cada línea de la carta)</label><textarea name="destinatario" rows="6" placeholder="Entidad&#10;Cargo&#10;D. Nombre Apellidos&#10;Calle, número&#10;29000 MÁLAGA">'+esc(o.destinatario)+'</textarea>' +
       '<p class="hint">Se imprime tal cual en el bloque de la derecha de la carta.'+(id?'':' Se guardará en el catálogo para usarlo también en futuros simulacros.')+'</p></div>' +
+      '<div class="field"><label>Participación que se le solicita (opcional)</label><textarea name="participacion" rows="4" placeholder="Le solicitamos la participación de:&#10;- Unidad de Protección Civil&#10;- Guardia Civil">'+esc(o.participacion||'')+'</textarea>' +
+      '<p class="hint">Se usará por defecto en las cartas de este operativo. Las líneas que empiezan por <b>-</b> salen como viñeta. Se puede cambiar para cada simulacro con «👥 Participación».</p></div>' +
       '<div class="modal-actions"><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn btn-primary">Guardar</button></div></form>');
     document.getElementById('f-op').addEventListener('submit', function(e){
       e.preventDefault(); var fd=new FormData(e.target);
       var nombre=(fd.get('nombre')||'').toString().trim(); if(!nombre) return;
       var dest=(fd.get('destinatario')||'').toString();
-      if(id){ o.nombre=nombre; o.destinatario=dest; }
+      var partic=(fd.get('participacion')||'').toString().replace(/\s+$/,'');
+      if(id){ o.nombre=nombre; o.destinatario=dest; o.participacion=partic; }
       else {
-        var nuevo={id:uid('o'),nombre:nombre,destinatario:dest};
+        var nuevo={id:uid('o'),nombre:nombre,destinatario:dest,participacion:partic};
         state.catalogo.push(nuevo);
         // Desde la pantalla de un simulacro, el nuevo destinatario queda ya invitado a él.
         var s=invitarEnSim ? sim(ui.simId) : null;
@@ -736,7 +811,7 @@
         if(d.membrete){ Object.keys(d.membrete).forEach(function(k){ var v=d.membrete[k]; if(v!==undefined && v!=='' && !(Array.isArray(v)&&!v.length)) state.membrete[k]=v; }); }
         if(d.plantilla) state.plantilla=Object.assign(state.plantilla,d.plantilla);
         if(Array.isArray(d.catalogo)) d.catalogo.forEach(function(o){
-          var ex=op(o.id); if(ex){ ex.nombre=o.nombre||ex.nombre; if(o.destinatario) ex.destinatario=o.destinatario; } else state.catalogo.push({id:o.id||uid('o'),nombre:o.nombre,destinatario:o.destinatario||''});
+          var ex=op(o.id); if(ex){ ex.nombre=o.nombre||ex.nombre; if(o.destinatario) ex.destinatario=o.destinatario; if(o.participacion) ex.participacion=o.participacion; } else state.catalogo.push({id:o.id||uid('o'),nombre:o.nombre,destinatario:o.destinatario||'',participacion:o.participacion||''});
         });
         var nuevos=0;
         if(Array.isArray(d.simulacros)) d.simulacros.forEach(function(s){ if(!sim(s.id)){ state.simulacros.push(s); nuevos++; } });
@@ -756,6 +831,8 @@
     if((t=ev.target.closest('[data-edit-sim]'))){ openEditarSim(); return; }
     if((t=ev.target.closest('[data-edit-texto]'))){ openEditarTexto(); return; }
     if((t=ev.target.closest('[data-edit-firma]'))){ openEditarFirma(); return; }
+    if((t=ev.target.closest('[data-edit-part]'))){ openEditarParticipacion(t.getAttribute('data-edit-part')); return; }
+    if((t=ev.target.closest('[data-ins-part]'))){ insertarEnParticipacion(t.getAttribute('data-ins-part')); return; }
     if((t=ev.target.closest('[data-dup-sim]'))){ duplicarSim(); return; }
     if((t=ev.target.closest('[data-del-sim]'))){ eliminarSim(); return; }
     if((t=ev.target.closest('[data-sel-all]'))){ var s=sim(ui.simId); state.catalogo.forEach(function(o){ if(!s.participantes.some(function(p){return p.opId===o.id;})) s.participantes.push({opId:o.id,estado:'Pendiente',fechaEnvio:null}); }); persist(); rerender(); return; }
