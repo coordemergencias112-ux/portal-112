@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-09-25T19:03:17Z",
-  "data_timestamp": "2026-09-25T20:00:00",
+  "generated_at": "2026-09-25T19:22:21Z",
+  "data_timestamp": "2026-09-25T21:00:00",
   "rios": [
     {
       "estacion": "34",
       "nombre": "AZUD DE PAREDONES (MA)",
       "lat": 36.8602,
       "lon": -4.7172,
-      "nivel_rio": 0.0,
+      "nivel_rio": 0.6,
       "caudal": 1.91,
-      "tendencia": "3",
+      "tendencia": "0",
       "aviso": 3.0,
       "prealerta": 4.0,
       "alerta": 5.0,
@@ -52,8 +52,8 @@
       "nombre": "RÍO GENAL (JUBRIQUE) (MA)",
       "lat": 36.5672,
       "lon": -5.2463,
-      "nivel_rio": 0.1,
-      "caudal": 0.53,
+      "nivel_rio": 0.09,
+      "caudal": 0.51,
       "tendencia": "0",
       "aviso": 1.1,
       "prealerta": 1.6,
@@ -97,9 +97,9 @@
       "nombre": "RÍO GUADALHORCE (ARCHIDONA) (MA)",
       "lat": 37.0821,
       "lon": -4.4554,
-      "nivel_rio": 0.0,
-      "caudal": 0.0,
-      "tendencia": "3",
+      "nivel_rio": 0.13,
+      "caudal": 0.04,
+      "tendencia": "0",
       "aviso": 2.0,
       "prealerta": 3.0,
       "alerta": 5.0,
@@ -142,8 +142,8 @@
       "nombre": "RÍO GUADALTEBA (AFORO TEBA) (MA)",
       "lat": 36.9315,
       "lon": -4.9284,
-      "nivel_rio": 0.12,
-      "caudal": 0.41,
+      "nivel_rio": 0.13,
+      "caudal": 0.42,
       "tendencia": "0",
       "aviso": 1.5,
       "prealerta": 2.0,
@@ -158,7 +158,7 @@
       "lat": 36.5797,
       "lon": -5.3374,
       "nivel_rio": 0.16,
-      "caudal": 0.47,
+      "caudal": 0.5,
       "tendencia": "0",
       "aviso": 2.0,
       "prealerta": 3.0,
@@ -189,9 +189,9 @@
       "nombre": "EMBALSE CONDE DE GUADALHORCE (MA)",
       "lat": 36.93444,
       "lon": -4.80325,
-      "volumen": 42.48,
-      "porcentaje": 63.9,
-      "nivel": 335.7
+      "volumen": 42.45,
+      "porcentaje": 63.8,
+      "nivel": 335.69
     },
     {
       "estacion": "19",
@@ -207,16 +207,16 @@
       "nombre": "EMBALSE DE LA CONCEPCIÓN (MA)",
       "lat": 36.53643,
       "lon": -4.95889,
-      "volumen": 31.18,
+      "volumen": 31.17,
       "porcentaje": 54.2,
-      "nivel": 90.06
+      "nivel": 90.05
     },
     {
       "estacion": "37",
       "nombre": "EMBALSE DE LA VIÑUELA (MA)",
       "lat": 36.86071,
       "lon": -4.1645,
-      "volumen": 139.43,
+      "volumen": 139.42,
       "porcentaje": 84.8,
       "nivel": 225.63
     },
@@ -225,7 +225,7 @@
       "nombre": "EMBALSE DEL GUADALHORCE (MA)",
       "lat": 36.94401,
       "lon": -4.80277,
-      "volumen": 108.28,
+      "volumen": 108.27,
       "porcentaje": 86.1,
       "nivel": 359.69
     },
@@ -245,7 +245,7 @@
       "lon": -4.42918,
       "volumen": 14.05,
       "porcentaje": 100.0,
-      "nivel": 94.6
+      "nivel": 94.59
     }
   ],
   "lluvia": [
