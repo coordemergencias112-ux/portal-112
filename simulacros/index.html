@@ -496,7 +496,7 @@
     if(!hayLogo) h+='<div class="warn-box" style="margin-top:12px">ℹ️ Aún no hay membrete cargado (logotipo, firma, pie). Impórtalo en ⚙️ Ajustes para que las cartas salgan completas.</div>';
 
     h+='<div class="section-title"><h2>Operativos invitados ('+r.total+' de '+state.catalogo.length+')</h2>' +
-      '<div style="display:flex;gap:6px"><button class="btn btn-sm" data-sel-all>Todos</button><button class="btn btn-sm" data-sel-none>Ninguno</button></div></div>';
+      '<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-sm btn-primary" data-new-op-sim>＋ Añadir destinatario</button><button class="btn btn-sm" data-sel-all>Todos</button><button class="btn btn-sm" data-sel-none>Ninguno</button></div></div>';
     h+='<div class="list">'+state.catalogo.map(function(o){ return opRowHTML(s,o); }).join('')+'</div>';
 
     h+='<div class="section-title"><h2>Generar cartas</h2></div><div class="card"><div class="actions" style="margin-top:0">' +
@@ -631,20 +631,26 @@
     openModal('<h2>Vista previa — '+esc(op(opId).nombre)+'</h2>'+previewHTML(cartaDe(s,part))+
       '<div class="modal-actions"><button class="btn" data-close>Cerrar</button><button class="btn" data-dl="docx|'+opId+'">📝 Word</button><button class="btn btn-primary" data-dl="pdf|'+opId+'">📕 PDF</button></div>', true);
   }
-  function openEditarOp(id){
+  function openEditarOp(id, invitarEnSim){
     var o=id? op(id) : {nombre:'',destinatario:''};
     openModal('<h2>'+(id?'Editar operativo':'Nuevo operativo')+'</h2><form id="f-op">' +
       '<div class="field"><label>Nombre del operativo</label><input name="nombre" required value="'+esc(o.nombre)+'" placeholder="Ej. Cruz Roja — Unidad de Emergencias"></div>' +
       '<div class="field"><label>Destinatario (una línea por cada línea de la carta)</label><textarea name="destinatario" rows="6" placeholder="Entidad&#10;Cargo&#10;D. Nombre Apellidos&#10;Calle, número&#10;29000 MÁLAGA">'+esc(o.destinatario)+'</textarea>' +
-      '<p class="hint">Se imprime tal cual en el bloque de la derecha de la carta.</p></div>' +
+      '<p class="hint">Se imprime tal cual en el bloque de la derecha de la carta.'+(id?'':' Se guardará en el catálogo para usarlo también en futuros simulacros.')+'</p></div>' +
       '<div class="modal-actions"><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn btn-primary">Guardar</button></div></form>');
     document.getElementById('f-op').addEventListener('submit', function(e){
       e.preventDefault(); var fd=new FormData(e.target);
       var nombre=(fd.get('nombre')||'').toString().trim(); if(!nombre) return;
       var dest=(fd.get('destinatario')||'').toString();
       if(id){ o.nombre=nombre; o.destinatario=dest; }
-      else state.catalogo.push({id:uid('o'),nombre:nombre,destinatario:dest});
-      persist('Operativo guardado'); closeModal(); rerender();
+      else {
+        var nuevo={id:uid('o'),nombre:nombre,destinatario:dest};
+        state.catalogo.push(nuevo);
+        // Desde la pantalla de un simulacro, el nuevo destinatario queda ya invitado a él.
+        var s=invitarEnSim ? sim(ui.simId) : null;
+        if(s) s.participantes.push({opId:nuevo.id,estado:'Pendiente',fechaEnvio:null});
+      }
+      persist(id ? 'Operativo guardado' : 'Destinatario añadido al catálogo'+(invitarEnSim?' y a este simulacro':'')); closeModal(); rerender();
     });
   }
   function openEditarMembrete(){
@@ -759,6 +765,7 @@
     if((t=ev.target.closest('[data-dl-all]'))){ descargarTodas(ui.simId,t.getAttribute('data-dl-all')); return; }
     if((t=ev.target.closest('[data-edit-op]'))){ openEditarOp(t.getAttribute('data-edit-op')); return; }
     if((t=ev.target.closest('[data-new-op]'))){ openEditarOp(null); return; }
+    if((t=ev.target.closest('[data-new-op-sim]'))){ openEditarOp(null, true); return; }
     if((t=ev.target.closest('[data-del-op]'))){ eliminarOp(t.getAttribute('data-del-op')); return; }
     if((t=ev.target.closest('[data-edit-membrete]'))){ openEditarMembrete(); return; }
     if((t=ev.target.closest('[data-edit-plantilla]'))){ openEditarPlantilla(); return; }
