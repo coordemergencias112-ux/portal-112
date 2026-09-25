@@ -734,7 +734,8 @@
   function openEditarParticipacion(opId){
     var s=sim(ui.simId), o=op(opId); if(!s||!o) return;
     var part=s.participantes.filter(function(p){return p.opId===opId;})[0]; if(!part) return;
-    var tieneDef=!!lines(o.participacion).length, actual=participacionDe(part,o);
+    // se limpian sangrías (tabuladores) y líneas en blanco que vienen de pegar texto de Word/LibreOffice
+    var tieneDef=!!lines(o.participacion).length, actual=lines(participacionDe(part,o)).join('\n');
     var m=openModal('<h2>👥 Participación solicitada</h2><p class="hint" style="margin-top:0"><b>'+esc(o.nombre)+'</b> — se imprime en la carta después del segundo párrafo.</p><form id="f-part">' +
       '<div class="field"><label>Plantillas rápidas (un clic rellena todo)</label><div id="chipsPlantillas" style="display:flex;gap:6px;flex-wrap:wrap">'+ chipsPlantillasHTML() +'</div></div>' +
       '<div class="field"><label>Marca lo que se le solicita</label><div id="listaOpciones" class="opciones-part">'+ opcionesPartHTML(actual) +'</div>' +
