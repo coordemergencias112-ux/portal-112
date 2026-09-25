@@ -192,7 +192,7 @@
   function sim(id){ for(var i=0;i<state.simulacros.length;i++) if(state.simulacros[i].id===id) return state.simulacros[i]; return null; }
   function op(id){ for(var i=0;i<state.catalogo.length;i++) if(state.catalogo[i].id===id) return state.catalogo[i]; return null; }
   function lines(t){ return String(t||'').split(/\r?\n/).map(function(l){return l.trim();}).filter(Boolean); }
-  function slug(s){ return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,60) || 'carta'; }
+  function slug(s, max){ return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^A-Za-z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,max||60).replace(/_+$/,'') || 'carta'; }
   function fill(t, v){ return String(t||'').replace(/\{\{(\w+)\}\}/g,function(m,k){ return v[k]!=null ? v[k] : m; }); }
 
   var toastEl=null, toastT=null;
@@ -253,9 +253,26 @@
       pie: (m.pie||[]).filter(Boolean), logo: m.logo||'', sello: m.sello||''
     };
   }
-  function nombreArchivo(s, part, ext){
-    var o=op(part.opId);
-    return 'Invitacion_'+slug(s.nombre)+'_'+slug(o?o.nombre:'')+'.'+ext;
+  // Nombres de archivo cortos: Windows/OneDrive/unidades de red fallan con rutas de más de ~260
+  // caracteres, y el nombre del simulacro + el del operativo completo se pasaba de largo.
+  var CORTOS = { ces061:'CES061', cruzroja:'CruzRoja', giped:'GIPED', upn:'UPN', bomberos:'Bomberos', diputacion:'Diputacion',
+    cptsocial:'ColTrabSocial', subdelegacion:'Subdelegacion', remer:'REMER', consulado:'ConsuladoUK', ama:'AMA', dgt:'DGT',
+    'ayto-benaojan':'Benaojan', 'ayto-ronda':'Ronda', 'ayto-algatocin':'Algatocin', 'ayto-manilva':'Manilva',
+    'ayto-cortes':'CortesFrontera', 'ayto-afectado':'AytoAfectado' };
+  function cortoDe(o){
+    if(!o) return 'carta';
+    if(o.corto && o.corto.trim()) return slug(o.corto, 20);
+    if(CORTOS[o.id]) return CORTOS[o.id];
+    var n=String(o.nombre||'').replace(/\([^)]*\)/g,' ').split(/\s+[—–-]\s+/)[0];
+    if(n.indexOf('/')>-1) n=n.split('/').pop();
+    n=n.replace(/\b(de|del|la|las|los|el|y|en)\b/gi,' ');
+    return slug(n, 20);
+  }
+  function cortoSim(s){ return slug(String(s.nombre||'').replace(/^simulacro\s+/i,'').replace(/\b(de|del|la|las|los|el|y|en)\b/gi,' '), 18); }
+  // enZip: dentro del ZIP basta el nombre del operativo (la carpeta ya dice de qué simulacro es).
+  function nombreArchivo(s, part, ext, enZip){
+    var c=cortoDe(op(part.opId));
+    return enZip ? c+'.'+ext : c+'_'+cortoSim(s)+'.'+ext;
   }
 
   /* ---- vista previa HTML ---- */
@@ -455,19 +472,19 @@
       toast('Generando '+parts.length+' cartas…');
       if(fmt==='pdfunico'){
         var blobU=await pdfBlob(parts.map(function(p){return cartaDe(s,p);}));
-        saveBlob(blobU, 'Invitaciones_'+slug(s.nombre)+'_todas.pdf'); toast('✅ PDF único descargado'); return;
+        saveBlob(blobU, 'Inv_'+cortoSim(s)+'_todas.pdf'); toast('✅ PDF único descargado'); return;
       }
       await loadLib('jszip');
       var zip=new window.JSZip(), usados={};
       for(var i=0;i<parts.length;i++){
         var L=cartaDe(s,parts[i]);
         var b = fmt==='docx' ? await docxBlob([L]) : await pdfBlob([L]);
-        var n=nombreArchivo(s,parts[i],fmt==='docx'?'docx':'pdf');
+        var n=nombreArchivo(s,parts[i],fmt==='docx'?'docx':'pdf',true);
         if(usados[n]){ n=n.replace(/(\.\w+)$/,'_'+(++usados[n])+'$1'); } else usados[n]=1;
         zip.file(n,b);
       }
       var zb=await zip.generateAsync({type:'blob'});
-      saveBlob(zb,'Invitaciones_'+slug(s.nombre)+'_'+(fmt==='docx'?'Word':'PDF')+'.zip');
+      saveBlob(zb,'Inv_'+cortoSim(s)+'_'+(fmt==='docx'?'Word':'PDF')+'.zip');
       toast('✅ ZIP con '+parts.length+' cartas descargado');
     }catch(e){ toast('⚠️ '+e.message); }
   }
@@ -707,6 +724,7 @@
     var o=id? op(id) : {nombre:'',destinatario:''};
     openModal('<h2>'+(id?'Editar operativo':'Nuevo operativo')+'</h2><form id="f-op">' +
       '<div class="field"><label>Nombre del operativo</label><input name="nombre" required value="'+esc(o.nombre)+'" placeholder="Ej. Cruz Roja — Unidad de Emergencias"></div>' +
+      '<div class="field"><label>Nombre corto para el archivo (opcional)</label><input name="corto" maxlength="20" value="'+esc(o.corto||'')+'" placeholder="'+esc(id?cortoDe(o):'Ej. CruzRoja')+'"><p class="hint">Es el nombre con el que se guarda su carta (p. ej. «CruzRoja.docx»). Si lo dejas vacío se genera solo.</p></div>' +
       '<div class="field"><label>Destinatario (una línea por cada línea de la carta)</label><textarea name="destinatario" rows="6" placeholder="Entidad&#10;Cargo&#10;D. Nombre Apellidos&#10;Calle, número&#10;29000 MÁLAGA">'+esc(o.destinatario)+'</textarea>' +
       '<p class="hint">Se imprime tal cual en el bloque de la derecha de la carta.'+(id?'':' Se guardará en el catálogo para usarlo también en futuros simulacros.')+'</p></div>' +
       '<div class="field"><label>Participación que se le solicita (opcional)</label><textarea name="participacion" rows="4" placeholder="Le solicitamos la participación de:&#10;- Unidad de Protección Civil&#10;- Guardia Civil">'+esc(o.participacion||'')+'</textarea>' +
@@ -717,9 +735,10 @@
       var nombre=(fd.get('nombre')||'').toString().trim(); if(!nombre) return;
       var dest=(fd.get('destinatario')||'').toString();
       var partic=(fd.get('participacion')||'').toString().replace(/\s+$/,'');
-      if(id){ o.nombre=nombre; o.destinatario=dest; o.participacion=partic; }
+      var corto=(fd.get('corto')||'').toString().trim();
+      if(id){ o.nombre=nombre; o.destinatario=dest; o.participacion=partic; o.corto=corto; }
       else {
-        var nuevo={id:uid('o'),nombre:nombre,destinatario:dest,participacion:partic};
+        var nuevo={id:uid('o'),nombre:nombre,destinatario:dest,participacion:partic,corto:corto};
         state.catalogo.push(nuevo);
         // Desde la pantalla de un simulacro, el nuevo destinatario queda ya invitado a él.
         var s=invitarEnSim ? sim(ui.simId) : null;
