@@ -230,7 +230,8 @@
       dest: lines(o ? o.destinatario : ''),
       destNombre: o ? o.nombre : '',
       parrafos: [fill(s.p1,v), fill(s.p2,v), fill(s.p3,v)].map(function(t){return t.replace(/\s+/g,' ').trim();}).filter(Boolean),
-      cargo: m.firmaCargo||'', firmante: m.firmaNombre||'',
+      // La firma puede cambiarse por simulacro; si está vacía se usa la de Ajustes.
+      cargo: s.firmaCargo || m.firmaCargo || '', firmante: s.firmaNombre || m.firmaNombre || '',
       pie: (m.pie||[]).filter(Boolean), logo: m.logo||'', sello: m.sello||''
     };
   }
@@ -488,8 +489,9 @@
       '<div><div class="k">Tipo de simulacro</div><div class="v">'+esc(s.tipo||'—')+'</div></div>' +
       '<div><div class="k">Asunto de la carta</div><div class="v">'+esc(s.asunto||'—')+'</div></div>' +
       '<div><div class="k">Plan</div><div class="v">'+esc(s.plan||'—')+'</div></div>' +
-      '<div><div class="k">Fecha de la carta</div><div class="v">'+esc(s.fechaCarta||'la de la firma')+'</div></div></div>' +
-      '<div class="actions"><button class="btn btn-sm" data-edit-sim>✏️ Editar datos</button><button class="btn btn-sm" data-edit-texto>📄 Editar texto de la carta</button></div></div>';
+      '<div><div class="k">Fecha de la carta</div><div class="v">'+esc(s.fechaCarta||'la de la firma')+'</div></div>' +
+      '<div style="grid-column:1/-1"><div class="k">Firma</div><div class="v">'+esc(s.firmaCargo||state.membrete.firmaCargo||'—')+' · '+esc(s.firmaNombre||state.membrete.firmaNombre||'—')+(s.firmaCargo||s.firmaNombre?' <span class="badge">propia de este simulacro</span>':'')+'</div></div></div>' +
+      '<div class="actions"><button class="btn btn-sm" data-edit-sim>✏️ Editar datos</button><button class="btn btn-sm" data-edit-texto>📄 Editar texto de la carta</button><button class="btn btn-sm" data-edit-firma>✍️ Cambiar firma</button></div></div>';
 
     if(!hayLogo) h+='<div class="warn-box" style="margin-top:12px">ℹ️ Aún no hay membrete cargado (logotipo, firma, pie). Impórtalo en ⚙️ Ajustes para que las cartas salgan completas.</div>';
 
@@ -600,6 +602,27 @@
       e.preventDefault(); var fd=new FormData(e.target);
       s.p1=(fd.get('p1')||'').toString(); s.p2=(fd.get('p2')||'').toString(); s.p3=(fd.get('p3')||'').toString(); s.borrador=!!fd.get('borrador');
       persist('Texto guardado'); closeModal(); rerender();
+    });
+  }
+  function openEditarFirma(){
+    var s=sim(ui.simId); if(!s) return;
+    var m=state.membrete;
+    openModal('<h2>✍️ Firma de las cartas</h2><form id="f-firma">' +
+      '<div class="field"><label>Cargo firmante</label><input name="firmaCargo" value="'+esc(s.firmaCargo||'')+'" placeholder="'+esc(m.firmaCargo||'Ej. EL DELEGADO DEL GOBIERNO')+'"></div>' +
+      '<div class="field"><label>Firma (Fdo.: …)</label><input name="firmaNombre" value="'+esc(s.firmaNombre||'')+'" placeholder="'+esc(m.firmaNombre||'Fdo.: Nombre Apellidos')+'"></div>' +
+      '<p class="hint">Solo afecta a este simulacro. Si dejas un campo vacío se usa el de ⚙️ Ajustes (ahora: «'+esc(m.firmaCargo||'—')+'» / «'+esc(m.firmaNombre||'—')+'»). Para cambiarlo en todos los simulacros nuevos, edita el membrete en Ajustes.</p>' +
+      '<label class="check"><input type="checkbox" name="global"> Guardar también como firma por defecto en Ajustes</label>' +
+      '<div class="modal-actions"><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn btn-primary">Guardar</button></div></form>');
+    document.getElementById('f-firma').addEventListener('submit', function(e){
+      e.preventDefault(); var fd=new FormData(e.target);
+      s.firmaCargo=(fd.get('firmaCargo')||'').toString().trim();
+      s.firmaNombre=(fd.get('firmaNombre')||'').toString().trim();
+      if(fd.get('global')){
+        if(s.firmaCargo) m.firmaCargo=s.firmaCargo;
+        if(s.firmaNombre) m.firmaNombre=s.firmaNombre;
+        s.firmaCargo=''; s.firmaNombre='';
+      }
+      persist('Firma guardada'); closeModal(); rerender();
     });
   }
   function openVistaPrevia(opId){
@@ -726,6 +749,7 @@
     if((t=ev.target.closest('[data-open]'))){ ui.view='sim'; ui.simId=t.getAttribute('data-open'); render(); return; }
     if((t=ev.target.closest('[data-edit-sim]'))){ openEditarSim(); return; }
     if((t=ev.target.closest('[data-edit-texto]'))){ openEditarTexto(); return; }
+    if((t=ev.target.closest('[data-edit-firma]'))){ openEditarFirma(); return; }
     if((t=ev.target.closest('[data-dup-sim]'))){ duplicarSim(); return; }
     if((t=ev.target.closest('[data-del-sim]'))){ eliminarSim(); return; }
     if((t=ev.target.closest('[data-sel-all]'))){ var s=sim(ui.simId); state.catalogo.forEach(function(o){ if(!s.participantes.some(function(p){return p.opId===o.id;})) s.participantes.push({opId:o.id,estado:'Pendiente',fechaEnvio:null}); }); persist(); rerender(); return; }
