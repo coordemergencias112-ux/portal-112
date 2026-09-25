@@ -25,6 +25,7 @@
     }
   }
   *{box-sizing:border-box}
+  [hidden]{display:none!important}
   html,body{margin:0;padding:0}
   body{background:var(--paper);color:var(--ink);font-family:var(--font-ui);-webkit-font-smoothing:antialiased;min-height:100vh}
   #app-root{max-width:760px;margin:0 auto;padding:0 0 96px;min-height:100vh}
@@ -154,11 +155,33 @@
     ['ayto-afectado','Ayuntamiento del municipio del simulacro — Policía Local']
   ].map(function(x){ return { id:x[0], nombre:x[1], destinatario:'' }; });
 
+  // Participación solicitada: opciones que se pueden marcar (una por línea de la lista) y
+  // plantillas completas de un clic. Solo hay textos genéricos; las que lleven nombres de
+  // personas las añade cada usuario (se guardan en su navegador / fichero privado).
+  var OPCIONES_PART_DEF = [
+    'Policía Local',
+    'Agrupación de Voluntarios de Protección Civil',
+    'Unidad de Protección Civil de la Subdelegación del Gobierno de Málaga.',
+    'Guardia Civil.',
+    'Red Nacional de Radio de Emergencia (REMER).',
+    'Consorcio Provincial de Bomberos.',
+    'Servicios Sociales Comunitarios',
+    'Agentes de Medio Ambiente',
+    'Policía Nacional'
+  ];
+  var PLANTILLAS_PART_DEF = [
+    { nombre:'Ayuntamiento (Policía Local y Voluntarios PC)', texto:'Le solicitamos la participación de su:\n- Policía Local\n- Agrupación de Voluntarios de Protección Civil' },
+    { nombre:'Subdelegación del Gobierno', texto:'Le solicitamos participación de:\n- Unidad de Protección Civil de la Subdelegación del Gobierno de Málaga.\n- Guardia Civil.\n- Red Nacional de Radio de Emergencia (REMER).' }
+  ];
+  var INTRO_PART = 'Le solicitamos la participación de:';
+
   function defaults(){
     return {
       membrete: { cabecera:['Delegación del Gobierno','Málaga'], firmaCargo:'LA DELEGADA DEL GOBIERNO', firmaNombre:'', pie:[], logo:'', sello:'' },
       plantilla: { p1:P1_DEF, p2:P2_DEF, p3:P3_DEF, borrador:BORRADOR_DEF },
       catalogo: CATALOGO_DEF.map(function(c){ return {id:c.id,nombre:c.nombre,destinatario:''}; }),
+      opcionesPart: OPCIONES_PART_DEF.slice(),
+      plantillasPart: PLANTILLAS_PART_DEF.map(function(p){ return {nombre:p.nombre,texto:p.texto}; }),
       simulacros: []
     };
   }
@@ -171,12 +194,16 @@
         base.plantilla = Object.assign(base.plantilla, s.plantilla || {});
         if(Array.isArray(s.catalogo)) base.catalogo = s.catalogo;
         if(Array.isArray(s.simulacros)) base.simulacros = s.simulacros;
+        if(Array.isArray(s.opcionesPart)) base.opcionesPart = s.opcionesPart;
+        if(Array.isArray(s.plantillasPart)) base.plantillasPart = s.plantillasPart;
       }
     }catch(e){}
     return base;
   }
   var state = load();
-  var ui = { view:'home', simId:null };
+  var ui = { view:'home', simId:null, buscar:'', grupo:'todos', buscarCat:'' };
+  // Los ayuntamientos se agrupan aparte del resto de organismos (son más de cien).
+  function esAyto(o){ return /^(ALVPC\s*\/|Ayuntamiento)/i.test(o.nombre||''); }
   function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){ toast('⚠️ No se pudo guardar en este navegador'); } }
   function persist(msg){ save(); if(msg) toast(msg); }
 
@@ -519,10 +546,31 @@
     return h;
   }
 
+  function norm(t){ return String(t||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase(); }
+  function filaVisible(o, buscar, grupo){
+    buscar = buscar!=null ? buscar : ui.buscar; grupo = grupo || ui.grupo;
+    if(grupo==='ayto' && !esAyto(o)) return false;
+    if(grupo==='org' && esAyto(o)) return false;
+    var q=norm(buscar).trim();
+    return !q || norm(o.nombre+' '+o.destinatario).indexOf(q) !== -1;
+  }
+  // Filtra las filas ya pintadas sin volver a dibujar (así el cuadro de búsqueda no pierde el foco).
+  function aplicarFiltroFilas(){
+    var n=0;
+    [].forEach.call(document.querySelectorAll('[data-fila]'), function(r){
+      var o=op(r.getAttribute('data-fila')), v=!!o && filaVisible(o);
+      r.hidden=!v; if(v) n++;
+    });
+    var c=document.getElementById('contFiltro'); if(c) c.textContent = n+' visibles';
+  }
+  function catVisible(o){ var q=norm(ui.buscarCat).trim(); return !q || norm(o.nombre+' '+o.destinatario).indexOf(q) !== -1; }
+  function aplicarFiltroCat(){
+    [].forEach.call(document.querySelectorAll('[data-cat]'), function(r){ var o=op(r.getAttribute('data-cat')); r.hidden = !(o && catVisible(o)); });
+  }
   function opRowHTML(s, o){
     var part=s.participantes.filter(function(p){return p.opId===o.id;})[0];
     var sel=!!part, dl=lines(o.destinatario);
-    var h='<div class="op-row'+(sel?' sel':'')+'"><input type="checkbox" data-toggle-op="'+o.id+'"'+(sel?' checked':'')+' aria-label="Invitar a '+esc(o.nombre)+'">' +
+    var h='<div class="op-row'+(sel?' sel':'')+'" data-fila="'+o.id+'"'+(filaVisible(o)?'':' hidden')+'><input type="checkbox" data-toggle-op="'+o.id+'"'+(sel?' checked':'')+' aria-label="Invitar a '+esc(o.nombre)+'">' +
       '<div class="op-main"><div class="op-name">'+esc(o.nombre)+'</div>' +
       '<div class="op-dest">'+(dl.length?esc(dl.slice(0,3).join('\n')):'<span style="color:var(--warn);font-weight:600">⚠️ Sin destinatario — pulsa ✏️ para rellenarlo</span>')+'</div>';
     if(sel){
@@ -561,7 +609,13 @@
     if(!hayLogo) h+='<div class="warn-box" style="margin-top:12px">ℹ️ Aún no hay membrete cargado (logotipo, firma, pie). Impórtalo en ⚙️ Ajustes para que las cartas salgan completas.</div>';
 
     h+='<div class="section-title"><h2>Operativos invitados ('+r.total+' de '+state.catalogo.length+')</h2>' +
-      '<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-sm btn-primary" data-new-op-sim>＋ Añadir destinatario</button><button class="btn btn-sm" data-sel-all>Todos</button><button class="btn btn-sm" data-sel-none>Ninguno</button></div></div>';
+      '<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-sm btn-primary" data-new-op-sim>＋ Añadir destinatario</button><button class="btn btn-sm" data-sel-all title="Marca todos los que se ven con el filtro actual">Marcar visibles</button><button class="btn btn-sm" data-sel-none title="Desmarca los que se ven con el filtro actual">Quitar visibles</button></div></div>';
+    var visibles=state.catalogo.filter(function(o){ return filaVisible(o); }).length;
+    h+='<div class="toolbar-ops" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px">' +
+      '<input type="search" id="buscarOps" placeholder="Buscar operativo o ayuntamiento…" value="'+esc(ui.buscar)+'" style="flex:1;min-width:180px;border:1px solid var(--border);border-radius:var(--radius-pill);padding:8px 14px;font-size:.85rem;background:var(--surface);color:var(--ink)">' +
+      '<select id="grupoOps" style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px;font-size:.8rem;background:var(--surface);color:var(--ink)">' +
+        [['todos','Todos'],['org','Organismos'],['ayto','Ayuntamientos']].map(function(g){ return '<option value="'+g[0]+'"'+(ui.grupo===g[0]?' selected':'')+'>'+g[1]+'</option>'; }).join('') +
+      '</select><span id="contFiltro" class="hint" style="margin:0">'+visibles+' visibles</span></div>';
     h+='<div class="list">'+state.catalogo.map(function(o){ return opRowHTML(s,o); }).join('')+'</div>';
 
     h+='<div class="section-title"><h2>Generar cartas</h2></div><div class="card"><div class="actions" style="margin-top:0">' +
@@ -575,9 +629,10 @@
   function renderCatalogo(){
     var h='<div class="topbar"><div class="topbar-row"><button class="btn btn-ghost btn-sm" data-go="home">← Volver</button><div class="brand"><h1>Operativos</h1></div><span></span></div></div><main>';
     h+='<div class="section-title"><h2>Catálogo ('+state.catalogo.length+')</h2><button class="btn btn-sm btn-primary" data-new-op>＋ Añadir</button></div>';
+    h+='<div style="margin-bottom:10px"><input type="search" id="buscarCat" placeholder="Buscar en el catálogo…" value="'+esc(ui.buscarCat)+'" style="width:100%;border:1px solid var(--border);border-radius:var(--radius-pill);padding:8px 14px;font-size:.85rem;background:var(--surface);color:var(--ink)"></div>';
     h+='<div class="list">'+state.catalogo.map(function(o){
       var dl=lines(o.destinatario);
-      return '<div class="op-row"><div class="op-main"><div class="op-name">'+esc(o.nombre)+'</div>' + '<div class="op-dest">'+(dl.length?esc(dl.join('\n')):'<span style="color:var(--warn);font-weight:600">⚠️ Sin destinatario</span>')+'</div>' +
+      return '<div class="op-row" data-cat="'+o.id+'"'+(catVisible(o)?'':' hidden')+'><div class="op-main"><div class="op-name">'+esc(o.nombre)+'</div>' + '<div class="op-dest">'+(dl.length?esc(dl.join('\n')):'<span style="color:var(--warn);font-weight:600">⚠️ Sin destinatario</span>')+'</div>' +
         (lines(o.participacion).length?'<div class="op-dest" style="color:var(--accent-strong);margin-top:4px">👥 '+esc(lines(o.participacion).join(' · ').slice(0,140))+'</div>':'')+'</div>' +
         '<div style="display:flex;gap:4px"><button class="btn btn-sm" data-edit-op="'+o.id+'">✏️</button><button class="btn btn-sm btn-danger" data-del-op="'+o.id+'">🗑️</button></div></div>';
     }).join('')+'</div></main>';
@@ -673,13 +728,22 @@
   function openEditarParticipacion(opId){
     var s=sim(ui.simId), o=op(opId); if(!s||!o) return;
     var part=s.participantes.filter(function(p){return p.opId===opId;})[0]; if(!part) return;
-    var tieneDef=!!lines(o.participacion).length;
-    openModal('<h2>👥 Participación solicitada</h2><p class="hint" style="margin-top:0"><b>'+esc(o.nombre)+'</b> — se imprime en la carta después del segundo párrafo.</p><form id="f-part">' +
-      '<div class="field"><label>Texto (una línea por renglón)</label><textarea name="texto" rows="7" placeholder="Le solicitamos la participación de:&#10;- Unidad de Protección Civil&#10;- Guardia Civil">'+esc(participacionDe(part,o))+'</textarea>' +
-      '<p class="hint">Las líneas que empiezan por <b>-</b> salen como viñeta; las demás, como párrafo normal. Vale una sola frase («Le solicitamos la participación de la Agrupación de Voluntarios de su municipio.») o una frase de introducción seguida de una lista. Déjalo vacío si no hay que pedir participación.</p></div>' +
+    var tieneDef=!!lines(o.participacion).length, actual=participacionDe(part,o);
+    var m=openModal('<h2>👥 Participación solicitada</h2><p class="hint" style="margin-top:0"><b>'+esc(o.nombre)+'</b> — se imprime en la carta después del segundo párrafo.</p><form id="f-part">' +
+      '<div class="field"><label>Plantillas rápidas (un clic rellena todo)</label><div id="chipsPlantillas" style="display:flex;gap:6px;flex-wrap:wrap">'+ chipsPlantillasHTML() +'</div></div>' +
+      '<div class="field"><label>Marca lo que se le solicita</label><div id="listaOpciones" style="display:flex;flex-direction:column;gap:2px;max-height:190px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px;background:var(--surface-alt)">'+ opcionesPartHTML(actual) +'</div>' +
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><button type="button" class="btn btn-sm" data-nueva-opcion>＋ Nueva opción</button><button type="button" class="btn btn-sm" data-guardar-plantilla>💾 Guardar como plantilla</button></div></div>' +
+      '<div class="field"><label>Texto de la carta (una línea por renglón)</label><textarea name="texto" rows="6" placeholder="Le solicitamos la participación de:&#10;- Unidad de Protección Civil&#10;- Guardia Civil">'+esc(actual)+'</textarea>' +
+      '<p class="hint">Se rellena solo al marcar opciones, pero puedes escribirlo o retocarlo a mano. Las líneas que empiezan por <b>-</b> salen como viñeta; las demás, como párrafo. Vale una frase suelta o una frase de introducción con lista. Vacío = sin participación solicitada.</p></div>' +
       '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"><button type="button" class="btn btn-sm" data-ins-part="Le solicitamos la participación de:">Insertar «…participación de:»</button><button type="button" class="btn btn-sm" data-ins-part="- ">Añadir viñeta</button></div>' +
       '<label class="check"><input type="checkbox" name="predet"'+(tieneDef?'':' checked')+'> Guardar como predeterminada de este operativo (para futuros simulacros)</label>' +
       '<div class="modal-actions"><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn btn-primary">Guardar</button></div></form>', true);
+    var ta=document.querySelector('#f-part textarea');
+    ta.addEventListener('input', sincronizarOpciones);
+    m.addEventListener('change', function(ev){
+      var c=ev.target.closest('[data-opt]'); if(!c) return;
+      partToggleItem(ta, state.opcionesPart[+c.getAttribute('data-opt')], c.checked);
+    });
     document.getElementById('f-part').addEventListener('submit', function(e){
       e.preventDefault(); var fd=new FormData(e.target);
       var txt=(fd.get('texto')||'').toString().replace(/\s+$/,'');
@@ -692,6 +756,68 @@
     var ta=document.querySelector('#f-part textarea'); if(!ta) return;
     var pre=ta.value && !/\n$/.test(ta.value) ? '\n' : '';
     ta.value+=pre+txt; ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length);
+    sincronizarOpciones();
+  }
+  /* --- opciones marcables de la participación --- */
+  var VINETA=/^\s*[-–•*]/;
+  function normItem(t){ return norm(String(t).replace(/^\s*[-–•*]\s*/,'')).replace(/[.\s]+$/,'').trim(); }
+  function partTieneItem(texto, item){
+    return String(texto||'').split(/\r?\n/).some(function(l){ return VINETA.test(l) && normItem(l)===normItem(item); });
+  }
+  function partToggleItem(ta, item, on){
+    var ls=String(ta.value).split(/\r?\n/).filter(function(l){ return l.trim(); });
+    var idx=-1; ls.forEach(function(l,i){ if(idx<0 && VINETA.test(l) && normItem(l)===normItem(item)) idx=i; });
+    if(on && idx<0){
+      if(!ls.some(function(l){ return !VINETA.test(l); })) ls.unshift(INTRO_PART);   // sin frase previa: se añade
+      ls.push('- '+item);
+    }
+    if(!on && idx>=0) ls.splice(idx,1);
+    ta.value=ls.join('\n');
+  }
+  function opcionesPartHTML(texto){
+    if(!state.opcionesPart.length) return '<span class="hint" style="margin:0">Aún no hay opciones. Añade la primera con «＋ Nueva opción».</span>';
+    return state.opcionesPart.map(function(it,i){
+      return '<label class="check" style="margin:2px 0"><input type="checkbox" data-opt="'+i+'"'+(partTieneItem(texto,it)?' checked':'')+'> '+esc(it)+'</label>';
+    }).join('');
+  }
+  function chipsPlantillasHTML(){
+    return state.plantillasPart.length ? state.plantillasPart.map(function(p,i){
+      return '<button type="button" class="btn btn-sm" data-plantilla="'+i+'" title="'+esc(p.texto)+'">'+esc(p.nombre)+'</button>';
+    }).join('') : '<span class="hint" style="margin:0">Sin plantillas todavía.</span>';
+  }
+  function sincronizarOpciones(){
+    var ta=document.querySelector('#f-part textarea'); if(!ta) return;
+    [].forEach.call(document.querySelectorAll('#f-part [data-opt]'), function(c){
+      c.checked = partTieneItem(ta.value, state.opcionesPart[+c.getAttribute('data-opt')]);
+    });
+  }
+  function refrescarOpcionesModal(){
+    var ta=document.querySelector('#f-part textarea'); if(!ta) return;
+    document.getElementById('listaOpciones').innerHTML=opcionesPartHTML(ta.value);
+    document.getElementById('chipsPlantillas').innerHTML=chipsPlantillasHTML();
+  }
+  function usarPlantillaPart(i){
+    var ta=document.querySelector('#f-part textarea'), p=state.plantillasPart[i]; if(!ta||!p) return;
+    if(ta.value.trim() && ta.value.trim()!==p.texto.trim() && !window.confirm('Esto sustituye el texto actual por la plantilla «'+p.nombre+'». ¿Continuar?')) return;
+    ta.value=p.texto; sincronizarOpciones();
+  }
+  function nuevaOpcionPart(){
+    var t=(window.prompt('Nueva opción de participación (una línea, tal como saldrá en la lista):')||'').trim();
+    if(!t) return;
+    if(!state.opcionesPart.some(function(x){ return normItem(x)===normItem(t); })) state.opcionesPart.push(t);
+    save();
+    var ta=document.querySelector('#f-part textarea'); partToggleItem(ta, t, true);
+    refrescarOpcionesModal();
+  }
+  function guardarPlantillaPart(){
+    var ta=document.querySelector('#f-part textarea'); if(!ta || !ta.value.trim()){ toast('Escribe primero el texto'); return; }
+    var n=(window.prompt('Nombre de la plantilla (p. ej. «Diputación» o «Ayuntamiento costero»):')||'').trim(); if(!n) return;
+    var ex=state.plantillasPart.filter(function(p){ return p.nombre===n; })[0];
+    if(ex){ if(!window.confirm('Ya existe una plantilla con ese nombre. ¿Sustituirla?')) return; ex.texto=ta.value.trim(); }
+    else state.plantillasPart.push({nombre:n, texto:ta.value.trim()});
+    // los elementos de la lista que aún no sean opciones marcables se añaden para futuros usos
+    lines(ta.value).forEach(function(l){ if(VINETA.test(l)){ var it=l.replace(/^\s*[-–•*]\s*/,'').trim(); if(it && !state.opcionesPart.some(function(x){ return normItem(x)===normItem(it); })) state.opcionesPart.push(it); } });
+    save(); refrescarOpcionesModal(); toast('Plantilla guardada');
   }
   function openEditarFirma(){
     var s=sim(ui.simId); if(!s) return;
@@ -819,7 +945,7 @@
     persist('Operativo eliminado'); rerender();
   }
   function exportar(){
-    var blob=new Blob([JSON.stringify({version:1, exportado:new Date().toISOString(), membrete:state.membrete, plantilla:state.plantilla, catalogo:state.catalogo, simulacros:state.simulacros}, null, 2)],{type:'application/json'});
+    var blob=new Blob([JSON.stringify({version:1, exportado:new Date().toISOString(), membrete:state.membrete, plantilla:state.plantilla, catalogo:state.catalogo, opcionesPart:state.opcionesPart, plantillasPart:state.plantillasPart, simulacros:state.simulacros}, null, 2)],{type:'application/json'});
     saveBlob(blob,'simulacros_datos_'+todayISO()+'.json'); toast('✅ Copia exportada (guárdala en un sitio privado)');
   }
   function importar(file){
@@ -829,8 +955,11 @@
         var d=JSON.parse(r.result);
         if(d.membrete){ Object.keys(d.membrete).forEach(function(k){ var v=d.membrete[k]; if(v!==undefined && v!=='' && !(Array.isArray(v)&&!v.length)) state.membrete[k]=v; }); }
         if(d.plantilla) state.plantilla=Object.assign(state.plantilla,d.plantilla);
+        // opciones y plantillas de participación: se suman las que falten, sin borrar las existentes
+        if(Array.isArray(d.opcionesPart)) d.opcionesPart.forEach(function(x){ if(!state.opcionesPart.some(function(y){ return normItem(y)===normItem(x); })) state.opcionesPart.push(x); });
+        if(Array.isArray(d.plantillasPart)) d.plantillasPart.forEach(function(p){ var ex=state.plantillasPart.filter(function(q){ return q.nombre===p.nombre; })[0]; if(ex) ex.texto=p.texto; else state.plantillasPart.push(p); });
         if(Array.isArray(d.catalogo)) d.catalogo.forEach(function(o){
-          var ex=op(o.id); if(ex){ ex.nombre=o.nombre||ex.nombre; if(o.destinatario) ex.destinatario=o.destinatario; if(o.participacion) ex.participacion=o.participacion; } else state.catalogo.push({id:o.id||uid('o'),nombre:o.nombre,destinatario:o.destinatario||'',participacion:o.participacion||''});
+          var ex=op(o.id); if(ex){ ex.nombre=o.nombre||ex.nombre; if(o.destinatario) ex.destinatario=o.destinatario; if(o.participacion) ex.participacion=o.participacion; if(o.corto) ex.corto=o.corto; } else state.catalogo.push({id:o.id||uid('o'),nombre:o.nombre,destinatario:o.destinatario||'',participacion:o.participacion||'',corto:o.corto||''});
         });
         var nuevos=0;
         if(Array.isArray(d.simulacros)) d.simulacros.forEach(function(s){ if(!sim(s.id)){ state.simulacros.push(s); nuevos++; } });
@@ -852,10 +981,13 @@
     if((t=ev.target.closest('[data-edit-firma]'))){ openEditarFirma(); return; }
     if((t=ev.target.closest('[data-edit-part]'))){ openEditarParticipacion(t.getAttribute('data-edit-part')); return; }
     if((t=ev.target.closest('[data-ins-part]'))){ insertarEnParticipacion(t.getAttribute('data-ins-part')); return; }
+    if((t=ev.target.closest('[data-plantilla]'))){ usarPlantillaPart(+t.getAttribute('data-plantilla')); return; }
+    if((t=ev.target.closest('[data-nueva-opcion]'))){ nuevaOpcionPart(); return; }
+    if((t=ev.target.closest('[data-guardar-plantilla]'))){ guardarPlantillaPart(); return; }
     if((t=ev.target.closest('[data-dup-sim]'))){ duplicarSim(); return; }
     if((t=ev.target.closest('[data-del-sim]'))){ eliminarSim(); return; }
-    if((t=ev.target.closest('[data-sel-all]'))){ var s=sim(ui.simId); state.catalogo.forEach(function(o){ if(!s.participantes.some(function(p){return p.opId===o.id;})) s.participantes.push({opId:o.id,estado:'Pendiente',fechaEnvio:null}); }); persist(); rerender(); return; }
-    if((t=ev.target.closest('[data-sel-none]'))){ sim(ui.simId).participantes=[]; persist(); rerender(); return; }
+    if((t=ev.target.closest('[data-sel-all]'))){ var s=sim(ui.simId); state.catalogo.forEach(function(o){ if(filaVisible(o) && !s.participantes.some(function(p){return p.opId===o.id;})) s.participantes.push({opId:o.id,estado:'Pendiente',fechaEnvio:null}); }); persist(); rerender(); return; }
+    if((t=ev.target.closest('[data-sel-none]'))){ var s2=sim(ui.simId); s2.participantes=s2.participantes.filter(function(p){ var o=op(p.opId); return !(o && filaVisible(o)); }); persist(); rerender(); return; }
     if((t=ev.target.closest('[data-preview]'))){ openVistaPrevia(t.getAttribute('data-preview')); return; }
     if((t=ev.target.closest('[data-dl]'))){ var a=t.getAttribute('data-dl').split('|'); closeModal(); descargarUna(ui.simId,a[1],a[0]); return; }
     if((t=ev.target.closest('[data-dl-all]'))){ descargarTodas(ui.simId,t.getAttribute('data-dl-all')); return; }
@@ -874,6 +1006,11 @@
     if((t=ev.target.closest('[data-toggle-op]'))){ toggleOp(t.getAttribute('data-toggle-op'), t.checked); return; }
     if((t=ev.target.closest('[data-estado-op]'))){ setEstado(t.getAttribute('data-estado-op'), t.value); return; }
     if(ev.target.id==='fileImport' && ev.target.files[0]){ importar(ev.target.files[0]); ev.target.value=''; }
+    if(ev.target.id==='grupoOps'){ ui.grupo=ev.target.value; aplicarFiltroFilas(); return; }
+  });
+  document.getElementById('app-root').addEventListener('input', function(ev){
+    if(ev.target.id==='buscarOps'){ ui.buscar=ev.target.value; aplicarFiltroFilas(); }
+    if(ev.target.id==='buscarCat'){ ui.buscarCat=ev.target.value; aplicarFiltroCat(); }
   });
 
   render();
