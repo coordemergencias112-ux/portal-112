@@ -291,7 +291,8 @@
     var foot = tbl([6800,1704],[ L.pie.map(function(t){return para(t,{size:15});}), [selloP] ]);
 
     var children=[
-      tbl([3800,4704],[
+      para('',{spacing:{after:360}}),
+      tbl([3300,5204],[
         [para('Fecha: '+L.fecha), para(''), para('Asunto: '+L.asunto)],
         L.dest.map(function(t){return para(t);})
       ]),
