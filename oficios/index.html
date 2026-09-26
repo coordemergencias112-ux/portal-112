@@ -423,7 +423,7 @@
     h+='<div class="card"><h2>Referencias de la cabecera <button class="btn btn-sm" data-act="add-ref">＋ Campo</button></h2>'+refsHTML(o)+'<p class="hint">Marca o desmarca cada campo para mostrarlo u ocultarlo. Los que estén vacíos no se imprimen.</p></div>';
     h+='<div class="card"><h2>Destinatario <label class="sw" style="gap:6px;font-size:.75rem;text-transform:none;letter-spacing:0"><input type="checkbox" data-bc="dest.on"'+(o.dest.on?' checked':'')+'> mostrar</label></h2>'+
       '<textarea rows="5" data-b="dest.texto" placeholder="Organismo&#10;Unidad&#10;Dirección&#10;A/A …">'+esc(o.dest.texto)+'</textarea>'+
-      '<div class="row" style="margin-top:8px;flex-wrap:wrap"><button class="btn btn-sm" data-act="elegir-dest">📇 Elegir destinatario…</button><button class="btn btn-sm" data-act="guardar-dest">💾 Guardar en mis destinatarios</button></div>'+
+      '<div class="row" style="margin-top:8px;flex-wrap:wrap"><button class="btn btn-sm" data-act="elegir-dest">📇 Elegir destinatario…</button><button class="btn btn-sm" data-act="guardar-dest">💾 Guardar en el directorio</button></div>'+
       '<p class="hint">La primera línea sale en negrita.</p></div>';
     h+='<div class="card"><h2>Datos para el texto <button class="btn btn-sm" data-act="add-var">＋ Dato</button></h2>'+varsHTML(o)+'</div>';
     h+='<div class="card"><h2>Contenido <span style="display:flex;gap:6px"><button class="btn btn-sm" data-act="add-texto">＋ Texto</button><button class="btn btn-sm" data-act="add-tabla">＋ Tabla</button></span></h2>'+bloquesHTML(o)+
@@ -452,7 +452,7 @@
       '<div class="row2"><div class="field"><label>Iniciales</label><input type="text" data-bn="ini" value="'+esc(n.ini)+'"></div>'+
       '<div class="field"><label>Último nº usado en '+new Date().getFullYear()+'</label><input type="text" id="ultimoNum" value="'+esc(n.ultimos[String(new Date().getFullYear()).slice(-2)]||0)+'"></div></div></div>';
     h+='<div class="card"><h2>Firmantes guardados</h2>'+(state.firmantes.length?state.firmantes.map(function(x,i){ return '<div class="row"><div style="flex:1">'+esc(x.cargo)+' — <b>'+esc(x.nombre)+'</b></div><button class="btn btn-sm btn-danger" data-act="quitar-firmante" data-i="'+i+'">🗑️</button></div>'; }).join(''):'<p class="hint" style="margin:0">Aún no hay ninguno. Se guardan desde un oficio con «Guardar este firmante».</p>')+'</div>';
-    h+='<div class="card"><h2>Mis destinatarios ('+state.destinatarios.length+')</h2>'+(state.destinatarios.length?state.destinatarios.map(function(x,i){ return '<div class="row"><div style="flex:1;font-size:.85rem"><b>'+esc(x.nombre)+'</b></div><button class="btn btn-sm btn-danger" data-act="quitar-dest" data-i="'+i+'">🗑️</button></div>'; }).join(''):'<p class="hint" style="margin:0">Se guardan desde un oficio con «Guardar en mis destinatarios». También puedes elegir los operativos de «Invitaciones a simulacros».</p>')+'</div>';
+    h+='<div class="card"><h2>Destinatarios guardados antes ('+state.destinatarios.length+')</h2>'+(state.destinatarios.length?state.destinatarios.map(function(x,i){ return '<div class="row"><div style="flex:1;font-size:.85rem"><b>'+esc(x.nombre)+'</b></div><button class="btn btn-sm btn-danger" data-act="quitar-dest" data-i="'+i+'">🗑️</button></div>'; }).join(''):'<p class="hint" style="margin:0">Los destinatarios nuevos se guardan ahora en el «Directorio de destinatarios» del portal. Aquí solo quedan los guardados antes.</p>')+'</div>';
     h+='<div class="card"><h2>Plantillas</h2>'+state.plantillas.map(function(p,i){ return '<div class="row"><div style="flex:1"><b>'+esc(p.nombre)+'</b><div class="hint">'+p.bloques.length+' bloques · '+p.vars.length+' datos</div></div><button class="btn btn-sm btn-danger" data-act="quitar-plantilla" data-i="'+i+'">🗑️</button></div>'; }).join('')+
       '<p class="hint">Para crear una plantilla propia: abre un oficio, ajústalo y usa ⋯ → «Guardar como plantilla».</p></div>';
     h+='<div class="card"><h2>Copia de seguridad</h2><div class="row" style="flex-wrap:wrap"><button class="btn" data-act="exportar">⬇️ Exportar datos</button><button class="btn" data-act="importar">⬆️ Importar datos</button></div>'+
@@ -478,11 +478,15 @@
       '<div class="modal-actions"><button class="btn" data-act="cerrar">Cancelar</button><button class="btn btn-primary" data-act="crear">Crear</button></div>');
   }
   function simCatalogo(){ try{ var s=JSON.parse(localStorage.getItem(SIM_KEY)||'null'); return s&&Array.isArray(s.catalogo)?s.catalogo:[]; }catch(e){ return []; } }
+  var DIR_KEY='dir112_v1';
+  function dirLeer(){ try{ var d=JSON.parse(localStorage.getItem(DIR_KEY)||'null'); return d&&Array.isArray(d.contactos)?d:{contactos:[]}; }catch(e){ return {contactos:[]}; } }
   function openElegirDest(){
-    var fuentes=state.destinatarios.map(function(d){ return {nombre:d.nombre,texto:d.texto,origen:'Mis destinatarios'}; })
-      .concat(simCatalogo().filter(function(c){ return lines(c.destinatario).length; }).map(function(c){ return {nombre:c.nombre,texto:c.destinatario,origen:'Operativos de simulacros'}; }));
+    var dir=dirLeer().contactos, refs={}; dir.forEach(function(c){ if(c.ref) refs[c.ref]=1; });
+    var fuentes=dir.map(function(c){ return {nombre:c.nombre,texto:c.destinatario,origen:c.grupo||'Directorio'}; })
+      .concat(state.destinatarios.map(function(d){ return {nombre:d.nombre,texto:d.texto,origen:'Mis destinatarios'}; }))
+      .concat(simCatalogo().filter(function(c){ return lines(c.destinatario).length && !refs[c.id] && !c.agId; }).map(function(c){ return {nombre:c.nombre,texto:c.destinatario,origen:'Operativos de simulacros'}; }));
     window.__fuentesDest=fuentes;
-    openModal('<h2>Elegir destinatario</h2><input type="search" id="buscarDest" placeholder="Buscar…"><div class="pick" id="listaDest"></div><div class="modal-actions"><button class="btn" data-act="cerrar">Cerrar</button></div>',true);
+    openModal('<h2>Elegir destinatario</h2><input type="search" id="buscarDest" placeholder="Buscar…"><div class="pick" id="listaDest"></div><p class="hint">Se leen del «Directorio de destinatarios» del portal (y de los operativos de simulacros).</p><div class="modal-actions"><button class="btn" data-act="cerrar">Cerrar</button></div>',true);
     pintarDest('');
   }
   function pintarDest(q){ q=norm(q).trim(); var f=window.__fuentesDest||[], el=document.getElementById('listaDest'); if(!el) return;
@@ -558,7 +562,7 @@
       case 'vaciar-tabla': if(window.confirm('¿Vaciar todas las filas de esta tabla?')){ o.bloques[ii].filas=[]; persist(); rerender(); } break;
       case 'elegir-dest': openElegirDest(); break;
       case 'usar-dest': var fu=window.__fuentesDest[ii]; if(fu){ o.dest.texto=lines(fu.texto).join('\n'); persist('Destinatario puesto'); closeModal(); rerender(); } break;
-      case 'guardar-dest': if(!lines(o.dest.texto).length){ toast('Escribe primero el destinatario'); break; } var nd=(window.prompt('Nombre con el que guardarlo:', lines(o.dest.texto)[0])||'').trim(); if(nd){ state.destinatarios.push({nombre:nd,texto:lines(o.dest.texto).join('\n')}); persist('Destinatario guardado'); } break;
+      case 'guardar-dest': if(!lines(o.dest.texto).length){ toast('Escribe primero el destinatario'); break; } var nd=(window.prompt('Nombre con el que guardarlo:', lines(o.dest.texto)[0])||'').trim(); if(nd){ var dd=dirLeer(); dd.contactos.push({id:'d'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),nombre:nd,grupo:'Otros',destinatario:lines(o.dest.texto).join('\n'),tel:'',email:'',notas:''}); try{ localStorage.setItem(DIR_KEY,JSON.stringify(dd)); toast('Guardado en el Directorio de destinatarios'); }catch(e){ toast('⚠️ No se pudo guardar'); } } break;
       case 'guardar-firmante': var fg=o.firma||{}, mm=membrete(o.membreteId), cg=fg.cargo||mm.firmaCargo, nm=fg.nombre||mm.firmaNombre; if(!cg&&!nm){ toast('Rellena cargo o nombre'); break; } state.firmantes.push({cargo:cg,nombre:nm}); persist('Firmante guardado'); rerender(); break;
       case 'del-firmante': case 'quitar-firmante': if(a==='quitar-firmante'){ state.firmantes.splice(ii,1); persist(); rerender(); } else toast('Bórralos desde ⚙️ Ajustes → Firmantes guardados'); break;
       case 'quitar-dest': state.destinatarios.splice(ii,1); persist(); rerender(); break;
