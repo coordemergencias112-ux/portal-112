@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Directorio de destinatarios</title>
+<style>
+  :root{
+    --ink:#101828; --ink-soft:#475467; --ink-faint:#8a94a3;
+    --paper:#f4f6f8; --surface:#ffffff; --surface-alt:#eef1f4;
+    --border:#d3d9e0; --accent:#2a4a73; --accent-strong:#16304f; --accent-soft:#e2e9f2;
+    --danger:#c8402f; --danger-soft:#f8e0db; --ok:#1f9d55; --ok-soft:#dff5e6;
+    --shadow:0 1px 2px rgba(16,24,32,.05),0 4px 12px rgba(16,24,32,.06);
+    --radius-sm:7px; --radius-md:10px; --radius-lg:14px; --radius-pill:999px;
+    --font-ui:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#eef1f4; --ink-soft:#aeb8c4; --ink-faint:#7c8798;
+      --paper:#0a0e14; --surface:#131922; --surface-alt:#1a212b;
+      --border:#28313d; --accent:#6f9bd1; --accent-strong:#9bc0e8; --accent-soft:#1b2938;
+      --danger:#e8695a; --danger-soft:#3a1f1c; --ok:#5cc98a; --ok-soft:#153524;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 16px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  [hidden]{display:none!important}
+  html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--font-ui);-webkit-font-smoothing:antialiased;min-height:100vh}
+  #app-root{max-width:820px;margin:0 auto;padding:0 0 96px;min-height:100vh}
+  button,input,select,textarea{font-family:inherit}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .topbar{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--border);padding:12px 16px 10px}
+  .topbar-row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .brand{display:flex;align-items:baseline;gap:8px}.brand h1{font-size:1.1rem;margin:0;font-weight:700}
+  .tools{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  main{padding:14px 16px}
+  .btn{border-radius:var(--radius-md);border:1px solid var(--border);background:var(--surface);color:var(--ink);font-weight:600;font-size:.82rem;padding:8px 12px;cursor:pointer}
+  .btn:hover{border-color:var(--accent)}
+  .btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}.btn-primary:hover{background:var(--accent-strong)}
+  .btn-danger{border-color:var(--danger);color:var(--danger)}.btn-danger:hover{background:var(--danger-soft)}
+  .btn-sm{padding:5px 9px;font-size:.74rem;border-radius:var(--radius-sm)}
+  .btn-ghost{background:transparent;border-color:transparent;color:var(--ink-soft)}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:13px 14px;box-shadow:var(--shadow);margin-bottom:10px}
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .card-title{font-weight:700;font-size:.95rem}
+  .dest{white-space:pre-line;font-size:.8rem;color:var(--ink-soft);margin-top:5px;line-height:1.45}
+  .meta{color:var(--ink-soft);font-size:.76rem;display:flex;flex-wrap:wrap;gap:3px 12px;margin-top:6px}
+  .badge{display:inline-flex;font-size:.62rem;font-weight:700;padding:3px 9px;border-radius:var(--radius-pill);text-transform:uppercase;letter-spacing:.03em;background:var(--accent-soft);color:var(--accent-strong);flex:none}
+  .row{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+  .acts{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap}
+  .empty-state{text-align:center;color:var(--ink-faint);padding:28px 18px;border:1px dashed var(--border);border-radius:var(--radius-lg);font-size:.86rem}
+  .fab{position:fixed;right:18px;bottom:24px;z-index:30;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-pill);padding:13px 20px;font-weight:700;font-size:.9rem;box-shadow:var(--shadow);cursor:pointer}
+  .field{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+  .field>label{font-size:.7rem;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  input[type=text],input[type=search],input[type=email],select,textarea{border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px;font-size:.88rem;background:var(--surface-alt);color:var(--ink);width:100%}
+  input[type=search]{flex:1;min-width:180px;width:auto}select.f{width:auto}
+  textarea{resize:vertical;min-height:60px;line-height:1.4}
+  .hint{font-size:.72rem;color:var(--ink-faint);line-height:1.5;margin:4px 0 0}
+  .modal-overlay{position:fixed;inset:0;background:rgba(10,14,17,.5);display:flex;align-items:flex-end;justify-content:center;z-index:50}
+  @media (min-width:560px){.modal-overlay{align-items:center;padding:20px}}
+  .modal{background:var(--surface);width:100%;max-width:600px;max-height:92vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:18px 18px 22px;box-shadow:var(--shadow)}
+  @media (min-width:560px){.modal{border-radius:var(--radius-lg)}}
+  .modal h2{margin:0 0 12px;font-size:1.05rem}
+  .modal-actions{display:flex;gap:8px;margin-top:14px}.modal-actions .btn{flex:1}
+  .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:var(--radius-pill);font-size:.82rem;font-weight:600;box-shadow:var(--shadow);z-index:80;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:90vw;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+</style>
+</head>
+<body>
+<div id="app-root"></div>
+<script>
+(function(){
+  'use strict';
+  /* Directorio común de destinatarios: lo leen «Invitaciones a simulacros» y «Oficios».
+     Vive solo en este navegador (clave dir112_v1). */
+  var KEY='dir112_v1', SIM_KEY='sim112_state_v1';
+  var GRUPOS_DEF=['Junta de Andalucía','Administración General del Estado','Diputación','Ayuntamientos','Emergencias y seguridad','Otros'];
+
+  function load(){
+    var b={contactos:[]};
+    try{ var s=JSON.parse(localStorage.getItem(KEY)||'null'); if(s&&Array.isArray(s.contactos)) b.contactos=s.contactos; }catch(e){}
+    return b;
+  }
+  var state=load(), ui={buscar:'', grupo:'todos'};
+  function save(m){ try{ localStorage.setItem(KEY,JSON.stringify(state)); }catch(e){ toast('⚠️ No se pudo guardar en este navegador'); return; } if(m) toast(m); }
+  function uid(){ return 'd'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  function norm(t){ return String(t||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase(); }
+  function lines(t){ return String(t||'').split(/\r?\n/).map(function(l){return l.trim();}).filter(Boolean); }
+  function grupos(){ var g=GRUPOS_DEF.slice(); state.contactos.forEach(function(c){ if(c.grupo&&g.indexOf(c.grupo)<0) g.push(c.grupo); }); return g; }
+  function get(id){ return state.contactos.filter(function(c){return c.id===id;})[0]; }
+  var toastEl=null,toastT=null;
+  function toast(m){ if(!toastEl){ toastEl=document.createElement('div'); toastEl.className='toast'; document.body.appendChild(toastEl); }
+    toastEl.textContent=m; toastEl.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(function(){ toastEl.classList.remove('show'); },3200); }
+  function saveBlob(b,n){ var a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=n; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },4000); }
+  function closeModal(){ var m=document.getElementById('modal'); if(m) m.remove(); }
+  function openModal(html){ closeModal(); var w=document.createElement('div'); w.className='modal-overlay'; w.id='modal'; w.innerHTML='<div class="modal">'+html+'</div>';
+    w.addEventListener('click',function(e){ if(e.target===w) closeModal(); else onClick(e); }); document.body.appendChild(w); return w; }
+
+  function render(keep){
+    var q=norm(ui.buscar).trim();
+    var lista=state.contactos.filter(function(c){ return (ui.grupo==='todos'||c.grupo===ui.grupo)&&(!q||norm(c.nombre+' '+c.destinatario+' '+(c.email||'')+' '+(c.notas||'')).indexOf(q)!==-1); })
+      .sort(function(a,b){ return (a.grupo||'').localeCompare(b.grupo||'','es')||a.nombre.localeCompare(b.nombre,'es'); });
+    var h='<div class="topbar"><div class="topbar-row"><div class="brand"><span>📇</span><h1>Directorio de destinatarios</h1></div><div class="tools">'+
+      '<button class="btn btn-sm" data-act="traer">📥 Traer de simulacros</button><button class="btn btn-sm" data-act="exportar">⬇️</button><button class="btn btn-sm" data-act="importar">⬆️</button></div></div></div><main>';
+    h+='<div class="row"><input type="search" id="buscar" placeholder="Buscar por organismo, persona, dirección o correo…" value="'+esc(ui.buscar)+'"><select class="f" id="grupo"><option value="todos">Todos los grupos</option>'+
+      grupos().map(function(g){ return '<option'+(g===ui.grupo?' selected':'')+'>'+esc(g)+'</option>'; }).join('')+'</select></div>';
+    h+=lista.length?lista.map(function(c){
+      return '<div class="card"><div class="card-top"><span class="card-title">'+esc(c.nombre)+'</span><span class="badge">'+esc(c.grupo||'Sin grupo')+'</span></div>'+
+        '<div class="dest">'+esc(lines(c.destinatario).join('\n'))+'</div>'+
+        ((c.tel||c.email)?'<div class="meta">'+(c.tel?'<span>📞 '+esc(c.tel)+'</span>':'')+(c.email?'<span>✉️ '+esc(c.email)+'</span>':'')+'</div>':'')+
+        (c.notas?'<div class="meta"><span>📝 '+esc(c.notas)+'</span></div>':'')+
+        '<div class="acts"><button class="btn btn-sm" data-act="editar" data-i="'+esc(c.id)+'">✏️ Editar</button><button class="btn btn-sm" data-act="copiar" data-i="'+esc(c.id)+'">📋 Copiar bloque</button><button class="btn btn-sm btn-ghost" data-act="borrar" data-i="'+esc(c.id)+'">🗑️</button></div></div>'; }).join('')
+      :'<div class="empty-state">'+(state.contactos.length?'Ningún destinatario con ese filtro.':'El directorio está vacío.<br>Añade destinatarios con «＋ Nuevo», importa un fichero (⬆️) o trae los operativos de «Invitaciones a simulacros».')+'</div>';
+    h+='<p class="hint" style="text-align:center">'+state.contactos.length+' destinatarios · guardados solo en este navegador · los usan «Invitaciones a simulacros» y «Oficios»</p></main><input type="file" id="fileImport" accept="application/json,.json" style="display:none"><button class="fab" data-act="nuevo">＋ Nuevo</button>';
+    var y=window.scrollY, r=document.getElementById('app-root'); r.innerHTML=h; window.scrollTo(0,keep?y:0);
+    if(keep){ var el=document.getElementById(keep); if(el){ el.focus(); try{ el.setSelectionRange(el.value.length,el.value.length); }catch(e){} } }
+  }
+
+  function openEditar(id){
+    var c=id?get(id):{nombre:'',grupo:'Otros',destinatario:'',tel:'',email:'',notas:'',corto:''};
+    openModal('<h2>'+(id?'Editar destinatario':'Nuevo destinatario')+'</h2><form id="f-c">'+
+      '<div class="field"><label>Nombre (cómo lo verás en las listas)</label><input type="text" name="nombre" required value="'+esc(c.nombre)+'" placeholder="Ej. Delegación Territorial de Sanidad y Consumo"></div>'+
+      '<div class="field"><label>Grupo</label><input type="text" name="grupo" list="lg" value="'+esc(c.grupo||'')+'"><datalist id="lg">'+grupos().map(function(g){ return '<option value="'+esc(g)+'">'; }).join('')+'</datalist></div>'+
+      '<div class="field"><label>Destinatario (una línea por cada línea del bloque de la carta)</label><textarea name="destinatario" rows="6" placeholder="Organismo&#10;Cargo&#10;Nombre&#10;Calle, número&#10;29000 Málaga">'+esc(c.destinatario)+'</textarea><p class="hint">La primera línea saldrá en negrita en los oficios.</p></div>'+
+      '<div class="field-row"><div class="field"><label>Teléfono</label><input type="text" name="tel" value="'+esc(c.tel||'')+'"></div><div class="field"><label>Correo</label><input type="email" name="email" value="'+esc(c.email||'')+'"></div></div>'+
+      '<div class="field"><label>Notas (no se imprimen)</label><textarea name="notas" rows="2">'+esc(c.notas||'')+'</textarea></div>'+
+      '<div class="modal-actions"><button type="button" class="btn" data-act="cerrar">Cancelar</button><button type="submit" class="btn btn-primary">Guardar</button></div></form>');
+    document.getElementById('f-c').addEventListener('submit',function(e){ e.preventDefault(); var fd=new FormData(e.target), t=id?c:{id:uid()};
+      t.nombre=String(fd.get('nombre')||'').trim(); if(!t.nombre) return; t.grupo=String(fd.get('grupo')||'').trim()||'Otros'; t.destinatario=lines(fd.get('destinatario')).join('\n');
+      t.tel=String(fd.get('tel')||'').trim(); t.email=String(fd.get('email')||'').trim(); t.notas=String(fd.get('notas')||'').trim();
+      if(!id) state.contactos.push(t); save(id?'Guardado':'Destinatario añadido'); closeModal(); render(); });
+  }
+  function grupoDeSim(o){ var t=norm(o.id+' '+o.nombre); if(/^ayto-|ayuntamiento/.test(t)) return 'Ayuntamientos'; if(/diputaci/.test(t)) return 'Diputación'; if(/subdelegaci|policia nacional|guardia civil|remer|dgt|trafico|ume\b|ejercito/.test(t)) return 'Administración General del Estado'; return 'Emergencias y seguridad'; }
+  function traer(){
+    var cat=[]; try{ var s=JSON.parse(localStorage.getItem(SIM_KEY)||'null'); cat=(s&&s.catalogo)||[]; }catch(e){}
+    if(!cat.length){ toast('No hay operativos en «Invitaciones a simulacros» de este navegador'); return; }
+    var n=0; cat.forEach(function(o){ if(!lines(o.destinatario).length) return; if(state.contactos.some(function(c){ return c.ref===o.id || (norm(c.nombre)===norm(o.nombre)&&norm(c.destinatario)===norm(o.destinatario)); })) return;
+      state.contactos.push({id:uid(),ref:o.id,nombre:o.nombre,grupo:grupoDeSim(o),destinatario:lines(o.destinatario).join('\n'),tel:'',email:'',notas:''}); n++; });
+    save(n?('✅ '+n+' destinatarios traídos de simulacros'):'Ya estaban todos en el directorio'); render();
+  }
+  function importar(file){ var r=new FileReader(); r.onload=function(){ try{ var d=JSON.parse(r.result), a=0, u=0; if(!Array.isArray(d.contactos)) throw new Error();
+      d.contactos.forEach(function(c){ if(!c.nombre) return; var ex=c.id?get(c.id):null; if(ex){ Object.keys(c).forEach(function(k){ if(c[k]!==''&&c[k]!=null) ex[k]=c[k]; }); u++; } else { if(!c.id) c.id=uid(); state.contactos.push(c); a++; } });
+      save('✅ Importado: '+a+' nuevos, '+u+' actualizados'); render(); }catch(e){ toast('⚠️ El fichero no es válido'); } }; r.readAsText(file); }
+
+  function onClick(ev){ var t=ev.target.closest('[data-act]'); if(!t) return; ev.preventDefault(); var a=t.getAttribute('data-act'), i=t.getAttribute('data-i');
+    if(a==='nuevo') openEditar(null); else if(a==='editar') openEditar(i); else if(a==='cerrar') closeModal();
+    else if(a==='borrar'){ var c=get(i); if(c&&window.confirm('¿Quitar «'+c.nombre+'» del directorio?')){ state.contactos=state.contactos.filter(function(x){return x.id!==i;}); save('Eliminado'); render(true); } }
+    else if(a==='copiar'){ var c2=get(i); if(c2){ var tx=lines(c2.destinatario).join('\n'); if(navigator.clipboard) navigator.clipboard.writeText(tx).then(function(){ toast('📋 Bloque copiado'); },function(){ toast('No se pudo copiar'); }); } }
+    else if(a==='traer') traer();
+    else if(a==='exportar'){ saveBlob(new Blob([JSON.stringify({version:1,exportado:new Date().toISOString(),contactos:state.contactos},null,2)],{type:'application/json'}),'directorio_destinatarios_'+new Date().toISOString().slice(0,10)+'.json'); toast('✅ Exportado (guárdalo en un sitio privado)'); }
+    else if(a==='importar') document.getElementById('fileImport').click(); }
+  var root=document.getElementById('app-root');
+  root.addEventListener('click',onClick);
+  root.addEventListener('input',function(e){ if(e.target.id==='buscar'){ ui.buscar=e.target.value; render('buscar'); } });
+  root.addEventListener('change',function(e){ if(e.target.id==='grupo'){ ui.grupo=e.target.value; render(); } else if(e.target.id==='fileImport'&&e.target.files[0]){ importar(e.target.files[0]); e.target.value=''; } });
+  render();
+})();
+</script>
+</body>
+</html>
