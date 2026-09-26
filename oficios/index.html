@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Oficios</title>
+<style>
+  :root{
+    --ink:#101828; --ink-soft:#475467; --ink-faint:#8a94a3;
+    --paper:#f4f6f8; --surface:#ffffff; --surface-alt:#eef1f4;
+    --border:#d3d9e0; --accent:#2a4a73; --accent-strong:#16304f; --accent-soft:#e2e9f2;
+    --danger:#c8402f; --danger-soft:#f8e0db; --ok:#1f9d55; --ok-soft:#dff5e6; --warn:#c9820a; --warn-soft:#faedd0;
+    --shadow:0 1px 2px rgba(16,24,32,.05),0 4px 12px rgba(16,24,32,.06);
+    --radius-sm:7px; --radius-md:10px; --radius-lg:14px; --radius-pill:999px;
+    --font-ui:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#eef1f4; --ink-soft:#aeb8c4; --ink-faint:#7c8798;
+      --paper:#0a0e14; --surface:#131922; --surface-alt:#1a212b;
+      --border:#28313d; --accent:#6f9bd1; --accent-strong:#9bc0e8; --accent-soft:#1b2938;
+      --danger:#e8695a; --danger-soft:#3a1f1c; --ok:#5cc98a; --ok-soft:#153524; --warn:#e3a83c; --warn-soft:#3a2c12;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 16px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  [hidden]{display:none!important}
+  html,body{margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font-family:var(--font-ui);-webkit-font-smoothing:antialiased;min-height:100vh}
+  #app-root{max-width:820px;margin:0 auto;padding:0 0 96px;min-height:100vh}
+  button,input,select,textarea{font-family:inherit}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .topbar{position:sticky;top:0;z-index:20;background:var(--paper);border-bottom:1px solid var(--border);padding:12px 16px 10px}
+  .topbar-row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .brand{display:flex;align-items:baseline;gap:8px}
+  .brand h1{font-size:1.1rem;margin:0;font-weight:700}
+  .tools{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  main{padding:14px 16px}
+  .btn{border-radius:var(--radius-md);border:1px solid var(--border);background:var(--surface);color:var(--ink);font-weight:600;font-size:.82rem;padding:8px 12px;cursor:pointer}
+  .btn:hover{border-color:var(--accent)}
+  .btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn-primary:hover{background:var(--accent-strong)}
+  .btn-danger{border-color:var(--danger);color:var(--danger)}
+  .btn-danger:hover{background:var(--danger-soft)}
+  .btn-sm{padding:5px 9px;font-size:.74rem;border-radius:var(--radius-sm)}
+  .btn-ghost{background:transparent;border-color:transparent;color:var(--ink-soft)}
+  .btn:disabled{opacity:.5;cursor:default}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;box-shadow:var(--shadow);margin-bottom:12px}
+  .card.click{cursor:pointer}.card.click:hover{border-color:var(--accent)}
+  .card h2{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);margin:0 0 10px;font-weight:700;display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .card-title{font-weight:700;font-size:.98rem}
+  .meta{color:var(--ink-soft);font-size:.78rem;display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:5px}
+  .badge{display:inline-flex;font-size:.64rem;font-weight:700;padding:3px 9px;border-radius:var(--radius-pill);text-transform:uppercase;letter-spacing:.03em;background:var(--accent-soft);color:var(--accent-strong);flex:none}
+  .badge.ok{background:var(--ok-soft);color:var(--ok)}.badge.warn{background:var(--warn-soft);color:var(--warn)}
+  .empty-state{text-align:center;color:var(--ink-faint);padding:28px 18px;border:1px dashed var(--border);border-radius:var(--radius-lg);font-size:.86rem}
+  .fab{position:fixed;right:18px;bottom:24px;z-index:30;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-pill);padding:13px 20px;font-weight:700;font-size:.9rem;box-shadow:var(--shadow);cursor:pointer}
+  .row{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .field{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+  .field>label{font-size:.7rem;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.04em}
+  input[type=text],input[type=date],input[type=search],select,textarea{border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px;font-size:.88rem;background:var(--surface-alt);color:var(--ink);width:100%}
+  textarea{resize:vertical;min-height:60px;line-height:1.4}
+  .hint{font-size:.72rem;color:var(--ink-faint);line-height:1.5;margin:4px 0 0}
+  .sw{display:flex;align-items:center;flex:none;cursor:pointer}
+  .sw input{width:18px;height:18px;margin:0;cursor:pointer}
+  .fld{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+  .fld .lbl{width:34%;font-weight:600}
+  .fld.off input[type=text],.fld.off textarea{opacity:.45}
+  .blk{border:1px solid var(--border);border-radius:var(--radius-md);padding:10px;margin-bottom:10px;background:var(--surface)}
+  .blk.off{background:var(--surface-alt)}.blk.off textarea,.blk.off table{opacity:.45}
+  .blk-h{display:flex;gap:6px;align-items:center;margin-bottom:8px}
+  .blk-h .tit{flex:1;font-weight:700}
+  table.tb{border-collapse:collapse;width:100%;font-size:.8rem}
+  table.tb th,table.tb td{border:1px solid var(--border);padding:3px}
+  table.tb input{border:none;background:transparent;padding:4px;font-size:.8rem;width:100%}
+  table.tb th input{font-weight:700}
+  .tbw{overflow-x:auto}
+  .chip{font-family:ui-monospace,Consolas,monospace;font-size:.68rem;background:var(--accent-soft);color:var(--accent-strong);border-radius:6px;padding:2px 6px;flex:none}
+  .modal-overlay{position:fixed;inset:0;background:rgba(10,14,17,.5);display:flex;align-items:flex-end;justify-content:center;z-index:50}
+  @media (min-width:560px){.modal-overlay{align-items:center;padding:20px}}
+  .modal{background:var(--surface);width:100%;max-width:600px;max-height:92vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:18px 18px 22px;box-shadow:var(--shadow)}
+  @media (min-width:560px){.modal{border-radius:var(--radius-lg)}}
+  .modal.wide{max-width:740px}
+  .modal h2{margin:0 0 12px;font-size:1.05rem}
+  .modal-actions{display:flex;gap:8px;margin-top:14px}.modal-actions .btn{flex:1}
+  .pick{display:flex;flex-direction:column;gap:6px;max-height:50vh;overflow-y:auto;margin-top:8px}
+  .pick button{text-align:left;border:1px solid var(--border);background:var(--surface);border-radius:var(--radius-md);padding:8px 10px;cursor:pointer;color:var(--ink)}
+  .pick button:hover{border-color:var(--accent);background:var(--accent-soft)}
+  .pick small{display:block;color:var(--ink-faint);white-space:pre-line;margin-top:2px}
+  .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:var(--radius-pill);font-size:.82rem;font-weight:600;box-shadow:var(--shadow);z-index:80;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:90vw;text-align:center}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+  .warn-box{background:var(--warn-soft);color:var(--warn);border-radius:var(--radius-md);padding:9px 12px;font-size:.8rem;font-weight:600;margin-bottom:12px}
+  .thumb{max-height:48px;max-width:110px;border:1px solid var(--border);border-radius:6px;background:#fff;padding:3px}
+  /* vista previa */
+  .paper{background:#fff;color:#000;border:1px solid var(--border);box-shadow:var(--shadow);padding:26px 30px 20px;font-family:Arial,Helvetica,sans-serif;font-size:11.5px;line-height:1.45;margin:0 auto;max-width:620px}
+  .paper .hd{display:flex;align-items:center;gap:26px;margin-bottom:20px}.paper .hd img{height:52px}.paper .hd .t div{font-size:11.5px}
+  .paper .two{display:grid;grid-template-columns:40% 60%;gap:8px;margin-bottom:16px}
+  .paper .two div div{min-height:1em}
+  .paper p{text-align:justify;text-indent:2em;margin:0 0 9px}
+  .paper .li{text-align:justify;padding-left:3.2em;text-indent:-1em;margin:0 0 4px}
+  .paper table{border-collapse:collapse;width:100%;margin:6px 0 10px;font-size:10.5px}.paper td,.paper th{border:1px solid #000;padding:3px 5px;text-align:left}.paper th{background:#e8ecf1}
+  .paper .at{margin:14px 0 0 2em}.paper .sig{text-align:center;margin-top:14px}.paper .sig .fdo{margin-top:26px}
+  .paper .ft{display:flex;justify-content:space-between;align-items:flex-end;margin-top:24px;font-size:9px;color:#333}.paper .ft img{height:46px}
+  .miss{background:#fff3b0;padding:0 2px}
+</style>
+</head>
+<body>
+<div id="app-root"></div>
+<script>
+(function(){
+  'use strict';
+  var KEY='ofi112_state_v1', SIM_KEY='sim112_state_v1';
+  var LIBS={ docx:'https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js', jspdf:'https://cdnjs.cloudflare.com/ajax/libs/jspdf/4.2.1/jspdf.umd.min.js' };
+  var ESTADOS=['Borrador','Pendiente de firma','Enviado','Archivado'];
+
+  /* ================= datos por defecto (solo textos institucionales genéricos) ================= */
+  function membretesDef(){ return [
+    { id:'agencia', nombre:'Agencia de Emergencias de Andalucía', cabecera:['Consejería de Presidencia, Sanidad y Emergencias','Agencia de Emergencias de Andalucía.'], negritaTodas:false,
+      firmaCargo:'LA JEFA DEL SERVICIO DE PROTECCIÓN CIVIL', firmaNombre:'',
+      pie:['C/ Inca Garcilaso, n.º 3. Edificio Expo.','41092-Sevilla','Tfno.: 955041429','dg.emergencias.cspe@juntadeandalucia.es'], logo:'', sello:'' },
+    { id:'delegacion', nombre:'Delegación del Gobierno (Málaga)', cabecera:['Delegación del Gobierno','Málaga'], negritaTodas:true,
+      firmaCargo:'LA DELEGADA DEL GOBIERNO', firmaNombre:'', pie:[], logo:'', sello:'' }
+  ]; }
+  function refsBase(asunto){ return [
+    {id:'fecha',label:'Fecha',on:true,valor:'la de firma'},
+    {id:'ref',label:'Ref.',on:true,valor:''},
+    {id:'nref',label:'N/Ref.',on:true,valor:''},
+    {id:'asunto',label:'Asunto',on:true,valor:asunto||''} ]; }
+  function plantillasDef(){ return [
+    { id:'grabaciones', nombre:'Respuesta a solicitud de grabaciones', membreteId:'agencia',
+      refs:refsBase('Solicitud de grabaciones'),
+      vars:[ {id:'fechaEscrito',label:'Fecha de su escrito',valor:''}, {id:'nRegistro',label:'Nº de registro de entrada',valor:''},
+             {id:'fechaRegistro',label:'Fecha de registro',valor:''}, {id:'atestado',label:'Atestado / diligencias',valor:''},
+             {id:'solicitud',label:'Lo que solicitan (cita textual)',valor:'',largo:true}, {id:'soporte',label:'Formato del soporte',valor:'CD'} ],
+      bloques:[
+        {id:'b1',tipo:'texto',titulo:'Referencia a su escrito',on:true,texto:'Con relación a su escrito de fecha {{fechaEscrito}}, con número de registro de entrada {{nRegistro}} de fecha {{fechaRegistro}}, en el que por ser necesario para una investigación, atestado {{atestado}}, solicita “{{solicitud}}”, le indicamos que:'},
+        {id:'b2',tipo:'texto',titulo:'Resultado: SÍ constan llamadas',on:true,texto:'Consultada la base de datos del Sistema Emergencias 112 Andalucía, consta la siguiente llamada recibida relacionada con su petición:'},
+        {id:'b3',tipo:'tabla',titulo:'Tabla de llamadas',on:true,numerar:true,cols:['Fecha','Hora','Nº teléfono','Observaciones'],filas:[]},
+        {id:'b4',tipo:'texto',titulo:'Resultado: NO constan llamadas',on:false,texto:'Consultada la base de datos del Sistema Emergencias 112 Andalucía, no consta ninguna llamada recibida relacionada con su petición.'},
+        {id:'b5',tipo:'texto',titulo:'Soporte que se acompaña',on:true,texto:'* Se acompaña al presente escrito el soporte informático de las grabaciones solicitadas en formato {{soporte}}.'} ],
+      atentamente:{on:true,texto:'Atentamente,'} },
+    { id:'generico', nombre:'Oficio genérico', membreteId:'delegacion',
+      refs:refsBase(''), vars:[],
+      bloques:[
+        {id:'b1',tipo:'texto',titulo:'Texto principal',on:true,texto:''},
+        {id:'b2',tipo:'texto',titulo:'Segundo párrafo',on:false,texto:''},
+        {id:'b3',tipo:'texto',titulo:'Lista (líneas que empiezan por -)',on:false,texto:'Le solicitamos:\n- '},
+        {id:'b4',tipo:'texto',titulo:'Se adjunta',on:false,texto:'Se adjunta a este escrito: '},
+        {id:'b5',tipo:'texto',titulo:'Despedida',on:true,texto:'Lo que le comunico para su conocimiento y efectos oportunos.'} ],
+      atentamente:{on:true,texto:'Atentamente,'} }
+  ]; }
+  function defaults(){
+    return { membretes:membretesDef(), firmantes:[], destinatarios:[], plantillas:plantillasDef(),
+      numeracion:{patron:'PMA-PD {n}/{aa} {ini}', ini:'', ultimos:{}}, oficios:[] };
+  }
+  function load(){
+    var b=defaults();
+    try{
+      var s=JSON.parse(localStorage.getItem(KEY)||'null');
+      if(s){ ['membretes','firmantes','destinatarios','plantillas','oficios'].forEach(function(k){ if(Array.isArray(s[k])) b[k]=s[k]; });
+        if(s.numeracion) b.numeracion=Object.assign(b.numeracion,s.numeracion); }
+    }catch(e){}
+    return b;
+  }
+  var state=load();
+  var ui={view:'home', id:null, buscar:'', estado:'todos'};
+  var saveT=null;
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){ toast('⚠️ No se pudo guardar en este navegador'); } }
+  function saveSoon(){ clearTimeout(saveT); saveT=setTimeout(save,350); }
+  function persist(m){ clearTimeout(saveT); save(); if(m) toast(m); }
+
+  /* ================= utilidades ================= */
+  function uid(p){ return p+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+  function pad2(n){ return (n<10?'0':'')+n; }
+  function todayISO(){ var d=new Date(); return d.getFullYear()+'-'+pad2(d.getMonth()+1)+'-'+pad2(d.getDate()); }
+  function fmtF(iso){ if(!iso) return ''; var p=iso.split('-'); return p[2]+'/'+p[1]+'/'+p[0]; }
+  function lines(t){ return String(t||'').split(/\r?\n/).map(function(l){return l.trim();}).filter(Boolean); }
+  function norm(t){ return String(t||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase(); }
+  function slug(s,max){ return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[\/]+/g,'-').replace(/[^A-Za-z0-9\-]+/g,'_').replace(/^[_\-]+|[_\-]+$/g,'').slice(0,max||60).replace(/[_\-]+$/,'')||'oficio'; }
+  function clone(o){ return JSON.parse(JSON.stringify(o)); }
+  function getPath(o,p){ return p.split('.').reduce(function(a,k){ return a==null?a:a[k]; }, o); }
+  function setPath(o,p,v){ var ks=p.split('.'), last=ks.pop(), t=o; ks.forEach(function(k){ t=t[k]; }); t[last]=v; }
+  function cur(){ for(var i=0;i<state.oficios.length;i++) if(state.oficios[i].id===ui.id) return state.oficios[i]; return null; }
+  function membrete(id){ for(var i=0;i<state.membretes.length;i++) if(state.membretes[i].id===id) return state.membretes[i]; return state.membretes[0]||{cabecera:[],pie:[]}; }
+  var toastEl=null,toastT=null;
+  function toast(m){ if(!toastEl){ toastEl=document.createElement('div'); toastEl.className='toast'; document.body.appendChild(toastEl); }
+    toastEl.textContent=m; toastEl.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(function(){ toastEl.classList.remove('show'); },3200); }
+  function openModal(html,wide){ closeModal(); var w=document.createElement('div'); w.className='modal-overlay'; w.id='modal';
+    w.innerHTML='<div class="modal'+(wide?' wide':'')+'">'+html+'</div>';
+    w.addEventListener('click',function(e){ if(e.target===w){ closeModal(); return; } onClick(e); });
+    w.addEventListener('input',onInput); w.addEventListener('change',onChange);
+    document.body.appendChild(w); return w; }
+  function closeModal(){ var m=document.getElementById('modal'); if(m) m.remove(); }
+
+  /* ================= modelo del documento ================= */
+  function fill(t,v,falta){
+    return String(t||'').replace(/\{\{(\w+)\}\}/g,function(m,k){
+      if(v.hasOwnProperty(k)){ if(v[k].valor) return v[k].valor; if(falta) falta[k]=v[k].label; return '['+v[k].label+']'; }
+      return m; });
+  }
+  function docDe(o, falta){
+    var m=membrete(o.membreteId), v={};
+    o.vars.forEach(function(x){ v[x.id]=x; });
+    var bl=[];
+    o.bloques.forEach(function(b){
+      if(!b.on) return;
+      if(b.tipo==='tabla'){
+        var cols=(b.numerar?['Nº']:[]).concat(b.cols);
+        var filas=b.filas.map(function(r,i){ return (b.numerar?[String(i+1)]:[]).concat(r.map(function(c){ return c||''; })); });
+        bl.push({k:'tabla',cols:cols,filas:filas,numerar:!!b.numerar});
+      } else {
+        lines(fill(b.texto,v,falta)).forEach(function(l){
+          var mm=l.match(/^[-–•]\s+(.*)$/);
+          bl.push(mm?{k:'li',text:mm[1]}:{k:'p',text:l});
+        });
+      }
+    });
+    var f=o.firma||{};
+    return {
+      cab:(m.cabecera||[]).filter(Boolean), negritaTodas:m.negritaTodas!==false, logo:m.logo||'',
+      refs:o.refs.filter(function(r){ return r.on && String(r.valor||'').trim(); }).map(function(r){ return {label:r.label,valor:String(r.valor).trim()}; }),
+      dest:o.dest.on?lines(o.dest.texto):[],
+      bloques:bl,
+      atent:(o.atentamente&&o.atentamente.on)?(o.atentamente.texto||''):'',
+      firma:f.on===false?null:{cargo:f.cargo||m.firmaCargo||'', nombre:f.nombre||m.firmaNombre||'', extra:f.extra||''},
+      pie:(o.pie&&o.pie.on===false)?[]:(m.pie||[]).filter(Boolean), sello:(o.pie&&o.pie.on===false)?'':(m.sello||'')
+    };
+  }
+  function nombreArchivo(o,ext){
+    var r=o.refs.filter(function(x){ return x.id==='nref'&&x.valor; })[0];
+    return slug(r?r.valor:o.titulo,30)+'.'+ext;
+  }
+
+  /* ---- vista previa HTML ---- */
+  function previewHTML(L){
+    var h='<div class="paper"><div class="hd">'+(L.logo?'<img alt="" src="'+esc(L.logo)+'">':'<span></span>')+
+      '<div class="t">'+L.cab.map(function(t,i){ return '<div'+((L.negritaTodas||i===0)?' style="font-weight:700"':'')+'>'+esc(t)+'</div>'; }).join('')+'</div></div>';
+    h+='<div class="two"><div>'+L.refs.map(function(r){ return '<div>'+esc(r.label)+': '+esc(r.valor)+'</div>'; }).join('')+'</div>'+
+       '<div>'+L.dest.map(function(t,i){ return '<div'+(i===0?' style="font-weight:700"':'')+'>'+esc(t)+'</div>'; }).join('')+'</div></div>';
+    L.bloques.forEach(function(b){
+      if(b.k==='li') h+='<div class="li">- '+marcar(b.text)+'</div>';
+      else if(b.k==='p') h+='<p>'+marcar(b.text)+'</p>';
+      else h+='<table><thead><tr>'+b.cols.map(function(c){ return '<th>'+esc(c)+'</th>'; }).join('')+'</tr></thead><tbody>'+
+        (b.filas.length?b.filas.map(function(r){ return '<tr>'+r.map(function(c){ return '<td>'+esc(c)+'</td>'; }).join('')+'</tr>'; }).join(''):'<tr>'+b.cols.map(function(){return '<td>&nbsp;</td>';}).join('')+'</tr>')+'</tbody></table>';
+    });
+    if(L.atent) h+='<div class="at">'+esc(L.atent)+'</div>';
+    if(L.firma) h+='<div class="sig"><div>'+esc(L.firma.cargo)+'</div>'+(L.firma.extra?'<div>'+esc(L.firma.extra)+'</div>':'')+'<div class="fdo">'+esc(L.firma.nombre)+'</div></div>';
+    if(L.pie.length||L.sello) h+='<div class="ft"><div>'+L.pie.map(function(t){ return '<div>'+esc(t)+'</div>'; }).join('')+'</div>'+(L.sello?'<img alt="" src="'+esc(L.sello)+'">':'')+'</div>';
+    return h+'</div>';
+  }
+  function marcar(t){ return esc(t).replace(/\[([^\]]+)\]/g,'<span class="miss">[$1]</span>'); }
+
+  /* ---- librerías (carga perezosa) ---- */
+  var loaded={};
+  function loadLib(n){ if(loaded[n]) return loaded[n];
+    loaded[n]=new Promise(function(res,rej){ var s=document.createElement('script'); s.src=LIBS[n]; s.onload=function(){res();}; s.onerror=function(){ loaded[n]=null; rej(new Error('No se pudo cargar la librería «'+n+'» (¿sin conexión?)')); }; document.head.appendChild(s); });
+    return loaded[n]; }
+  function u8(uri){ var b=atob(String(uri).split(',')[1]); var a=new Uint8Array(b.length); for(var i=0;i<b.length;i++) a[i]=b.charCodeAt(i); return a; }
+  function imgType(u){ return /^data:image\/(jpe?g)/i.test(u)?'jpg':'png'; }
+  function imgSize(u){ return new Promise(function(r){ var i=new Image(); i.onload=function(){ r({w:i.naturalWidth,h:i.naturalHeight}); }; i.onerror=function(){ r({w:1,h:1}); }; i.src=u; }); }
+
+  /* ---- Word ---- */
+  async function docxBlob(L){
+    await loadLib('docx'); var D=window.docx;
+    var none={style:D.BorderStyle.NONE,size:0,color:'FFFFFF'}, nb={top:none,bottom:none,left:none,right:none};
+    function run(t,o){ o=o||{}; return new D.TextRun({text:t,bold:!!o.bold,size:o.size||22,font:'Arial'}); }
+    function para(t,o){ o=o||{}; return new D.Paragraph({children:[run(t,o)],alignment:o.align,spacing:o.spacing,indent:o.indent}); }
+    function tbl(ws,cols){ return new D.Table({ width:{size:ws.reduce(function(a,b){return a+b;},0),type:D.WidthType.DXA}, columnWidths:ws,
+        borders:{top:none,bottom:none,left:none,right:none,insideHorizontal:none,insideVertical:none},
+        rows:[new D.TableRow({children:cols.map(function(c,i){ return new D.TableCell({children:c.length?c:[new D.Paragraph('')],width:{size:ws[i],type:D.WidthType.DXA},borders:nb}); })})] }); }
+    async function img(uri,hpx){ var sz=await imgSize(uri); var w=Math.round(hpx*sz.w/sz.h); return new D.Paragraph({children:[new D.ImageRun({data:u8(uri),transformation:{width:w,height:hpx},type:imgType(uri)})]}); }
+    var head=tbl([3300,5204],[ L.logo?[await img(L.logo,78)]:[], L.cab.map(function(t,i){ return para(t,{bold:(L.negritaTodas||i===0)}); }) ]);
+    var selloP=L.sello?await img(L.sello,71):new D.Paragraph('');
+    var foot=tbl([6800,1704],[ L.pie.map(function(t){ return para(t,{size:15}); }), [selloP] ]);
+    var ch=[ para('',{spacing:{after:300}}),
+      tbl([3700,4804],[ L.refs.map(function(r){ return para(r.label+': '+r.valor); }), L.dest.map(function(t,i){ return para(t,{bold:i===0}); }) ]), para('') ];
+    L.bloques.forEach(function(b,i){
+      var sig=L.bloques[i+1];
+      if(b.k==='li') ch.push(new D.Paragraph({children:[run('- '+b.text)],alignment:D.AlignmentType.JUSTIFIED,spacing:{after:(sig&&sig.k==='li')?60:200,line:312},indent:{left:1134,hanging:284}}));
+      else if(b.k==='p') ch.push(new D.Paragraph({children:[run(b.text)],alignment:D.AlignmentType.JUSTIFIED,spacing:{after:(sig&&sig.k==='li')?80:200,line:312},indent:{firstLine:567}}));
+      else {
+        var n=b.cols.length, w=Math.floor(8504/n), ws=b.cols.map(function(c,ci){ return (b.numerar&&ci===0)?600:0; });
+        var rest=8504-ws.reduce(function(a,x){return a+x;},0), cnt=ws.filter(function(x){return !x;}).length; ws=ws.map(function(x){ return x||Math.floor(rest/cnt); });
+        function cel(t,i,hd){ return new D.TableCell({width:{size:ws[i],type:D.WidthType.DXA},margins:{top:50,bottom:50,left:80,right:80},shading:hd?{fill:'E8ECF1'}:undefined,children:[para(String(t||''),{size:18,bold:hd})]}); }
+        var rows=[new D.TableRow({tableHeader:true,children:b.cols.map(function(c,i){ return cel(c,i,true); })})];
+        (b.filas.length?b.filas:[b.cols.map(function(){return '';})]).forEach(function(r){ rows.push(new D.TableRow({children:r.map(function(c,i){ return cel(c,i,false); })})); });
+        ch.push(new D.Table({width:{size:8504,type:D.WidthType.DXA},columnWidths:ws,rows:rows})); ch.push(para('',{spacing:{after:120}}));
+      }
+    });
+    if(L.atent) ch.push(para(L.atent,{spacing:{before:300},indent:{firstLine:567}}));
+    if(L.firma){ ch.push(para(L.firma.cargo,{align:D.AlignmentType.CENTER,spacing:{before:400}}));
+      if(L.firma.extra) ch.push(para(L.firma.extra,{align:D.AlignmentType.CENTER}));
+      ch.push(para(L.firma.nombre,{align:D.AlignmentType.CENTER,spacing:{before:600}})); }
+    var doc=new D.Document({styles:{default:{document:{run:{font:'Arial',size:22}}}},sections:[{
+      properties:{titlePage:true,page:{size:{width:11906,height:16838},margin:{top:1134,right:1701,bottom:1134,left:1701,header:567,footer:567}}},
+      headers:{first:new D.Header({children:[head]}),default:new D.Header({children:[new D.Paragraph('')]})},
+      footers:{first:new D.Footer({children:[foot]}),default:new D.Footer({children:[foot]})},
+      children:ch }]});
+    return D.Packer.toBlob(doc);
+  }
+
+  /* ---- PDF ---- */
+  function wrapW(doc,text,wf){ var ws=text.split(/\s+/).filter(Boolean),out=[],cur=[]; ws.forEach(function(w){ var t=cur.concat([w]).join(' ');
+      if(!cur.length||doc.getTextWidth(t)<=wf(out.length)) cur.push(w); else { out.push(cur); cur=[w]; } }); if(cur.length) out.push(cur); return out; }
+  async function pdfBlob(L){
+    await loadLib('jspdf'); var doc=new window.jspdf.jsPDF({unit:'mm',format:'a4'});
+    var W=210,mL=24,mR=22,cw=W-mL-mR,maxY=258,y=0;
+    function need(h){ if(y+h>maxY){ doc.addPage(); y=25; return true; } return false; }
+    function jline(ws,x,w,last){ if(last){ doc.text(ws.join(' '),x,y); return; }
+      var tw=ws.reduce(function(a,s){return a+doc.getTextWidth(s);},0), gap=(w-tw)/Math.max(ws.length-1,1), cx=x; ws.forEach(function(s){ doc.text(s,cx,y); cx+=doc.getTextWidth(s)+gap; }); }
+    if(L.logo){ var sz=await imgSize(L.logo), h=20.6; doc.addImage(L.logo,imgType(L.logo)==='jpg'?'JPEG':'PNG',mL,14,h*sz.w/sz.h,h); }
+    doc.setFontSize(10.5);
+    L.cab.forEach(function(t,i){ doc.setFont('helvetica',(L.negritaTodas||i===0)?'bold':'normal'); doc.text(t,112,20+i*5.2); });
+    doc.setFont('helvetica','normal'); doc.setFontSize(10.5);
+    var top=54, dx=104, dw=W-mR-dx, y1=top, y2=top;
+    L.dest.forEach(function(l,i){ doc.setFont('helvetica',i===0?'bold':'normal'); doc.splitTextToSize(l,dw).forEach(function(s){ doc.text(s,dx,y1); y1+=5.2; }); });
+    doc.setFont('helvetica','normal');
+    L.refs.forEach(function(r){ doc.splitTextToSize(r.label+': '+r.valor,dx-mL-6).forEach(function(s){ doc.text(s,mL,y2); y2+=5.2; }); });
+    y=Math.max(y1,y2)+10; doc.setFontSize(11);
+    L.bloques.forEach(function(b,i){
+      var sig=L.bloques[i+1], pegado=sig&&sig.k==='li';
+      if(b.k==='p'){ var ls=wrapW(doc,b.text,function(n){return n===0?cw-10:cw;}); ls.forEach(function(ws,j){ need(5.6); jline(ws,mL+(j===0?10:0),j===0?cw-10:cw,j===ls.length-1); y+=5.6; }); y+=pegado?0.8:3; }
+      else if(b.k==='li'){ var lx=mL+10,tx=lx+doc.getTextWidth('- '),w=cw-(tx-mL); var l2=wrapW(doc,b.text,function(){return w;});
+        l2.forEach(function(ws,j){ need(5.6); if(j===0) doc.text('-',lx,y); jline(ws,tx,w,j===l2.length-1); y+=5.6; }); y+=(sig&&sig.k==='li')?0.8:3; }
+      else {
+        doc.setFontSize(9);
+        var wts=b.cols.map(function(c,ci){ var m=Math.max(String(c).length,4); b.filas.forEach(function(r){ m=Math.max(m,String(r[ci]||'').length); }); m=Math.min(m,40); return (b.numerar&&ci===0)?4:m; });
+        var tot=wts.reduce(function(a,x){return a+x;},0), ws=wts.map(function(x){ return x/tot*cw; });
+        function fila(cells,head){ doc.setFont('helvetica',head?'bold':'normal'); var tl=cells.map(function(t,ci){ return doc.splitTextToSize(String(t||''),ws[ci]-3); });
+          var h=Math.max(1,Math.max.apply(null,tl.map(function(a){return a.length;})))*4.3+3.2;
+          if(need(h)&&!head){ fila(b.cols,true); doc.setFont('helvetica','normal'); }
+          var x=mL;
+          cells.forEach(function(t,ci){ if(head) doc.setFillColor(232,236,241); doc.rect(x,y,ws[ci],h,head?'FD':'S'); doc.setTextColor(0,0,0); doc.text(tl[ci],x+1.5,y+4.2); x+=ws[ci]; }); y+=h; }
+        fila(b.cols,true); (b.filas.length?b.filas:[b.cols.map(function(){return '';})]).forEach(function(r){ fila(r,false); });
+        y+=6; doc.setFont('helvetica','normal'); doc.setFontSize(11);
+      }
+    });
+    if(L.atent){ need(12); y+=4; doc.text(L.atent,mL+10,y); y+=8; }
+    if(L.firma){ need(34); y+=2; doc.text(L.firma.cargo,W/2,y,{align:'center'}); y+=(L.firma.extra?5.6:0); if(L.firma.extra) doc.text(L.firma.extra,W/2,y-0.0,{align:'center'}); y+=18; doc.text(L.firma.nombre,W/2,y,{align:'center'}); }
+    var n=doc.getNumberOfPages(), simg=L.sello?await imgSize(L.sello):null;
+    for(var p=1;p<=n;p++){ doc.setPage(p); doc.setFontSize(7.5); doc.setTextColor(60,60,60); doc.setFont('helvetica','normal');
+      L.pie.forEach(function(t,i){ doc.text(t,mL,278+i*3.6-(L.pie.length>3?(L.pie.length-3)*3.6:0)); }); doc.setTextColor(0,0,0);
+      if(simg){ var hh=19; doc.addImage(L.sello,imgType(L.sello)==='jpg'?'JPEG':'PNG',W-mR-hh*simg.w/simg.h,268,hh*simg.w/simg.h,hh); } }
+    return doc.output('blob');
+  }
+  function saveBlob(b,n){ var a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=n; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },4000); }
+  async function descargar(fmt){
+    var o=cur(); if(!o) return; var falta={}, L=docDe(o,falta), fl=Object.keys(falta).map(function(k){return falta[k];});
+    if(fl.length && !window.confirm('Faltan estos datos por rellenar (saldrán entre corchetes):\n\n— '+fl.join('\n— ')+'\n\n¿Generar igualmente?')) return;
+    try{ toast('Generando…'); var b=fmt==='docx'?await docxBlob(L):await pdfBlob(L); saveBlob(b,nombreArchivo(o,fmt)); toast('✅ Descargado ('+fmt.toUpperCase()+')'); }
+    catch(e){ toast('⚠️ '+e.message); }
+  }
+
+  /* ================= numeración ================= */
+  function anioDe(o){ var f=o&&o.fechaEntrada?o.fechaEntrada:todayISO(); return +f.slice(0,4); }
+  function nrefSiguiente(o){ var y=anioDe(o), aa=String(y).slice(-2), n=(+state.numeracion.ultimos[aa]||0)+1;
+    return {n:n,aa:aa,txt:String(state.numeracion.patron||'{n}/{aa}').replace(/\{n\}/g,n).replace(/\{aa\}/g,aa).replace(/\{aaaa\}/g,y).replace(/\{ini\}/g,state.numeracion.ini||'').replace(/\s+/g,' ').trim()}; }
+
+  /* ================= pantallas ================= */
+  function badgeEstado(e){ return '<span class="badge '+(e==='Enviado'?'ok':(e==='Pendiente de firma'?'warn':''))+'">'+esc(e)+'</span>'; }
+  function renderHome(){
+    var h='<div class="topbar"><div class="topbar-row"><div class="brand"><span>📨</span><h1>Oficios</h1></div><div class="tools"><button class="btn btn-sm" data-act="ir-ajustes">⚙️ Ajustes</button></div></div></div><main>';
+    var q=norm(ui.buscar).trim();
+    var lista=state.oficios.filter(function(o){ return (ui.estado==='todos'||o.estado===ui.estado) && (!q||norm(o.titulo+' '+o.dest.texto+' '+o.refs.map(function(r){return r.valor;}).join(' ')).indexOf(q)!==-1); })
+      .sort(function(a,b){ return b.creado-a.creado; });
+    h+='<div class="row"><input type="search" id="buscarOfi" placeholder="Buscar por título, destinatario o referencia…" value="'+esc(ui.buscar)+'"><select id="estadoOfi" style="width:auto"><option value="todos">Todos</option>'+ESTADOS.map(function(e){ return '<option'+(ui.estado===e?' selected':'')+'>'+e+'</option>'; }).join('')+'</select></div>';
+    h+=lista.length?lista.map(function(o){
+      var nref=(o.refs.filter(function(r){return r.id==='nref';})[0]||{}).valor||'';
+      return '<div class="card click" data-act="abrir" data-i="'+o.id+'"><div class="card-top"><span class="card-title">'+esc(o.titulo)+'</span>'+badgeEstado(o.estado)+'</div>'+
+        '<div class="meta"><span>➡️ '+esc(lines(o.dest.texto)[0]||'Sin destinatario')+'</span>'+(nref?'<span>Nº '+esc(nref)+'</span>':'')+'<span>📄 '+esc(o.plantillaNombre||'')+'</span></div>'+
+        '<div class="meta">'+(o.fechaEntrada?'<span>📥 Entrada '+fmtF(o.fechaEntrada)+'</span>':'')+(o.fechaSalida?'<span>📤 Salida '+fmtF(o.fechaSalida)+'</span>':'')+'</div></div>'; }).join('')
+      :'<div class="empty-state">'+(state.oficios.length?'Ningún oficio con ese filtro.':'Todavía no hay oficios.<br>Crea el primero a partir de una plantilla.')+'</div>';
+    return h+'</main><button class="fab" data-act="nuevo">＋ Nuevo oficio</button>';
+  }
+
+  function refsHTML(o){
+    return o.refs.map(function(r,i){ return '<div class="fld'+(r.on?'':' off')+'"><label class="sw" title="Mostrar en el documento"><input type="checkbox" data-bc="refs.'+i+'.on"'+(r.on?' checked':'')+'></label>'+
+      '<input type="text" class="lbl" data-b="refs.'+i+'.label" value="'+esc(r.label)+'">'+
+      '<input type="text" data-b="refs.'+i+'.valor" value="'+esc(r.valor)+'" placeholder="(vacío = no se imprime)">'+
+      (r.id==='nref'?'<button class="btn btn-sm" data-act="gen-nref" title="Asignar el siguiente número">Nº</button>':'')+
+      (r.id==='fecha'?'<button class="btn btn-sm" data-act="fecha-hoy" title="Poner la fecha de hoy">Hoy</button>':'')+
+      '<button class="btn btn-sm btn-ghost" data-act="del-ref" data-i="'+i+'" title="Quitar campo">✕</button></div>'; }).join('');
+  }
+  function varsHTML(o){
+    if(!o.vars.length) return '<p class="hint" style="margin:0">Esta plantilla no tiene datos sueltos. Añade uno con «＋ Dato» y úsalo en los textos escribiendo su nombre entre llaves.</p>';
+    return o.vars.map(function(v,i){ return '<div class="field"><label>'+esc(v.label)+' <span class="chip">{{'+esc(v.id)+'}}</span> <button class="btn btn-sm btn-ghost" data-act="del-var" data-i="'+i+'" title="Quitar dato">✕</button></label>'+
+      (v.largo?'<textarea rows="3" data-b="vars.'+i+'.valor">'+esc(v.valor)+'</textarea>':'<input type="text" data-b="vars.'+i+'.valor" value="'+esc(v.valor)+'">')+'</div>'; }).join('');
+  }
+  function tablaEditorHTML(b,i){
+    var h='<div class="tbw"><table class="tb"><thead><tr>'+(b.numerar?'<th style="width:36px;text-align:center">Nº</th>':'')+
+      b.cols.map(function(c,j){ return '<th><input type="text" data-b="bloques.'+i+'.cols.'+j+'" value="'+esc(c)+'"></th>'; }).join('')+'<th style="width:30px"></th></tr></thead><tbody>';
+    b.filas.forEach(function(r,ri){ h+='<tr>'+(b.numerar?'<td style="text-align:center;color:var(--ink-faint)">'+(ri+1)+'</td>':'')+
+      r.map(function(c,ci){ return '<td><input type="text" data-b="bloques.'+i+'.filas.'+ri+'.'+ci+'" value="'+esc(c)+'"></td>'; }).join('')+
+      '<td><button class="btn btn-sm btn-ghost" data-act="del-fila" data-i="'+i+'" data-r="'+ri+'" title="Quitar fila">✕</button></td></tr>'; });
+    h+='</tbody></table></div><div class="row" style="margin-top:8px;flex-wrap:wrap"><button class="btn btn-sm" data-act="add-fila" data-i="'+i+'">＋ Fila</button><button class="btn btn-sm" data-act="add-col" data-i="'+i+'">＋ Columna</button><button class="btn btn-sm" data-act="del-col" data-i="'+i+'">− Última columna</button>'+
+      '<label class="sw" style="gap:6px;font-size:.78rem"><input type="checkbox" data-bc="bloques.'+i+'.numerar"'+(b.numerar?' checked':'')+'> Numerar filas</label>'+
+      '<button class="btn btn-sm btn-danger" data-act="vaciar-tabla" data-i="'+i+'">🧹 Vaciar filas</button></div>';
+    return h;
+  }
+  function bloquesHTML(o){
+    return o.bloques.map(function(b,i){
+      return '<div class="blk'+(b.on?'':' off')+'"><div class="blk-h"><label class="sw" title="Mostrar en el documento"><input type="checkbox" data-bc="bloques.'+i+'.on"'+(b.on?' checked':'')+'></label>'+
+        '<input type="text" class="tit" data-b="bloques.'+i+'.titulo" value="'+esc(b.titulo)+'" title="Nombre interno del bloque (no se imprime)"><span class="badge">'+(b.tipo==='tabla'?'tabla':'texto')+'</span>'+
+        '<button class="btn btn-sm btn-ghost" data-act="blk-up" data-i="'+i+'" title="Subir">↑</button><button class="btn btn-sm btn-ghost" data-act="blk-down" data-i="'+i+'" title="Bajar">↓</button>'+
+        '<button class="btn btn-sm btn-ghost" data-act="del-blk" data-i="'+i+'" title="Quitar bloque">✕</button></div>'+
+        (b.tipo==='tabla'?tablaEditorHTML(b,i):'<textarea rows="'+Math.min(8,Math.max(3,Math.ceil((b.texto||'').length/90)+1))+'" data-b="bloques.'+i+'.texto" placeholder="Escribe aquí. Cada línea es un párrafo; las que empiezan por - son viñetas. Usa {{dato}} para insertar datos.">'+esc(b.texto)+'</textarea>')+'</div>'; }).join('');
+  }
+  function renderEdit(){
+    var o=cur(); if(!o){ ui.view='home'; return renderHome(); }
+    var m=membrete(o.membreteId);
+    var h='<div class="topbar"><div class="topbar-row"><button class="btn btn-ghost btn-sm" data-act="ir-home">← Volver</button><div class="tools">'+
+      '<button class="btn btn-sm" data-act="vista">👁 Vista previa</button><button class="btn btn-sm btn-primary" data-act="dl-docx">📝 Word</button><button class="btn btn-sm btn-primary" data-act="dl-pdf">📕 PDF</button>'+
+      '<button class="btn btn-sm" data-act="mas" title="Más acciones">⋯</button></div></div></div><main>';
+    h+='<div class="card"><h2>Datos del oficio</h2><div class="field"><label>Título interno (no se imprime)</label><input type="text" data-b="titulo" value="'+esc(o.titulo)+'"></div>'+
+      '<div class="row2"><div class="field"><label>Membrete</label><select data-b="membreteId">'+state.membretes.map(function(x){ return '<option value="'+esc(x.id)+'"'+(x.id===o.membreteId?' selected':'')+'>'+esc(x.nombre)+'</option>'; }).join('')+'</select></div>'+
+      '<div class="field"><label>Estado</label><select data-b="estado">'+ESTADOS.map(function(e){ return '<option'+(e===o.estado?' selected':'')+'>'+e+'</option>'; }).join('')+'</select></div></div>'+
+      '<div class="row2"><div class="field"><label>Fecha de entrada de la solicitud</label><input type="date" data-b="fechaEntrada" value="'+esc(o.fechaEntrada)+'"></div>'+
+      '<div class="field"><label>Fecha de salida</label><input type="date" data-b="fechaSalida" value="'+esc(o.fechaSalida)+'"></div></div>'+
+      '<div class="field"><label>Nº de registro de salida</label><input type="text" data-b="registroSalida" value="'+esc(o.registroSalida)+'"></div>'+
+      '<div class="field" style="margin:0"><label>Notas internas (no se imprimen)</label><textarea rows="2" data-b="notas">'+esc(o.notas)+'</textarea></div></div>';
+    h+='<div class="card"><h2>Referencias de la cabecera <button class="btn btn-sm" data-act="add-ref">＋ Campo</button></h2>'+refsHTML(o)+'<p class="hint">Marca o desmarca cada campo para mostrarlo u ocultarlo. Los que estén vacíos no se imprimen.</p></div>';
+    h+='<div class="card"><h2>Destinatario <label class="sw" style="gap:6px;font-size:.75rem;text-transform:none;letter-spacing:0"><input type="checkbox" data-bc="dest.on"'+(o.dest.on?' checked':'')+'> mostrar</label></h2>'+
+      '<textarea rows="5" data-b="dest.texto" placeholder="Organismo&#10;Unidad&#10;Dirección&#10;A/A …">'+esc(o.dest.texto)+'</textarea>'+
+      '<div class="row" style="margin-top:8px;flex-wrap:wrap"><button class="btn btn-sm" data-act="elegir-dest">📇 Elegir destinatario…</button><button class="btn btn-sm" data-act="guardar-dest">💾 Guardar en mis destinatarios</button></div>'+
+      '<p class="hint">La primera línea sale en negrita.</p></div>';
+    h+='<div class="card"><h2>Datos para el texto <button class="btn btn-sm" data-act="add-var">＋ Dato</button></h2>'+varsHTML(o)+'</div>';
+    h+='<div class="card"><h2>Contenido <span style="display:flex;gap:6px"><button class="btn btn-sm" data-act="add-texto">＋ Texto</button><button class="btn btn-sm" data-act="add-tabla">＋ Tabla</button></span></h2>'+bloquesHTML(o)+
+      '<p class="hint">Cada bloque se puede activar o desactivar con su casilla (por ejemplo, «SÍ constan llamadas» / «NO constan llamadas»). Se pueden subir, bajar, añadir y quitar.</p></div>';
+    var f=o.firma||{};
+    h+='<div class="card"><h2>Cierre y firma</h2>'+
+      '<div class="fld'+(o.atentamente.on?'':' off')+'"><label class="sw"><input type="checkbox" data-bc="atentamente.on"'+(o.atentamente.on?' checked':'')+'></label><input type="text" data-b="atentamente.texto" value="'+esc(o.atentamente.texto)+'"></div>'+
+      '<div class="fld'+(f.on===false?' off':'')+'" style="margin-bottom:4px"><label class="sw"><input type="checkbox" data-bc="firma.on"'+(f.on===false?'':' checked')+'></label><b style="font-size:.85rem">Mostrar firma</b></div>'+
+      (state.firmantes.length?'<div class="field"><label>Firmante guardado</label><select id="selFirmante"><option value="">— elegir —</option>'+state.firmantes.map(function(x,i){ return '<option value="'+i+'">'+esc(x.cargo+' — '+x.nombre)+'</option>'; }).join('')+'</select></div>':'')+
+      '<div class="field"><label>Cargo</label><input type="text" data-b="firma.cargo" value="'+esc(f.cargo||'')+'" placeholder="'+esc(m.firmaCargo||'')+'"></div>'+
+      '<div class="field"><label>Línea adicional (p. ej. «P.D.», «Por delegación»)</label><input type="text" data-b="firma.extra" value="'+esc(f.extra||'')+'"></div>'+
+      '<div class="field"><label>Nombre (con «Fdo.:» si lo quieres)</label><input type="text" data-b="firma.nombre" value="'+esc(f.nombre||'')+'" placeholder="'+esc(m.firmaNombre||'Fdo.: Nombre Apellidos')+'"></div>'+
+      '<div class="row" style="flex-wrap:wrap"><button class="btn btn-sm" data-act="guardar-firmante">💾 Guardar este firmante</button>'+(state.firmantes.length?'<button class="btn btn-sm btn-ghost" data-act="del-firmante">Quitar un firmante guardado…</button>':'')+'</div>'+
+      '<p class="hint">Si dejas cargo o nombre vacíos se usan los del membrete elegido.</p>'+
+      '<div class="fld'+(o.pie.on===false?' off':'')+'" style="margin-top:8px"><label class="sw"><input type="checkbox" data-bc="pie.on"'+(o.pie.on===false?'':' checked')+'></label><b style="font-size:.85rem">Mostrar pie de página y sello</b></div></div>';
+    return h+'</main>';
+  }
+  function renderAjustes(){
+    var n=state.numeracion, h='<div class="topbar"><div class="topbar-row"><button class="btn btn-ghost btn-sm" data-act="ir-home">← Volver</button><div class="brand"><h1>Ajustes</h1></div><span></span></div></div><main>';
+    h+='<div class="card"><h2>Membretes <button class="btn btn-sm" data-act="nuevo-membrete">＋ Nuevo</button></h2>'+state.membretes.map(function(m){
+      return '<div class="row" style="align-items:flex-start;border-bottom:1px solid var(--border);padding-bottom:8px;margin-bottom:8px"><div style="flex:1"><b>'+esc(m.nombre)+'</b><div class="hint">'+esc((m.cabecera||[]).join(' · ')||'sin cabecera de texto')+'<br>Firma: '+esc(m.firmaCargo||'—')+' · '+esc(m.firmaNombre||'—')+'</div></div>'+
+        (m.logo?'<img class="thumb" alt="" src="'+esc(m.logo)+'">':'')+
+        '<button class="btn btn-sm" data-act="edit-membrete" data-i="'+esc(m.id)+'">✏️</button><button class="btn btn-sm btn-danger" data-act="del-membrete" data-i="'+esc(m.id)+'">🗑️</button></div>'; }).join('')+
+      '<button class="btn btn-sm" data-act="copiar-membrete-sim">📥 Copiar el membrete de «Invitaciones a simulacros»</button><p class="hint">Trae cabecera, logotipo, sello, pie y firma de ese módulo (se quedan solo en este navegador).</p></div>';
+    h+='<div class="card"><h2>Numeración de referencia (N/Ref.)</h2><div class="field"><label>Patrón</label><input type="text" data-bn="patron" value="'+esc(n.patron)+'"><p class="hint">Usa <b>{n}</b> (número correlativo), <b>{aa}</b> (año, 2 cifras), <b>{aaaa}</b> y <b>{ini}</b> (iniciales). Ejemplo: PMA-PD {n}/{aa} {ini}</p></div>'+
+      '<div class="row2"><div class="field"><label>Iniciales</label><input type="text" data-bn="ini" value="'+esc(n.ini)+'"></div>'+
+      '<div class="field"><label>Último nº usado en '+new Date().getFullYear()+'</label><input type="text" id="ultimoNum" value="'+esc(n.ultimos[String(new Date().getFullYear()).slice(-2)]||0)+'"></div></div></div>';
+    h+='<div class="card"><h2>Firmantes guardados</h2>'+(state.firmantes.length?state.firmantes.map(function(x,i){ return '<div class="row"><div style="flex:1">'+esc(x.cargo)+' — <b>'+esc(x.nombre)+'</b></div><button class="btn btn-sm btn-danger" data-act="quitar-firmante" data-i="'+i+'">🗑️</button></div>'; }).join(''):'<p class="hint" style="margin:0">Aún no hay ninguno. Se guardan desde un oficio con «Guardar este firmante».</p>')+'</div>';
+    h+='<div class="card"><h2>Mis destinatarios ('+state.destinatarios.length+')</h2>'+(state.destinatarios.length?state.destinatarios.map(function(x,i){ return '<div class="row"><div style="flex:1;font-size:.85rem"><b>'+esc(x.nombre)+'</b></div><button class="btn btn-sm btn-danger" data-act="quitar-dest" data-i="'+i+'">🗑️</button></div>'; }).join(''):'<p class="hint" style="margin:0">Se guardan desde un oficio con «Guardar en mis destinatarios». También puedes elegir los operativos de «Invitaciones a simulacros».</p>')+'</div>';
+    h+='<div class="card"><h2>Plantillas</h2>'+state.plantillas.map(function(p,i){ return '<div class="row"><div style="flex:1"><b>'+esc(p.nombre)+'</b><div class="hint">'+p.bloques.length+' bloques · '+p.vars.length+' datos</div></div><button class="btn btn-sm btn-danger" data-act="quitar-plantilla" data-i="'+i+'">🗑️</button></div>'; }).join('')+
+      '<p class="hint">Para crear una plantilla propia: abre un oficio, ajústalo y usa ⋯ → «Guardar como plantilla».</p></div>';
+    h+='<div class="card"><h2>Copia de seguridad</h2><div class="row" style="flex-wrap:wrap"><button class="btn" data-act="exportar">⬇️ Exportar datos</button><button class="btn" data-act="importar">⬆️ Importar datos</button></div>'+
+      '<p class="hint">Todo se guarda solo en este navegador (nada en la nube ni en el repositorio). El fichero exportado contiene datos personales y de expedientes: guárdalo en un sitio privado. Al importar se combinan los datos.</p><input type="file" id="fileImport" accept="application/json,.json" style="display:none"></div>';
+    return h+'</main>';
+  }
+  function render(){ var r=document.getElementById('app-root'); r.innerHTML=ui.view==='edit'?renderEdit():ui.view==='ajustes'?renderAjustes():renderHome(); window.scrollTo(0,0); }
+  function rerender(){ var y=window.scrollY,r=document.getElementById('app-root'); r.innerHTML=ui.view==='edit'?renderEdit():ui.view==='ajustes'?renderAjustes():renderHome(); window.scrollTo(0,y); }
+
+  /* ================= acciones ================= */
+  function crearOficio(pid,titulo,mid){
+    var p=state.plantillas.filter(function(x){return x.id===pid;})[0]||state.plantillas[0]; var c=clone(p);
+    var o={ id:uid('o'), titulo:titulo||p.nombre, plantillaNombre:p.nombre, membreteId:mid||p.membreteId||state.membretes[0].id,
+      refs:c.refs, vars:c.vars, bloques:c.bloques, atentamente:c.atentamente||{on:true,texto:'Atentamente,'},
+      dest:{on:true,texto:''}, firma:{on:true,cargo:'',nombre:'',extra:''}, pie:{on:true},
+      estado:'Borrador', fechaEntrada:todayISO(), fechaSalida:'', registroSalida:'', notas:'', creado:Date.now() };
+    state.oficios.push(o); persist(); ui.id=o.id; ui.view='edit'; render();
+  }
+  function openNuevo(){
+    openModal('<h2>Nuevo oficio</h2><div class="field"><label>Título interno</label><input type="text" id="nuevoTitulo" placeholder="Ej. 84 · CNP UDEV — solicitud de grabaciones"></div>'+
+      '<div class="field"><label>Plantilla</label><select id="nuevoPlantilla">'+state.plantillas.map(function(p){ return '<option value="'+esc(p.id)+'">'+esc(p.nombre)+'</option>'; }).join('')+'</select></div>'+
+      '<div class="field"><label>Membrete</label><select id="nuevoMembrete"><option value="">(el de la plantilla)</option>'+state.membretes.map(function(m){ return '<option value="'+esc(m.id)+'">'+esc(m.nombre)+'</option>'; }).join('')+'</select></div>'+
+      '<div class="modal-actions"><button class="btn" data-act="cerrar">Cancelar</button><button class="btn btn-primary" data-act="crear">Crear</button></div>');
+  }
+  function simCatalogo(){ try{ var s=JSON.parse(localStorage.getItem(SIM_KEY)||'null'); return s&&Array.isArray(s.catalogo)?s.catalogo:[]; }catch(e){ return []; } }
+  function openElegirDest(){
+    var fuentes=state.destinatarios.map(function(d){ return {nombre:d.nombre,texto:d.texto,origen:'Mis destinatarios'}; })
+      .concat(simCatalogo().filter(function(c){ return lines(c.destinatario).length; }).map(function(c){ return {nombre:c.nombre,texto:c.destinatario,origen:'Operativos de simulacros'}; }));
+    window.__fuentesDest=fuentes;
+    openModal('<h2>Elegir destinatario</h2><input type="search" id="buscarDest" placeholder="Buscar…"><div class="pick" id="listaDest"></div><div class="modal-actions"><button class="btn" data-act="cerrar">Cerrar</button></div>',true);
+    pintarDest('');
+  }
+  function pintarDest(q){ q=norm(q).trim(); var f=window.__fuentesDest||[], el=document.getElementById('listaDest'); if(!el) return;
+    var r=f.map(function(x,i){ return {x:x,i:i}; }).filter(function(y){ return !q||norm(y.x.nombre+' '+y.x.texto).indexOf(q)!==-1; }).slice(0,80);
+    el.innerHTML=r.length?r.map(function(y){ return '<button data-act="usar-dest" data-i="'+y.i+'"><b>'+esc(y.x.nombre)+'</b> <span class="badge">'+esc(y.x.origen)+'</span><small>'+esc(lines(y.x.texto).slice(0,3).join('\n'))+'</small></button>'; }).join(''):'<div class="empty-state">Nada encontrado.</div>'; }
+  function openMembrete(id){
+    var m=id?state.membretes.filter(function(x){return x.id===id;})[0]:{nombre:'',cabecera:[],negritaTodas:true,firmaCargo:'',firmaNombre:'',pie:[],logo:'',sello:''};
+    openModal('<h2>'+(id?'Editar membrete':'Nuevo membrete')+'</h2><form id="f-mem"><div class="field"><label>Nombre del membrete</label><input type="text" name="nombre" required value="'+esc(m.nombre)+'"></div>'+
+      '<div class="field"><label>Cabecera (una línea por renglón)</label><textarea name="cabecera" rows="2">'+esc((m.cabecera||[]).join('\n'))+'</textarea><label class="sw" style="gap:6px;font-size:.78rem;margin-top:4px"><input type="checkbox" name="negritaTodas"'+(m.negritaTodas!==false?' checked':'')+'> Todas las líneas en negrita (si no, solo la primera)</label></div>'+
+      '<div class="row2"><div class="field"><label>Cargo firmante</label><input type="text" name="firmaCargo" value="'+esc(m.firmaCargo)+'"></div><div class="field"><label>Firma (Fdo.: …)</label><input type="text" name="firmaNombre" value="'+esc(m.firmaNombre)+'"></div></div>'+
+      '<div class="field"><label>Pie de página (una línea por renglón)</label><textarea name="pie" rows="4">'+esc((m.pie||[]).join('\n'))+'</textarea></div>'+
+      '<div class="row2"><div class="field"><label>Logotipo (PNG/JPG)</label><input type="file" name="logo" accept="image/png,image/jpeg"></div><div class="field"><label>Sello del pie (PNG/JPG)</label><input type="file" name="sello" accept="image/png,image/jpeg"></div></div>'+
+      '<p class="hint">Si no eliges imagen nueva se conserva la actual.</p><div class="modal-actions"><button type="button" class="btn" data-act="cerrar">Cancelar</button><button type="submit" class="btn btn-primary">Guardar</button></div></form>');
+    document.getElementById('f-mem').addEventListener('submit',async function(e){ e.preventDefault(); var fd=new FormData(e.target);
+      function rd(f){ return new Promise(function(res){ if(!f||!f.size) return res(null); var r=new FileReader(); r.onload=function(){res(r.result);}; r.onerror=function(){res(null);}; r.readAsDataURL(f); }); }
+      var lg=await rd(fd.get('logo')), sl=await rd(fd.get('sello'));
+      var t=id?m:{id:uid('m'),logo:'',sello:''};
+      t.nombre=(fd.get('nombre')||'').toString().trim(); t.cabecera=lines(fd.get('cabecera')); t.negritaTodas=!!fd.get('negritaTodas');
+      t.firmaCargo=(fd.get('firmaCargo')||'').toString().trim(); t.firmaNombre=(fd.get('firmaNombre')||'').toString().trim(); t.pie=lines(fd.get('pie'));
+      if(lg) t.logo=lg; if(sl) t.sello=sl; if(!id) state.membretes.push(t);
+      persist('Membrete guardado'); closeModal(); rerender(); });
+  }
+  function copiarMembreteSim(){
+    try{ var s=JSON.parse(localStorage.getItem(SIM_KEY)||'null'); if(!s||!s.membrete){ toast('No hay membrete en «Invitaciones a simulacros»'); return; }
+      var m=s.membrete, t=state.membretes.filter(function(x){return x.id==='delegacion';})[0]; if(!t){ t={id:'delegacion',nombre:'Delegación del Gobierno (Málaga)',negritaTodas:true}; state.membretes.push(t); }
+      t.cabecera=(m.cabecera||[]).slice(); t.firmaCargo=m.firmaCargo||''; t.firmaNombre=m.firmaNombre||''; t.pie=(m.pie||[]).slice(); if(m.logo) t.logo=m.logo; if(m.sello) t.sello=m.sello;
+      persist('✅ Membrete «Delegación del Gobierno» actualizado'); rerender();
+    }catch(e){ toast('No se pudo leer el otro módulo'); }
+  }
+  function guardarPlantilla(){
+    var o=cur(); if(!o) return; var n=(window.prompt('Nombre de la plantilla:', o.plantillaNombre||o.titulo)||'').trim(); if(!n) return;
+    var c=clone({refs:o.refs,vars:o.vars,bloques:o.bloques,atentamente:o.atentamente});
+    c.vars.forEach(function(v){ if(v.id!=='soporte') v.valor=v.valor; }); c.vars.forEach(function(v){ v.valor=''; });
+    c.bloques.forEach(function(b){ if(b.tipo==='tabla') b.filas=[]; });
+    var ex=state.plantillas.filter(function(p){return p.nombre===n;})[0];
+    if(ex && !window.confirm('Ya existe una plantilla con ese nombre. ¿Sustituirla?')) return;
+    var p=Object.assign({id:ex?ex.id:uid('p'),nombre:n,membreteId:o.membreteId},c); if(ex) state.plantillas[state.plantillas.indexOf(ex)]=p; else state.plantillas.push(p);
+    persist('Plantilla guardada'); closeModal();
+  }
+  function accion(a,el){
+    var o=cur(), i=el&&el.getAttribute('data-i'), ii=+i;
+    switch(a){
+      case 'ir-home': ui.view='home'; ui.id=null; render(); break;
+      case 'ir-ajustes': ui.view='ajustes'; render(); break;
+      case 'nuevo': openNuevo(); break;
+      case 'cerrar': closeModal(); break;
+      case 'crear': crearOficio(document.getElementById('nuevoPlantilla').value, document.getElementById('nuevoTitulo').value.trim(), document.getElementById('nuevoMembrete').value); closeModal(); break;
+      case 'abrir': ui.id=i; ui.view='edit'; render(); break;
+      case 'vista': var F={}; var L=docDe(o,F); openModal('<h2>Vista previa</h2>'+previewHTML(L)+(Object.keys(F).length?'<p class="hint">🟨 Hay datos sin rellenar (entre corchetes).</p>':'')+'<div class="modal-actions"><button class="btn" data-act="cerrar">Cerrar</button><button class="btn" data-act="dl-docx">📝 Word</button><button class="btn btn-primary" data-act="dl-pdf">📕 PDF</button></div>',true); break;
+      case 'dl-docx': closeModal(); descargar('docx'); break;
+      case 'dl-pdf': closeModal(); descargar('pdf'); break;
+      case 'mas': openModal('<h2>Más acciones</h2><div class="pick"><button data-act="guardar-plantilla">💾 Guardar como plantilla<small>Conserva bloques y textos; vacía los datos y las tablas.</small></button><button data-act="duplicar">⧉ Duplicar este oficio</button><button data-act="vaciar-datos">🧹 Vaciar datos sensibles<small>Borra los datos sueltos, las tablas y el destinatario; deja el oficio como esqueleto.</small></button><button data-act="eliminar" style="color:var(--danger)">🗑️ Eliminar este oficio</button></div><div class="modal-actions"><button class="btn" data-act="cerrar">Cerrar</button></div>'); break;
+      case 'guardar-plantilla': guardarPlantilla(); break;
+      case 'duplicar': var c=clone(o); c.id=uid('o'); c.titulo=o.titulo+' (copia)'; c.creado=Date.now(); c.estado='Borrador'; c.fechaSalida=''; c.registroSalida=''; c.refs.forEach(function(r){ if(r.id==='nref') r.valor=''; }); state.oficios.push(c); persist('Duplicado'); closeModal(); ui.id=c.id; render(); break;
+      case 'vaciar-datos': if(window.confirm('¿Vaciar los datos sueltos, las tablas y el destinatario de este oficio?')){ o.vars.forEach(function(v){ v.valor=''; }); o.bloques.forEach(function(b){ if(b.tipo==='tabla') b.filas=[]; }); o.dest.texto=''; persist('Datos vaciados'); closeModal(); rerender(); } break;
+      case 'eliminar': if(window.confirm('¿Eliminar este oficio? No se puede deshacer.')){ state.oficios=state.oficios.filter(function(x){return x.id!==o.id;}); persist('Oficio eliminado'); closeModal(); ui.view='home'; ui.id=null; render(); } break;
+      case 'add-ref': var l=(window.prompt('Nombre del campo (p. ej. «Expediente», «A/A»):')||'').trim(); if(l){ o.refs.push({id:uid('r'),label:l,on:true,valor:''}); persist(); rerender(); } break;
+      case 'del-ref': o.refs.splice(ii,1); persist(); rerender(); break;
+      case 'gen-nref': var nr=o.refs.filter(function(r){return r.id==='nref';})[0]; if(!nr) break; if(nr.valor && !window.confirm('Ya hay un número («'+nr.valor+'»). ¿Sustituirlo por el siguiente?')) break;
+        var sg=nrefSiguiente(o); nr.valor=sg.txt; state.numeracion.ultimos[sg.aa]=sg.n; persist('N/Ref. asignada: '+sg.txt); rerender(); break;
+      case 'fecha-hoy': var fr=o.refs.filter(function(r){return r.id==='fecha';})[0]; if(fr){ var d=new Date(); fr.valor=d.getDate()+' de '+['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][d.getMonth()]+' de '+d.getFullYear(); persist(); rerender(); } break;
+      case 'add-var': var vl=(window.prompt('Nombre del dato (p. ej. «Nº de expediente»):')||'').trim(); if(vl){ var vid=slug(vl,20).replace(/[^A-Za-z0-9]/g,'')||uid('v'); if(o.vars.some(function(v){return v.id===vid;})) vid+=Math.floor(Math.random()*90+10); o.vars.push({id:vid,label:vl,valor:''}); persist(); rerender(); toast('Úsalo en los textos escribiendo {{'+vid+'}}'); } break;
+      case 'del-var': o.vars.splice(ii,1); persist(); rerender(); break;
+      case 'add-texto': o.bloques.push({id:uid('b'),tipo:'texto',titulo:'Nuevo texto',on:true,texto:''}); persist(); rerender(); break;
+      case 'add-tabla': o.bloques.push({id:uid('b'),tipo:'tabla',titulo:'Nueva tabla',on:true,numerar:false,cols:['Columna 1','Columna 2'],filas:[]}); persist(); rerender(); break;
+      case 'del-blk': if(window.confirm('¿Quitar este bloque?')){ o.bloques.splice(ii,1); persist(); rerender(); } break;
+      case 'blk-up': if(ii>0){ var t=o.bloques[ii]; o.bloques[ii]=o.bloques[ii-1]; o.bloques[ii-1]=t; persist(); rerender(); } break;
+      case 'blk-down': if(ii<o.bloques.length-1){ var t2=o.bloques[ii]; o.bloques[ii]=o.bloques[ii+1]; o.bloques[ii+1]=t2; persist(); rerender(); } break;
+      case 'add-fila': var bt=o.bloques[ii]; bt.filas.push(bt.cols.map(function(){return '';})); persist(); rerender(); break;
+      case 'del-fila': o.bloques[ii].filas.splice(+el.getAttribute('data-r'),1); persist(); rerender(); break;
+      case 'add-col': var bc=o.bloques[ii]; bc.cols.push('Columna '+(bc.cols.length+1)); bc.filas.forEach(function(r){ r.push(''); }); persist(); rerender(); break;
+      case 'del-col': var bd=o.bloques[ii]; if(bd.cols.length>1){ bd.cols.pop(); bd.filas.forEach(function(r){ r.pop(); }); persist(); rerender(); } break;
+      case 'vaciar-tabla': if(window.confirm('¿Vaciar todas las filas de esta tabla?')){ o.bloques[ii].filas=[]; persist(); rerender(); } break;
+      case 'elegir-dest': openElegirDest(); break;
+      case 'usar-dest': var fu=window.__fuentesDest[ii]; if(fu){ o.dest.texto=lines(fu.texto).join('\n'); persist('Destinatario puesto'); closeModal(); rerender(); } break;
+      case 'guardar-dest': if(!lines(o.dest.texto).length){ toast('Escribe primero el destinatario'); break; } var nd=(window.prompt('Nombre con el que guardarlo:', lines(o.dest.texto)[0])||'').trim(); if(nd){ state.destinatarios.push({nombre:nd,texto:lines(o.dest.texto).join('\n')}); persist('Destinatario guardado'); } break;
+      case 'guardar-firmante': var fg=o.firma||{}, mm=membrete(o.membreteId), cg=fg.cargo||mm.firmaCargo, nm=fg.nombre||mm.firmaNombre; if(!cg&&!nm){ toast('Rellena cargo o nombre'); break; } state.firmantes.push({cargo:cg,nombre:nm}); persist('Firmante guardado'); rerender(); break;
+      case 'del-firmante': case 'quitar-firmante': if(a==='quitar-firmante'){ state.firmantes.splice(ii,1); persist(); rerender(); } else toast('Bórralos desde ⚙️ Ajustes → Firmantes guardados'); break;
+      case 'quitar-dest': state.destinatarios.splice(ii,1); persist(); rerender(); break;
+      case 'quitar-plantilla': if(state.plantillas.length>1 && window.confirm('¿Eliminar esta plantilla?')){ state.plantillas.splice(ii,1); persist(); rerender(); } else if(state.plantillas.length<=1) toast('Debe quedar al menos una plantilla'); break;
+      case 'nuevo-membrete': openMembrete(null); break;
+      case 'edit-membrete': openMembrete(i); break;
+      case 'del-membrete': if(state.membretes.length>1 && window.confirm('¿Eliminar este membrete?')){ state.membretes=state.membretes.filter(function(x){return x.id!==i;}); persist(); rerender(); } else if(state.membretes.length<=1) toast('Debe quedar al menos un membrete'); break;
+      case 'copiar-membrete-sim': copiarMembreteSim(); break;
+      case 'exportar': saveBlob(new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),'oficios_datos_'+todayISO()+'.json'); toast('✅ Exportado (guárdalo en un sitio privado)'); break;
+      case 'importar': document.getElementById('fileImport').click(); break;
+    }
+  }
+  function importar(file){ var r=new FileReader(); r.onload=function(){ try{ var d=JSON.parse(r.result), n=0;
+      (d.membretes||[]).forEach(function(m){ var ex=state.membretes.filter(function(x){return x.id===m.id;})[0]; if(ex){ Object.keys(m).forEach(function(k){ var v=m[k]; if(v!==''&&v!=null&&!(Array.isArray(v)&&!v.length)) ex[k]=v; }); } else state.membretes.push(m); });
+      (d.firmantes||[]).forEach(function(f){ if(!state.firmantes.some(function(x){return x.cargo===f.cargo&&x.nombre===f.nombre;})) state.firmantes.push(f); });
+      (d.destinatarios||[]).forEach(function(x){ if(!state.destinatarios.some(function(y){return y.nombre===x.nombre;})) state.destinatarios.push(x); });
+      (d.plantillas||[]).forEach(function(p){ var ex=state.plantillas.filter(function(x){return x.id===p.id;})[0]; if(ex) state.plantillas[state.plantillas.indexOf(ex)]=p; else state.plantillas.push(p); });
+      (d.oficios||[]).forEach(function(o){ if(!state.oficios.some(function(x){return x.id===o.id;})){ state.oficios.push(o); n++; } });
+      if(d.numeracion){ state.numeracion.patron=d.numeracion.patron||state.numeracion.patron; if(d.numeracion.ini) state.numeracion.ini=d.numeracion.ini; Object.keys(d.numeracion.ultimos||{}).forEach(function(k){ state.numeracion.ultimos[k]=Math.max(+state.numeracion.ultimos[k]||0,+d.numeracion.ultimos[k]||0); }); }
+      persist('✅ Importado ('+n+' oficio'+(n===1?'':'s')+' nuevo'+(n===1?'':'s')+')'); rerender(); }catch(e){ toast('⚠️ El fichero no es válido'); } }; r.readAsText(file); }
+
+  /* ================= eventos ================= */
+  function onClick(ev){ var t=ev.target.closest('[data-act]'); if(!t) return; ev.preventDefault(); accion(t.getAttribute('data-act'),t); }
+  function onInput(ev){
+    var t=ev.target;
+    if(t.id==='buscarOfi'){ ui.buscar=t.value; rerenderKeep('buscarOfi'); return; }
+    if(t.id==='buscarDest'){ pintarDest(t.value); return; }
+    if(t.getAttribute&&t.getAttribute('data-bn')){ state.numeracion[t.getAttribute('data-bn')]=t.value; saveSoon(); return; }
+    if(t.id==='ultimoNum'){ state.numeracion.ultimos[String(new Date().getFullYear()).slice(-2)]=parseInt(t.value,10)||0; saveSoon(); return; }
+    var p=t.getAttribute&&t.getAttribute('data-b'); if(p && t.type!=='checkbox' && t.tagName!=='SELECT'){ var o=cur(); if(o){ setPath(o,p,t.value); saveSoon(); } }
+  }
+  function rerenderKeep(id){ var pos=(document.getElementById(id)||{}).selectionStart; rerender(); var el=document.getElementById(id); if(el){ el.focus(); try{ el.setSelectionRange(pos,pos); }catch(e){} } }
+  function onChange(ev){
+    var t=ev.target, o=cur();
+    if(t.id==='estadoOfi'){ ui.estado=t.value; rerender(); return; }
+    if(t.id==='fileImport' && t.files[0]){ importar(t.files[0]); t.value=''; return; }
+    if(t.id==='selFirmante'){ var f=state.firmantes[+t.value]; if(f&&o){ o.firma.cargo=f.cargo; o.firma.nombre=f.nombre; persist(); rerender(); } return; }
+    var bc=t.getAttribute&&t.getAttribute('data-bc');
+    if(bc&&o){ setPath(o,bc,t.checked); var box=t.closest('.fld,.blk'); if(box) box.classList.toggle('off',!t.checked); saveSoon(); return; }
+    var b=t.getAttribute&&t.getAttribute('data-b'); if(b&&o&&(t.tagName==='SELECT'||t.type==='date')){ setPath(o,b,t.value); persist(); if(b==='membreteId') rerender(); }
+  }
+  var root=document.getElementById('app-root');
+  root.addEventListener('click',onClick); root.addEventListener('input',onInput); root.addEventListener('change',onChange);
+  render();
+})();
+</script>
+</body>
+</html>
