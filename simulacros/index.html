@@ -624,7 +624,7 @@
     if(!hayLogo) h+='<div class="warn-box" style="margin-top:12px">ℹ️ Aún no hay membrete cargado (logotipo, firma, pie). Impórtalo en ⚙️ Ajustes para que las cartas salgan completas.</div>';
 
     h+='<div class="section-title"><h2>Operativos invitados ('+r.total+' de '+state.catalogo.length+')</h2>' +
-      '<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-sm btn-primary" data-new-op-sim>＋ Añadir destinatario</button></div></div>';
+      '<div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-sm" data-dir-op-sim title="Traer destinatarios del Directorio de destinatarios del portal">📇 Desde el directorio</button><button class="btn btn-sm btn-primary" data-new-op-sim>＋ Añadir destinatario</button></div></div>';
     var visibles=state.catalogo.filter(function(o){ return filaVisible(o); }).length;
     h+='<div class="toolbar-ops" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px">' +
       '<input type="search" id="buscarOps" placeholder="Buscar operativo o ayuntamiento…" value="'+esc(ui.buscar)+'" style="flex:1;min-width:180px;border:1px solid var(--border);border-radius:var(--radius-pill);padding:8px 14px;font-size:.85rem;background:var(--surface);color:var(--ink)">' +
@@ -645,7 +645,7 @@
 
   function renderCatalogo(){
     var h='<div class="topbar"><div class="topbar-row"><button class="btn btn-ghost btn-sm" data-go="home">← Volver</button><div class="brand"><h1>Operativos</h1></div><span></span></div></div><main>';
-    h+='<div class="section-title"><h2>Catálogo ('+state.catalogo.length+')</h2><button class="btn btn-sm btn-primary" data-new-op>＋ Añadir</button></div>';
+    h+='<div class="section-title"><h2>Catálogo ('+state.catalogo.length+')</h2><span style="display:flex;gap:6px"><button class="btn btn-sm" data-dir-op>📇 Desde el directorio</button><button class="btn btn-sm btn-primary" data-new-op>＋ Añadir</button></span></div>';
     h+='<div style="margin-bottom:10px"><input type="search" id="buscarCat" placeholder="Buscar en el catálogo…" value="'+esc(ui.buscarCat)+'" style="width:100%;border:1px solid var(--border);border-radius:var(--radius-pill);padding:8px 14px;font-size:.85rem;background:var(--surface);color:var(--ink)"></div>';
     h+='<div class="list">'+state.catalogo.map(function(o){
       var dl=lines(o.destinatario);
@@ -871,6 +871,7 @@
       '<div class="field"><label>Nombre corto para el archivo (opcional)</label><input name="corto" maxlength="20" value="'+esc(o.corto||'')+'" placeholder="'+esc(id?cortoDe(o):'Ej. CruzRoja')+'"><p class="hint">Es el nombre con el que se guarda su carta (p. ej. «CruzRoja.docx»). Si lo dejas vacío se genera solo.</p></div>' +
       '<div class="field"><label>Destinatario (una línea por cada línea de la carta)</label><textarea name="destinatario" rows="6" placeholder="Entidad&#10;Cargo&#10;D. Nombre Apellidos&#10;Calle, número&#10;29000 MÁLAGA">'+esc(o.destinatario)+'</textarea>' +
       '<p class="hint">Se imprime tal cual en el bloque de la derecha de la carta.'+(id?'':' Se guardará en el catálogo para usarlo también en futuros simulacros.')+'</p></div>' +
+      (id?'':'<label class="check" style="margin-bottom:10px"><input type="checkbox" name="aDirectorio" checked> Guardar también en el Directorio de destinatarios del portal (para usarlo en oficios)</label>') +
       '<div class="field"><label>Participación que se le solicita (opcional)</label><textarea name="participacion" rows="4" placeholder="Le solicitamos la participación de:&#10;- Unidad de Protección Civil&#10;- Guardia Civil">'+esc(o.participacion||'')+'</textarea>' +
       '<p class="hint">Se usará por defecto en las cartas de este operativo. Las líneas que empiezan por <b>-</b> salen como viñeta. Se puede cambiar para cada simulacro con «👥 Participación».</p></div>' +
       '<div class="modal-actions"><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn btn-primary">Guardar</button></div></form>');
@@ -884,11 +885,40 @@
       else {
         var nuevo={id:uid('o'),nombre:nombre,destinatario:dest,participacion:partic,corto:corto};
         state.catalogo.push(nuevo);
+        if(fd.get('aDirectorio')) dirAnadir({ref:nuevo.id,nombre:nombre,destinatario:dest});
         // Desde la pantalla de un simulacro, el nuevo destinatario queda ya invitado a él.
         var s=invitarEnSim ? sim(ui.simId) : null;
         if(s) s.participantes.push({opId:nuevo.id,estado:'Pendiente',fechaEnvio:null});
       }
       persist(id ? 'Operativo guardado' : 'Destinatario añadido al catálogo'+(invitarEnSim?' y a este simulacro':'')); closeModal(); rerender();
+    });
+  }
+  /* ---- Directorio común de destinatarios (módulo «Directorio de destinatarios», clave dir112_v1) ---- */
+  var DIR_KEY='dir112_v1';
+  function dirLeer(){ try{ var d=JSON.parse(localStorage.getItem(DIR_KEY)||'null'); return d&&Array.isArray(d.contactos)?d:{contactos:[]}; }catch(e){ return {contactos:[]}; } }
+  function dirAnadir(o){
+    var d=dirLeer(); if(d.contactos.some(function(c){ return c.ref===o.ref; })) return;
+    d.contactos.push({id:uid('d'),ref:o.ref,nombre:o.nombre,grupo:/ayuntamiento/i.test(o.nombre)?'Ayuntamientos':'Otros',destinatario:lines(o.destinatario).join('\n'),tel:'',email:'',notas:''});
+    try{ localStorage.setItem(DIR_KEY,JSON.stringify(d)); }catch(e){}
+  }
+  function openDesdeDirectorio(invitarEnSim){
+    var enCat={}; state.catalogo.forEach(function(o){ enCat[o.id]=1; enCat['ag:'+norm(o.nombre)]=1; });
+    var libres=dirLeer().contactos.filter(function(c){ return lines(c.destinatario).length && !(c.ref&&enCat[c.ref]) && !enCat['ag:'+norm(c.nombre)]; })
+      .sort(function(a,b){ return (a.grupo||'').localeCompare(b.grupo||'','es')||a.nombre.localeCompare(b.nombre,'es'); });
+    window.__dirLibres=libres;
+    if(!libres.length){ toast('No hay destinatarios nuevos en el directorio (o está vacío)'); return; }
+    openModal('<h2>Añadir desde el directorio</h2><input type="search" id="buscarDir" placeholder="Buscar…" style="width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px;margin-bottom:8px;background:var(--surface-alt);color:var(--ink)">'+
+      '<div id="listaDir" style="max-height:48vh;overflow-y:auto;display:flex;flex-direction:column;gap:6px">'+
+      libres.map(function(c,i){ return '<label class="check dir-item" data-t="'+esc(norm(c.nombre+' '+c.destinatario+' '+(c.grupo||'')))+'" style="border:1px solid var(--border);border-radius:var(--radius-md);padding:8px 10px;align-items:flex-start"><input type="checkbox" value="'+i+'"> <span><b>'+esc(c.nombre)+'</b> <span class="badge">'+esc(c.grupo||'')+'</span><span class="hint" style="display:block;white-space:pre-line">'+esc(lines(c.destinatario).slice(0,3).join('\n'))+'</span></span></label>'; }).join('')+'</div>'+
+      '<div class="modal-actions"><button class="btn" data-close>Cancelar</button><button class="btn btn-primary" id="addDir">Añadir seleccionados</button></div>');
+    document.getElementById('buscarDir').addEventListener('input',function(e){ var q=norm(e.target.value).trim(); [].forEach.call(document.querySelectorAll('.dir-item'),function(el){ el.style.display=(!q||el.getAttribute('data-t').indexOf(q)!==-1)?'':'none'; }); });
+    document.getElementById('addDir').addEventListener('click',function(){
+      var sel=[].filter.call(document.querySelectorAll('#listaDir input:checked'),function(){return true;}).map(function(i){ return window.__dirLibres[+i.value]; });
+      if(!sel.length){ toast('Marca al menos uno'); return; }
+      var s=invitarEnSim?sim(ui.simId):null;
+      sel.forEach(function(c){ var nuevo={id:uid('o'),nombre:c.nombre,destinatario:lines(c.destinatario).join('\n'),participacion:'',corto:'',agId:c.id}; state.catalogo.push(nuevo);
+        if(s) s.participantes.push({opId:nuevo.id,estado:'Pendiente',fechaEnvio:null}); });
+      persist(sel.length+' destinatario'+(sel.length===1?'':'s')+' añadido'+(sel.length===1?'':'s')+(s?' al catálogo y a este simulacro':' al catálogo')); closeModal(); rerender();
     });
   }
   function openEditarMembrete(){
@@ -1010,6 +1040,8 @@
     if((t=ev.target.closest('[data-edit-op]'))){ openEditarOp(t.getAttribute('data-edit-op')); return; }
     if((t=ev.target.closest('[data-new-op]'))){ openEditarOp(null); return; }
     if((t=ev.target.closest('[data-new-op-sim]'))){ openEditarOp(null, true); return; }
+    if((t=ev.target.closest('[data-dir-op-sim]'))){ openDesdeDirectorio(true); return; }
+    if((t=ev.target.closest('[data-dir-op]'))){ openDesdeDirectorio(false); return; }
     if((t=ev.target.closest('[data-del-op]'))){ eliminarOp(t.getAttribute('data-del-op')); return; }
     if((t=ev.target.closest('[data-edit-membrete]'))){ openEditarMembrete(); return; }
     if((t=ev.target.closest('[data-edit-plantilla]'))){ openEditarPlantilla(); return; }
