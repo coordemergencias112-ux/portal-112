@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-28T22:42:09Z",
+  "generated_at": "2026-09-28T23:02:19Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -44,8 +44,40 @@
       "id": "29067",
       "nombre": "Málaga capital",
       "referencia": "Costa",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-09-28",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "NO",
+          "tempMax": 24,
+          "tempMin": 23
+        },
+        {
+          "fecha": "2026-09-29",
+          "probPrecipitacion": 5,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "NO",
+          "tempMax": 29,
+          "tempMin": 19
+        },
+        {
+          "fecha": "2026-09-30",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "S",
+          "tempMax": 29,
+          "tempMin": 20
+        },
+        {
+          "fecha": "2026-10-01",
+          "probPrecipitacion": 5,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "SE",
+          "tempMax": 29,
+          "tempMin": 20
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 20,
@@ -431,7 +463,44 @@
           "tempMin": 20
         }
       ],
-      "horas_hoy": []
+      "horas_hoy": [
+        {
+          "hora": 20,
+          "temp": null,
+          "precip": 0.1,
+          "probPrecipitacion": 55,
+          "estadoCielo": "43",
+          "vientoVelocidad": null,
+          "vientoDireccion": null
+        },
+        {
+          "hora": 21,
+          "temp": 22,
+          "precip": 0.1,
+          "probPrecipitacion": 55,
+          "estadoCielo": "43n",
+          "vientoVelocidad": 9,
+          "vientoDireccion": "N"
+        },
+        {
+          "hora": 22,
+          "temp": 21,
+          "precip": 0.1,
+          "probPrecipitacion": 55,
+          "estadoCielo": "45n",
+          "vientoVelocidad": 7,
+          "vientoDireccion": "NE"
+        },
+        {
+          "hora": 23,
+          "temp": 20,
+          "precip": 0.1,
+          "probPrecipitacion": 55,
+          "estadoCielo": "45n",
+          "vientoVelocidad": 7,
+          "vientoDireccion": "N"
+        }
+      ]
     },
     {
       "id": "29075",
