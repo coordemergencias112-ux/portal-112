@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-28T11:02:35Z",
+  "generated_at": "2026-09-28T11:22:27Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -44,6 +44,15 @@
           "evento": "Aviso de lluvias de nivel amarillo",
           "severidad": "Moderate",
           "desde": "2026-09-28T07:00:00+02:00",
+          "hasta": "2026-09-28T19:59:59+02:00",
+          "estado_tiempo": "activo"
+        },
+        {
+          "fenomeno": "Lluvias",
+          "nivel": "amarillo",
+          "evento": "Aviso de lluvias de nivel amarillo",
+          "severidad": "Moderate",
+          "desde": "2026-09-28T13:00:00+02:00",
           "hasta": "2026-09-28T19:59:59+02:00",
           "estado_tiempo": "activo"
         }
@@ -824,8 +833,40 @@
       "id": "29069",
       "nombre": "Marbella",
       "referencia": "Costa del Sol",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-09-28",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "E",
+          "tempMax": 25,
+          "tempMin": 25
+        },
+        {
+          "fecha": "2026-09-29",
+          "probPrecipitacion": 20,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "SE",
+          "tempMax": 28,
+          "tempMin": 20
+        },
+        {
+          "fecha": "2026-09-30",
+          "probPrecipitacion": 5,
+          "vientoVelocidad": 5,
+          "vientoDireccion": "S",
+          "tempMax": 28,
+          "tempMin": 21
+        },
+        {
+          "fecha": "2026-10-01",
+          "probPrecipitacion": 10,
+          "vientoVelocidad": 5,
+          "vientoDireccion": "S",
+          "tempMax": 27,
+          "tempMin": 21
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 8,
@@ -1345,6 +1386,13 @@
     }
   ],
   "historial": [
+    {
+      "zona": "Sol y Guadalhorce",
+      "fenomeno": "Lluvias",
+      "nivel": "amarillo",
+      "desde": "2026-09-28T13:00:00+02:00",
+      "hasta": "2026-09-28T19:59:59+02:00"
+    },
     {
       "zona": "Antequera",
       "fenomeno": "Lluvias",
