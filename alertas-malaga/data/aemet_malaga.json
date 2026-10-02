@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-02T21:41:37Z",
+  "generated_at": "2026-10-02T22:02:31Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -78,44 +78,7 @@
           "tempMin": 21
         }
       ],
-      "horas_hoy": [
-        {
-          "hora": 20,
-          "temp": null,
-          "precip": 0.1,
-          "probPrecipitacion": 80,
-          "estadoCielo": "43n",
-          "vientoVelocidad": null,
-          "vientoDireccion": null
-        },
-        {
-          "hora": 21,
-          "temp": 23,
-          "precip": 0.1,
-          "probPrecipitacion": 80,
-          "estadoCielo": "46n",
-          "vientoVelocidad": 3,
-          "vientoDireccion": "NE"
-        },
-        {
-          "hora": 22,
-          "temp": 23,
-          "precip": 0.1,
-          "probPrecipitacion": 80,
-          "estadoCielo": "43n",
-          "vientoVelocidad": 3,
-          "vientoDireccion": "S"
-        },
-        {
-          "hora": 23,
-          "temp": 23,
-          "precip": 0.1,
-          "probPrecipitacion": 80,
-          "estadoCielo": "44n",
-          "vientoVelocidad": 4,
-          "vientoDireccion": "S"
-        }
-      ]
+      "horas_hoy": []
     },
     {
       "id": "29084",
@@ -352,8 +315,40 @@
       "id": "29069",
       "nombre": "Marbella",
       "referencia": "Costa del Sol",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-10-02",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "E",
+          "tempMax": 27,
+          "tempMin": 22
+        },
+        {
+          "fecha": "2026-10-03",
+          "probPrecipitacion": 100,
+          "vientoVelocidad": 25,
+          "vientoDireccion": "E",
+          "tempMax": 28,
+          "tempMin": 22
+        },
+        {
+          "fecha": "2026-10-04",
+          "probPrecipitacion": 95,
+          "vientoVelocidad": 20,
+          "vientoDireccion": "E",
+          "tempMax": 28,
+          "tempMin": 21
+        },
+        {
+          "fecha": "2026-10-05",
+          "probPrecipitacion": 35,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "NE",
+          "tempMax": 27,
+          "tempMin": 21
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 20,
