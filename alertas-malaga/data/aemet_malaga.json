@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-03T00:22:04Z",
+  "generated_at": "2026-10-03T00:42:10Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -44,40 +44,8 @@
       "id": "29067",
       "nombre": "Málaga capital",
       "referencia": "Costa",
-      "dias": [
-        {
-          "fecha": "2026-10-02",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": null,
-          "vientoDireccion": null,
-          "tempMax": 28,
-          "tempMin": 21
-        },
-        {
-          "fecha": "2026-10-03",
-          "probPrecipitacion": 90,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "SE",
-          "tempMax": 28,
-          "tempMin": 21
-        },
-        {
-          "fecha": "2026-10-04",
-          "probPrecipitacion": 80,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "E",
-          "tempMax": 28,
-          "tempMin": 21
-        },
-        {
-          "fecha": "2026-10-05",
-          "probPrecipitacion": 20,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "SE",
-          "tempMax": 27,
-          "tempMin": 21
-        }
-      ],
+      "error": "HTTP Error 500: Internal Server Error",
+      "dias": [],
       "horas_hoy": [
         {
           "hora": 0,
@@ -301,8 +269,40 @@
       "id": "29084",
       "nombre": "Ronda",
       "referencia": "Interior / Serranía",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-10-02",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 30,
+          "vientoDireccion": "SE",
+          "tempMax": 26,
+          "tempMin": 18
+        },
+        {
+          "fecha": "2026-10-03",
+          "probPrecipitacion": 100,
+          "vientoVelocidad": 30,
+          "vientoDireccion": "SE",
+          "tempMax": 25,
+          "tempMin": 18
+        },
+        {
+          "fecha": "2026-10-04",
+          "probPrecipitacion": 100,
+          "vientoVelocidad": 30,
+          "vientoDireccion": "SE",
+          "tempMax": 26,
+          "tempMin": 18
+        },
+        {
+          "fecha": "2026-10-05",
+          "probPrecipitacion": 75,
+          "vientoVelocidad": 20,
+          "vientoDireccion": "SE",
+          "tempMax": 25,
+          "tempMin": 18
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 0,
