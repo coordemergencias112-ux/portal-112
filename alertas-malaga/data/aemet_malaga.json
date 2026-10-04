@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-04T20:22:24Z",
+  "generated_at": "2026-10-04T20:41:45Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -209,7 +209,98 @@
           "tempMin": 14
         }
       ],
-      "horas_hoy": []
+      "horas_hoy": [
+        {
+          "hora": 14,
+          "temp": null,
+          "precip": 0.1,
+          "probPrecipitacion": 95,
+          "estadoCielo": "64",
+          "vientoVelocidad": null,
+          "vientoDireccion": null
+        },
+        {
+          "hora": 15,
+          "temp": 25,
+          "precip": 0.1,
+          "probPrecipitacion": 95,
+          "estadoCielo": "43",
+          "vientoVelocidad": 18,
+          "vientoDireccion": "S"
+        },
+        {
+          "hora": 16,
+          "temp": 26,
+          "precip": 0.1,
+          "probPrecipitacion": 95,
+          "estadoCielo": "43",
+          "vientoVelocidad": 26,
+          "vientoDireccion": "S"
+        },
+        {
+          "hora": 17,
+          "temp": 24,
+          "precip": 0.1,
+          "probPrecipitacion": 95,
+          "estadoCielo": "43",
+          "vientoVelocidad": 16,
+          "vientoDireccion": "S"
+        },
+        {
+          "hora": 18,
+          "temp": 25,
+          "precip": 0.1,
+          "probPrecipitacion": 95,
+          "estadoCielo": "43",
+          "vientoVelocidad": 21,
+          "vientoDireccion": "S"
+        },
+        {
+          "hora": 19,
+          "temp": 24,
+          "precip": 0.1,
+          "probPrecipitacion": 95,
+          "estadoCielo": "43",
+          "vientoVelocidad": 20,
+          "vientoDireccion": "S"
+        },
+        {
+          "hora": 20,
+          "temp": 22,
+          "precip": 0,
+          "probPrecipitacion": 0,
+          "estadoCielo": "17",
+          "vientoVelocidad": 16,
+          "vientoDireccion": "S"
+        },
+        {
+          "hora": 21,
+          "temp": 21,
+          "precip": 0,
+          "probPrecipitacion": 0,
+          "estadoCielo": "17n",
+          "vientoVelocidad": 12,
+          "vientoDireccion": "SE"
+        },
+        {
+          "hora": 22,
+          "temp": 21,
+          "precip": 0,
+          "probPrecipitacion": 0,
+          "estadoCielo": "17n",
+          "vientoVelocidad": 15,
+          "vientoDireccion": "SE"
+        },
+        {
+          "hora": 23,
+          "temp": 20,
+          "precip": 0,
+          "probPrecipitacion": 0,
+          "estadoCielo": "17n",
+          "vientoVelocidad": 22,
+          "vientoDireccion": "SE"
+        }
+      ]
     },
     {
       "id": "29015",
@@ -477,40 +568,8 @@
       "id": "29069",
       "nombre": "Marbella",
       "referencia": "Costa del Sol",
-      "dias": [
-        {
-          "fecha": "2026-10-04",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "E",
-          "tempMax": 27,
-          "tempMin": 21
-        },
-        {
-          "fecha": "2026-10-05",
-          "probPrecipitacion": 85,
-          "vientoVelocidad": 20,
-          "vientoDireccion": "E",
-          "tempMax": 28,
-          "tempMin": 22
-        },
-        {
-          "fecha": "2026-10-06",
-          "probPrecipitacion": 100,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "E",
-          "tempMax": 28,
-          "tempMin": 20
-        },
-        {
-          "fecha": "2026-10-07",
-          "probPrecipitacion": 75,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "S",
-          "tempMax": 25,
-          "tempMin": 18
-        }
-      ],
+      "error": "HTTP Error 500: Internal Server Error",
+      "dias": [],
       "horas_hoy": [
         {
           "hora": 14,
