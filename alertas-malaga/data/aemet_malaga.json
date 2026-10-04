@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-04T08:42:05Z",
+  "generated_at": "2026-10-04T08:44:36Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -321,8 +321,40 @@
       "id": "29084",
       "nombre": "Ronda",
       "referencia": "Interior / Serranía",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-10-04",
+          "probPrecipitacion": 100,
+          "vientoVelocidad": 30,
+          "vientoDireccion": "S",
+          "tempMax": 24,
+          "tempMin": 18
+        },
+        {
+          "fecha": "2026-10-05",
+          "probPrecipitacion": 95,
+          "vientoVelocidad": 35,
+          "vientoDireccion": "S",
+          "tempMax": 27,
+          "tempMin": 18
+        },
+        {
+          "fecha": "2026-10-06",
+          "probPrecipitacion": 100,
+          "vientoVelocidad": 25,
+          "vientoDireccion": "S",
+          "tempMax": 24,
+          "tempMin": 16
+        },
+        {
+          "fecha": "2026-10-07",
+          "probPrecipitacion": 75,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "O",
+          "tempMax": 23,
+          "tempMin": 14
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 2,
@@ -1484,40 +1516,8 @@
       "id": "29075",
       "nombre": "Nerja",
       "referencia": "Costa - Axarquía",
-      "dias": [
-        {
-          "fecha": "2026-10-04",
-          "probPrecipitacion": 100,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "E",
-          "tempMax": 26,
-          "tempMin": 21
-        },
-        {
-          "fecha": "2026-10-05",
-          "probPrecipitacion": 35,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "SE",
-          "tempMax": 28,
-          "tempMin": 21
-        },
-        {
-          "fecha": "2026-10-06",
-          "probPrecipitacion": 100,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "SE",
-          "tempMax": 26,
-          "tempMin": 20
-        },
-        {
-          "fecha": "2026-10-07",
-          "probPrecipitacion": 70,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "SO",
-          "tempMax": 24,
-          "tempMin": 19
-        }
-      ],
+      "error": "HTTP Error 500: Internal Server Error",
+      "dias": [],
       "horas_hoy": [
         {
           "hora": 2,
