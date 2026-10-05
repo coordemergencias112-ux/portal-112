@@ -173,13 +173,18 @@
     'Consorcio Provincial de Bomberos.',
     'Servicios Sociales Comunitarios',
     'Agentes de Medio Ambiente',
-    'Cuerpo Nacional de Policía'
+    'Cuerpo Nacional de Policía',
+    'Representante de la Unidad de Protección Civil de la Subdelegación del Gobierno de Málaga.',
+    'Representante de la Guardia Civil.',
+    'Representante de la Red Nacional de Radio de Emergencia (REMER).',
+    'Representante de la Jefatura Provincial de Tráfico.'
   ];
   var PLANTILLAS_PART_DEF = [
     { nombre:'Ayuntamiento (Policía Local y Voluntarios PC)', texto:'Le solicitamos la participación de su:\n- Policía Local\n- Agrupación de Voluntarios de Protección Civil' },
-    { nombre:'Subdelegación del Gobierno', texto:'Le solicitamos participación de:\n- Unidad de Protección Civil de la Subdelegación del Gobierno de Málaga.\n- Guardia Civil.\n- Red Nacional de Radio de Emergencia (REMER).' }
+    { nombre:'Subdelegación del Gobierno', texto:'Le solicitamos la asistencia a la citada reunión, de:\n- Representante de la Unidad de Protección Civil de la Subdelegación del Gobierno de Málaga.\n- Representante de la Guardia Civil.\n- Representante de la Red Nacional de Radio de Emergencia (REMER).\n- Representante de la Jefatura Provincial de Tráfico.' }
   ];
   var INTRO_PART = 'Le solicitamos la participación de:';
+  var INTRO_REUNION = 'Le solicitamos la asistencia a la citada reunión, de:';   // organismos: se marcan como «Representante de …»
 
   function defaults(){
     return {
@@ -753,7 +758,7 @@
       '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"><button type="button" class="btn btn-sm" data-nueva-opcion>＋ Nueva opción</button><button type="button" class="btn btn-sm" data-guardar-plantilla>💾 Guardar como plantilla</button></div></div>' +
       '<div class="field"><label>Texto de la carta (una línea por renglón)</label><textarea name="texto" rows="6" placeholder="Le solicitamos la participación de:&#10;- Unidad de Protección Civil&#10;- Guardia Civil">'+esc(actual)+'</textarea>' +
       '<p class="hint">Se rellena solo al marcar opciones, pero puedes escribirlo o retocarlo a mano. Las líneas que empiezan por <b>-</b> salen como viñeta; las demás, como párrafo. Vale una frase suelta o una frase de introducción con lista. Vacío = sin participación solicitada.</p></div>' +
-      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"><button type="button" class="btn btn-sm" data-ins-part="Le solicitamos la participación de:">Insertar «…participación de:»</button><button type="button" class="btn btn-sm" data-ins-part="- ">Añadir viñeta</button></div>' +
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"><button type="button" class="btn btn-sm" data-ins-part="Le solicitamos la participación de:">Insertar «…participación de:»</button><button type="button" class="btn btn-sm" data-ins-part="Le solicitamos la asistencia a la citada reunión, de:">Insertar «…asistencia a la reunión, de:»</button><button type="button" class="btn btn-sm" data-ins-part="- ">Añadir viñeta</button></div>' +
       '<label class="check"><input type="checkbox" name="predet"'+(tieneDef?'':' checked')+'> Guardar como predeterminada de este operativo (para futuros simulacros)</label>' +
       '<div class="modal-actions"><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn btn-primary">Guardar</button></div></form>', true);
     var ta=document.querySelector('#f-part textarea');
@@ -786,7 +791,7 @@
     var ls=String(ta.value).split(/\r?\n/).filter(function(l){ return l.trim(); });
     var idx=-1; ls.forEach(function(l,i){ if(idx<0 && VINETA.test(l) && normItem(l)===normItem(item)) idx=i; });
     if(on && idx<0){
-      if(!ls.some(function(l){ return !VINETA.test(l); })) ls.unshift(INTRO_PART);   // sin frase previa: se añade
+      if(!ls.some(function(l){ return !VINETA.test(l); })) ls.unshift(/^\s*Representante\b/i.test(item) ? INTRO_REUNION : INTRO_PART);   // sin frase previa: se añade
       ls.push('- '+item);
     }
     if(!on && idx>=0) ls.splice(idx,1);
