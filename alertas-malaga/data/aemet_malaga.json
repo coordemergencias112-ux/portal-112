@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-06T23:02:16Z",
+  "generated_at": "2026-10-06T23:22:10Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -309,7 +309,44 @@
           "tempMin": 16
         }
       ],
-      "horas_hoy": []
+      "horas_hoy": [
+        {
+          "hora": 20,
+          "temp": null,
+          "precip": 0.1,
+          "probPrecipitacion": 55,
+          "estadoCielo": "43n",
+          "vientoVelocidad": null,
+          "vientoDireccion": null
+        },
+        {
+          "hora": 21,
+          "temp": 21,
+          "precip": 0.1,
+          "probPrecipitacion": 55,
+          "estadoCielo": "43n",
+          "vientoVelocidad": 7,
+          "vientoDireccion": "E"
+        },
+        {
+          "hora": 22,
+          "temp": 21,
+          "precip": 0.1,
+          "probPrecipitacion": 55,
+          "estadoCielo": "43n",
+          "vientoVelocidad": 2,
+          "vientoDireccion": "E"
+        },
+        {
+          "hora": 23,
+          "temp": 20,
+          "precip": 0.1,
+          "probPrecipitacion": 55,
+          "estadoCielo": "45n",
+          "vientoVelocidad": 4,
+          "vientoDireccion": "O"
+        }
+      ]
     },
     {
       "id": "29069",
