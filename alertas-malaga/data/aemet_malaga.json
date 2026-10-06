@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-06T03:22:30Z",
+  "generated_at": "2026-10-06T03:41:43Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -853,40 +853,8 @@
       "id": "29042",
       "nombre": "Coín",
       "referencia": "Valle del Guadalhorce",
-      "dias": [
-        {
-          "fecha": "2026-10-05",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 5,
-          "vientoDireccion": "SE",
-          "tempMax": 30,
-          "tempMin": 21
-        },
-        {
-          "fecha": "2026-10-06",
-          "probPrecipitacion": 100,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "S",
-          "tempMax": 28,
-          "tempMin": 18
-        },
-        {
-          "fecha": "2026-10-07",
-          "probPrecipitacion": 65,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "N",
-          "tempMax": 28,
-          "tempMin": 15
-        },
-        {
-          "fecha": "2026-10-08",
-          "probPrecipitacion": 25,
-          "vientoVelocidad": 5,
-          "vientoDireccion": "E",
-          "tempMax": 28,
-          "tempMin": 16
-        }
-      ],
+      "error": "HTTP Error 500: Internal Server Error",
+      "dias": [],
       "horas_hoy": [
         {
           "hora": 0,
