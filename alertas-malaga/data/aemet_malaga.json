@@ -1,55 +1,17 @@
 {
-  "generated_at": "2026-10-06T21:42:14Z",
+  "generated_at": "2026-10-06T22:02:29Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
       "tipo": "interior",
-      "nivel": "amarillo",
-      "avisos": [
-        {
-          "fenomeno": "Lluvias",
-          "nivel": "amarillo",
-          "evento": "Aviso de lluvias de nivel amarillo",
-          "severidad": "Moderate",
-          "desde": "2026-10-06T00:00:00+02:00",
-          "hasta": "2026-10-06T23:59:59+02:00",
-          "estado_tiempo": "activo"
-        },
-        {
-          "fenomeno": "Tormentas",
-          "nivel": "amarillo",
-          "evento": "Aviso de tormentas de nivel amarillo",
-          "severidad": "Moderate",
-          "desde": "2026-10-06T00:00:00+02:00",
-          "hasta": "2026-10-06T23:59:59+02:00",
-          "estado_tiempo": "activo"
-        }
-      ]
+      "nivel": "verde",
+      "avisos": []
     },
     "612902": {
       "nombre": "Ronda",
       "tipo": "interior",
-      "nivel": "amarillo",
-      "avisos": [
-        {
-          "fenomeno": "Lluvias",
-          "nivel": "amarillo",
-          "evento": "Aviso de lluvias de nivel amarillo",
-          "severidad": "Moderate",
-          "desde": "2026-10-06T00:00:00+02:00",
-          "hasta": "2026-10-06T23:59:59+02:00",
-          "estado_tiempo": "activo"
-        },
-        {
-          "fenomeno": "Tormentas",
-          "nivel": "amarillo",
-          "evento": "Aviso de tormentas de nivel amarillo",
-          "severidad": "Moderate",
-          "desde": "2026-10-06T00:00:00+02:00",
-          "hasta": "2026-10-06T23:59:59+02:00",
-          "estado_tiempo": "activo"
-        }
-      ]
+      "nivel": "verde",
+      "avisos": []
     },
     "612903": {
       "nombre": "Sol y Guadalhorce",
@@ -82,8 +44,40 @@
       "id": "29067",
       "nombre": "Málaga capital",
       "referencia": "Costa",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-10-06",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "NO",
+          "tempMax": 26,
+          "tempMin": 19
+        },
+        {
+          "fecha": "2026-10-07",
+          "probPrecipitacion": 20,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "NO",
+          "tempMax": 28,
+          "tempMin": 17
+        },
+        {
+          "fecha": "2026-10-08",
+          "probPrecipitacion": 15,
+          "vientoVelocidad": 20,
+          "vientoDireccion": "O",
+          "tempMax": 28,
+          "tempMin": 18
+        },
+        {
+          "fecha": "2026-10-09",
+          "probPrecipitacion": 65,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "SE",
+          "tempMax": 26,
+          "tempMin": 18
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 20,
