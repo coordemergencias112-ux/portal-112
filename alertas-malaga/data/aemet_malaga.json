@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-07T20:22:08Z",
+  "generated_at": "2026-10-07T20:34:34Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -44,8 +44,40 @@
       "id": "29067",
       "nombre": "Málaga capital",
       "referencia": "Costa",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-10-07",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "NO",
+          "tempMax": 28,
+          "tempMin": 17
+        },
+        {
+          "fecha": "2026-10-08",
+          "probPrecipitacion": 20,
+          "vientoVelocidad": 20,
+          "vientoDireccion": "O",
+          "tempMax": 27,
+          "tempMin": 17
+        },
+        {
+          "fecha": "2026-10-09",
+          "probPrecipitacion": 80,
+          "vientoVelocidad": 25,
+          "vientoDireccion": "E",
+          "tempMax": 26,
+          "tempMin": 18
+        },
+        {
+          "fecha": "2026-10-10",
+          "probPrecipitacion": 55,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "SE",
+          "tempMax": 26,
+          "tempMin": 19
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 14,
@@ -405,40 +437,8 @@
       "id": "29042",
       "nombre": "Coín",
       "referencia": "Valle del Guadalhorce",
-      "dias": [
-        {
-          "fecha": "2026-10-07",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "O",
-          "tempMax": 28,
-          "tempMin": 17
-        },
-        {
-          "fecha": "2026-10-08",
-          "probPrecipitacion": 15,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "E",
-          "tempMax": 29,
-          "tempMin": 16
-        },
-        {
-          "fecha": "2026-10-09",
-          "probPrecipitacion": 85,
-          "vientoVelocidad": 20,
-          "vientoDireccion": "E",
-          "tempMax": 26,
-          "tempMin": 16
-        },
-        {
-          "fecha": "2026-10-10",
-          "probPrecipitacion": 75,
-          "vientoVelocidad": 5,
-          "vientoDireccion": "SE",
-          "tempMax": 26,
-          "tempMin": 17
-        }
-      ],
+      "error": "HTTP Error 500: Internal Server Error",
+      "dias": [],
       "horas_hoy": [
         {
           "hora": 14,
@@ -570,7 +570,98 @@
           "tempMin": 19
         }
       ],
-      "horas_hoy": []
+      "horas_hoy": [
+        {
+          "hora": 14,
+          "temp": null,
+          "precip": 0,
+          "probPrecipitacion": 35,
+          "estadoCielo": "17",
+          "vientoVelocidad": null,
+          "vientoDireccion": null
+        },
+        {
+          "hora": 15,
+          "temp": 26,
+          "precip": 0,
+          "probPrecipitacion": 35,
+          "estadoCielo": "17",
+          "vientoVelocidad": 21,
+          "vientoDireccion": "S"
+        },
+        {
+          "hora": 16,
+          "temp": 27,
+          "precip": 0,
+          "probPrecipitacion": 35,
+          "estadoCielo": "17",
+          "vientoVelocidad": 3,
+          "vientoDireccion": "SO"
+        },
+        {
+          "hora": 17,
+          "temp": 27,
+          "precip": 0,
+          "probPrecipitacion": 35,
+          "estadoCielo": "17",
+          "vientoVelocidad": 17,
+          "vientoDireccion": "SO"
+        },
+        {
+          "hora": 18,
+          "temp": 26,
+          "precip": 0,
+          "probPrecipitacion": 35,
+          "estadoCielo": "12",
+          "vientoVelocidad": 19,
+          "vientoDireccion": "O"
+        },
+        {
+          "hora": 19,
+          "temp": 25,
+          "precip": 0,
+          "probPrecipitacion": 35,
+          "estadoCielo": "11",
+          "vientoVelocidad": 17,
+          "vientoDireccion": "O"
+        },
+        {
+          "hora": 20,
+          "temp": 24,
+          "precip": 0,
+          "probPrecipitacion": 0,
+          "estadoCielo": "12n",
+          "vientoVelocidad": 12,
+          "vientoDireccion": "O"
+        },
+        {
+          "hora": 21,
+          "temp": 23,
+          "precip": 0,
+          "probPrecipitacion": 0,
+          "estadoCielo": "17n",
+          "vientoVelocidad": 8,
+          "vientoDireccion": "O"
+        },
+        {
+          "hora": 22,
+          "temp": 22,
+          "precip": 0,
+          "probPrecipitacion": 0,
+          "estadoCielo": "17n",
+          "vientoVelocidad": 8,
+          "vientoDireccion": "O"
+        },
+        {
+          "hora": 23,
+          "temp": 21,
+          "precip": 0,
+          "probPrecipitacion": 0,
+          "estadoCielo": "17n",
+          "vientoVelocidad": 8,
+          "vientoDireccion": "O"
+        }
+      ]
     },
     {
       "id": "29094",
