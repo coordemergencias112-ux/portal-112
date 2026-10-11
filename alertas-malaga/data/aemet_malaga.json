@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-11T03:21:46Z",
+  "generated_at": "2026-10-11T03:41:33Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -558,8 +558,40 @@
       "id": "29015",
       "nombre": "Antequera",
       "referencia": "Comarca de Antequera",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-10-10",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "S",
+          "tempMax": 25,
+          "tempMin": 14
+        },
+        {
+          "fecha": "2026-10-11",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "S",
+          "tempMax": 27,
+          "tempMin": 13
+        },
+        {
+          "fecha": "2026-10-12",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "S",
+          "tempMax": 28,
+          "tempMin": 16
+        },
+        {
+          "fecha": "2026-10-13",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "S",
+          "tempMax": 26,
+          "tempMin": 15
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 0,
@@ -1040,40 +1072,8 @@
       "id": "29069",
       "nombre": "Marbella",
       "referencia": "Costa del Sol",
-      "dias": [
-        {
-          "fecha": "2026-10-10",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 5,
-          "vientoDireccion": "N",
-          "tempMax": 25,
-          "tempMin": 19
-        },
-        {
-          "fecha": "2026-10-11",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "S",
-          "tempMax": 25,
-          "tempMin": 16
-        },
-        {
-          "fecha": "2026-10-12",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "SE",
-          "tempMax": 25,
-          "tempMin": 18
-        },
-        {
-          "fecha": "2026-10-13",
-          "probPrecipitacion": 5,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "SE",
-          "tempMax": 27,
-          "tempMin": 20
-        }
-      ],
+      "error": "HTTP Error 500: Internal Server Error",
+      "dias": [],
       "horas_hoy": [
         {
           "hora": 0,
