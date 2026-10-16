@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-16T12:21:51Z",
+  "generated_at": "2026-10-16T12:41:37Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -115,7 +115,7 @@
           "vientoVelocidad": 15,
           "vientoDireccion": "SE",
           "tempMax": 27,
-          "tempMin": 18
+          "tempMin": 19
         },
         {
           "fecha": "2026-10-18",
@@ -285,8 +285,40 @@
       "id": "29084",
       "nombre": "Ronda",
       "referencia": "Interior / Serranía",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-10-16",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "S",
+          "tempMax": 26,
+          "tempMin": 17
+        },
+        {
+          "fecha": "2026-10-17",
+          "probPrecipitacion": 100,
+          "vientoVelocidad": 20,
+          "vientoDireccion": "O",
+          "tempMax": 25,
+          "tempMin": 14
+        },
+        {
+          "fecha": "2026-10-18",
+          "probPrecipitacion": 100,
+          "vientoVelocidad": 5,
+          "vientoDireccion": "SE",
+          "tempMax": 21,
+          "tempMin": 13
+        },
+        {
+          "fecha": "2026-10-19",
+          "probPrecipitacion": 100,
+          "vientoVelocidad": 5,
+          "vientoDireccion": "S",
+          "tempMax": 21,
+          "tempMin": 12
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 8,
@@ -438,40 +470,8 @@
       "id": "29015",
       "nombre": "Antequera",
       "referencia": "Comarca de Antequera",
-      "dias": [
-        {
-          "fecha": "2026-10-16",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "S",
-          "tempMax": 28,
-          "tempMin": 15
-        },
-        {
-          "fecha": "2026-10-17",
-          "probPrecipitacion": 100,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "SE",
-          "tempMax": 27,
-          "tempMin": 15
-        },
-        {
-          "fecha": "2026-10-18",
-          "probPrecipitacion": 100,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "S",
-          "tempMax": 23,
-          "tempMin": 13
-        },
-        {
-          "fecha": "2026-10-19",
-          "probPrecipitacion": 95,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "S",
-          "tempMax": 22,
-          "tempMin": 12
-        }
-      ],
+      "error": "HTTP Error 500: Internal Server Error",
+      "dias": [],
       "horas_hoy": [
         {
           "hora": 8,
@@ -1007,7 +1007,7 @@
           "probPrecipitacion": 100,
           "vientoVelocidad": 15,
           "vientoDireccion": "S",
-          "tempMax": 27,
+          "tempMax": 28,
           "tempMin": 18
         },
         {
