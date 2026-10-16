@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-16T12:02:07Z",
+  "generated_at": "2026-10-16T12:21:51Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -285,40 +285,8 @@
       "id": "29084",
       "nombre": "Ronda",
       "referencia": "Interior / Serranía",
-      "dias": [
-        {
-          "fecha": "2026-10-16",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "S",
-          "tempMax": 26,
-          "tempMin": 17
-        },
-        {
-          "fecha": "2026-10-17",
-          "probPrecipitacion": 100,
-          "vientoVelocidad": 20,
-          "vientoDireccion": "O",
-          "tempMax": 26,
-          "tempMin": 15
-        },
-        {
-          "fecha": "2026-10-18",
-          "probPrecipitacion": 100,
-          "vientoVelocidad": 5,
-          "vientoDireccion": "SE",
-          "tempMax": 21,
-          "tempMin": 13
-        },
-        {
-          "fecha": "2026-10-19",
-          "probPrecipitacion": 100,
-          "vientoVelocidad": 5,
-          "vientoDireccion": "S",
-          "tempMax": 21,
-          "tempMin": 12
-        }
-      ],
+      "error": "HTTP Error 500: Internal Server Error",
+      "dias": [],
       "horas_hoy": [
         {
           "hora": 8,
