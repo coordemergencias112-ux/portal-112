@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-16T06:42:03Z",
+  "generated_at": "2026-10-16T07:02:20Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -31,6 +31,24 @@
       "tipo": "interior",
       "nivel": "verde",
       "avisos": [
+        {
+          "fenomeno": "Lluvias",
+          "nivel": "amarillo",
+          "evento": "Aviso de lluvias de nivel amarillo",
+          "severidad": "Moderate",
+          "desde": "2026-10-16T14:00:00+02:00",
+          "hasta": "2026-10-16T20:59:59+02:00",
+          "estado_tiempo": "proximo"
+        },
+        {
+          "fenomeno": "Tormentas",
+          "nivel": "amarillo",
+          "evento": "Aviso de tormentas de nivel amarillo",
+          "severidad": "Moderate",
+          "desde": "2026-10-16T14:00:00+02:00",
+          "hasta": "2026-10-16T20:59:59+02:00",
+          "estado_tiempo": "proximo"
+        },
         {
           "fenomeno": "Tormentas",
           "nivel": "amarillo",
@@ -339,8 +357,40 @@
       "id": "29084",
       "nombre": "Ronda",
       "referencia": "Interior / Serranía",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-10-15",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 20,
+          "vientoDireccion": "SE",
+          "tempMax": 25,
+          "tempMin": 16
+        },
+        {
+          "fecha": "2026-10-16",
+          "probPrecipitacion": 75,
+          "vientoVelocidad": 20,
+          "vientoDireccion": "SE",
+          "tempMax": 26,
+          "tempMin": 17
+        },
+        {
+          "fecha": "2026-10-17",
+          "probPrecipitacion": 100,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "O",
+          "tempMax": 26,
+          "tempMin": 15
+        },
+        {
+          "fecha": "2026-10-18",
+          "probPrecipitacion": 100,
+          "vientoVelocidad": 5,
+          "vientoDireccion": "E",
+          "tempMax": 20,
+          "tempMin": 14
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 0,
@@ -1874,6 +1924,20 @@
       "nivel": "amarillo",
       "desde": "2026-10-17T12:00:00+02:00",
       "hasta": "2026-10-17T23:59:59+02:00"
+    },
+    {
+      "zona": "Ronda",
+      "fenomeno": "Lluvias",
+      "nivel": "amarillo",
+      "desde": "2026-10-16T14:00:00+02:00",
+      "hasta": "2026-10-16T20:59:59+02:00"
+    },
+    {
+      "zona": "Ronda",
+      "fenomeno": "Tormentas",
+      "nivel": "amarillo",
+      "desde": "2026-10-16T14:00:00+02:00",
+      "hasta": "2026-10-16T20:59:59+02:00"
     }
   ]
 }
