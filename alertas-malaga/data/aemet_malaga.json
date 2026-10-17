@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-17T16:41:26Z",
+  "generated_at": "2026-10-17T17:02:09Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -69,9 +69,9 @@
         },
         {
           "fenomeno": "Lluvias",
-          "nivel": "amarillo",
-          "evento": "Aviso de lluvias de nivel amarillo",
-          "severidad": "Moderate",
+          "nivel": "naranja",
+          "evento": "Aviso de lluvias de nivel naranja",
+          "severidad": "Severe",
           "desde": "2026-10-18T12:00:00+02:00",
           "hasta": "2026-10-18T17:59:59+02:00",
           "estado_tiempo": "proximo"
@@ -164,8 +164,8 @@
           "nivel": "amarillo",
           "evento": "Aviso de lluvias de nivel amarillo",
           "severidad": "Moderate",
-          "desde": "2026-10-17T12:00:00+02:00",
-          "hasta": "2026-10-17T23:59:59+02:00",
+          "desde": "2026-10-17T18:00:00+02:00",
+          "hasta": "2026-10-18T17:59:59+02:00",
           "estado_tiempo": "activo"
         },
         {
@@ -173,27 +173,9 @@
           "nivel": "amarillo",
           "evento": "Aviso de tormentas de nivel amarillo",
           "severidad": "Moderate",
-          "desde": "2026-10-17T12:00:00+02:00",
-          "hasta": "2026-10-17T23:59:59+02:00",
+          "desde": "2026-10-17T18:00:00+02:00",
+          "hasta": "2026-10-18T17:59:59+02:00",
           "estado_tiempo": "activo"
-        },
-        {
-          "fenomeno": "Lluvias",
-          "nivel": "amarillo",
-          "evento": "Aviso de lluvias de nivel amarillo",
-          "severidad": "Moderate",
-          "desde": "2026-10-18T06:00:00+02:00",
-          "hasta": "2026-10-18T17:59:59+02:00",
-          "estado_tiempo": "proximo"
-        },
-        {
-          "fenomeno": "Tormentas",
-          "nivel": "amarillo",
-          "evento": "Aviso de tormentas de nivel amarillo",
-          "severidad": "Moderate",
-          "desde": "2026-10-18T06:00:00+02:00",
-          "hasta": "2026-10-18T17:59:59+02:00",
-          "estado_tiempo": "proximo"
         }
       ]
     },
@@ -984,159 +966,46 @@
           "tempMin": 15
         }
       ],
-      "horas_hoy": [
-        {
-          "hora": 8,
-          "temp": null,
-          "precip": 0.1,
-          "probPrecipitacion": 85,
-          "estadoCielo": "43n",
-          "vientoVelocidad": null,
-          "vientoDireccion": null
-        },
-        {
-          "hora": 9,
-          "temp": 22,
-          "precip": 0.1,
-          "probPrecipitacion": 85,
-          "estadoCielo": "43",
-          "vientoVelocidad": 3,
-          "vientoDireccion": "N"
-        },
-        {
-          "hora": 10,
-          "temp": 23,
-          "precip": 0.1,
-          "probPrecipitacion": 85,
-          "estadoCielo": "46",
-          "vientoVelocidad": 6,
-          "vientoDireccion": "O"
-        },
-        {
-          "hora": 11,
-          "temp": 24,
-          "precip": 0.1,
-          "probPrecipitacion": 85,
-          "estadoCielo": "46",
-          "vientoVelocidad": 10,
-          "vientoDireccion": "SO"
-        },
-        {
-          "hora": 12,
-          "temp": 24,
-          "precip": 0.1,
-          "probPrecipitacion": 85,
-          "estadoCielo": "45",
-          "vientoVelocidad": 12,
-          "vientoDireccion": "SO"
-        },
-        {
-          "hora": 13,
-          "temp": 24,
-          "precip": 0.1,
-          "probPrecipitacion": 85,
-          "estadoCielo": "43",
-          "vientoVelocidad": 10,
-          "vientoDireccion": "S"
-        },
-        {
-          "hora": 14,
-          "temp": 25,
-          "precip": 0.1,
-          "probPrecipitacion": 100,
-          "estadoCielo": "45",
-          "vientoVelocidad": 11,
-          "vientoDireccion": "S"
-        },
-        {
-          "hora": 15,
-          "temp": 25,
-          "precip": 0.1,
-          "probPrecipitacion": 100,
-          "estadoCielo": "46",
-          "vientoVelocidad": 11,
-          "vientoDireccion": "S"
-        },
-        {
-          "hora": 16,
-          "temp": 25,
-          "precip": 0.1,
-          "probPrecipitacion": 100,
-          "estadoCielo": "43",
-          "vientoVelocidad": 8,
-          "vientoDireccion": "S"
-        },
-        {
-          "hora": 17,
-          "temp": 25,
-          "precip": 0.1,
-          "probPrecipitacion": 100,
-          "estadoCielo": "43",
-          "vientoVelocidad": 4,
-          "vientoDireccion": "S"
-        },
-        {
-          "hora": 18,
-          "temp": 24,
-          "precip": 0.1,
-          "probPrecipitacion": 100,
-          "estadoCielo": "43",
-          "vientoVelocidad": 7,
-          "vientoDireccion": "S"
-        },
-        {
-          "hora": 19,
-          "temp": 23,
-          "precip": 0.1,
-          "probPrecipitacion": 100,
-          "estadoCielo": "43",
-          "vientoVelocidad": 10,
-          "vientoDireccion": "SE"
-        },
-        {
-          "hora": 20,
-          "temp": 22,
-          "precip": 0.1,
-          "probPrecipitacion": 85,
-          "estadoCielo": "43n",
-          "vientoVelocidad": 8,
-          "vientoDireccion": "E"
-        },
-        {
-          "hora": 21,
-          "temp": 22,
-          "precip": 0.1,
-          "probPrecipitacion": 85,
-          "estadoCielo": "43n",
-          "vientoVelocidad": 3,
-          "vientoDireccion": "NO"
-        },
-        {
-          "hora": 22,
-          "temp": 21,
-          "precip": 0.1,
-          "probPrecipitacion": 85,
-          "estadoCielo": "43n",
-          "vientoVelocidad": 2,
-          "vientoDireccion": "NE"
-        },
-        {
-          "hora": 23,
-          "temp": 21,
-          "precip": 0.1,
-          "probPrecipitacion": 85,
-          "estadoCielo": "43n",
-          "vientoVelocidad": 5,
-          "vientoDireccion": "N"
-        }
-      ]
+      "horas_hoy": []
     },
     {
       "id": "29094",
       "nombre": "Vélez-Málaga",
       "referencia": "Axarquía",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-10-17",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "S",
+          "tempMax": 28,
+          "tempMin": 18
+        },
+        {
+          "fecha": "2026-10-18",
+          "probPrecipitacion": 100,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "N",
+          "tempMax": 24,
+          "tempMin": 17
+        },
+        {
+          "fecha": "2026-10-19",
+          "probPrecipitacion": 100,
+          "vientoVelocidad": 5,
+          "vientoDireccion": "N",
+          "tempMax": 24,
+          "tempMin": 15
+        },
+        {
+          "fecha": "2026-10-20",
+          "probPrecipitacion": 85,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "SO",
+          "tempMax": 26,
+          "tempMin": 14
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 8,
@@ -1514,6 +1383,13 @@
       "hasta": "2026-10-18T17:59:59+02:00"
     },
     {
+      "zona": "Ronda",
+      "fenomeno": "Lluvias",
+      "nivel": "naranja",
+      "desde": "2026-10-18T12:00:00+02:00",
+      "hasta": "2026-10-18T17:59:59+02:00"
+    },
+    {
       "zona": "Sol y Guadalhorce",
       "fenomeno": "Lluvias",
       "nivel": "amarillo",
@@ -1539,6 +1415,20 @@
       "fenomeno": "Tormentas",
       "nivel": "amarillo",
       "desde": "2026-10-18T06:00:00+02:00",
+      "hasta": "2026-10-18T17:59:59+02:00"
+    },
+    {
+      "zona": "Axarquía",
+      "fenomeno": "Lluvias",
+      "nivel": "amarillo",
+      "desde": "2026-10-17T18:00:00+02:00",
+      "hasta": "2026-10-18T17:59:59+02:00"
+    },
+    {
+      "zona": "Axarquía",
+      "fenomeno": "Tormentas",
+      "nivel": "amarillo",
+      "desde": "2026-10-17T18:00:00+02:00",
       "hasta": "2026-10-18T17:59:59+02:00"
     },
     {
