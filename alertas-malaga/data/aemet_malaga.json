@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-10-17T09:41:42Z",
+  "generated_at": "2026-10-17T10:02:19Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
       "tipo": "interior",
-      "nivel": "verde",
+      "nivel": "amarillo",
       "avisos": [
         {
           "fenomeno": "Lluvias",
@@ -13,7 +13,7 @@
           "severidad": "Moderate",
           "desde": "2026-10-17T12:00:00+02:00",
           "hasta": "2026-10-17T23:59:59+02:00",
-          "estado_tiempo": "proximo"
+          "estado_tiempo": "activo"
         },
         {
           "fenomeno": "Tormentas",
@@ -22,7 +22,7 @@
           "severidad": "Moderate",
           "desde": "2026-10-17T12:00:00+02:00",
           "hasta": "2026-10-17T23:59:59+02:00",
-          "estado_tiempo": "proximo"
+          "estado_tiempo": "activo"
         },
         {
           "fenomeno": "Lluvias",
@@ -47,7 +47,7 @@
     "612902": {
       "nombre": "Ronda",
       "tipo": "interior",
-      "nivel": "verde",
+      "nivel": "amarillo",
       "avisos": [
         {
           "fenomeno": "Lluvias",
@@ -56,7 +56,7 @@
           "severidad": "Moderate",
           "desde": "2026-10-17T12:00:00+02:00",
           "hasta": "2026-10-17T23:59:59+02:00",
-          "estado_tiempo": "proximo"
+          "estado_tiempo": "activo"
         },
         {
           "fenomeno": "Tormentas",
@@ -65,7 +65,7 @@
           "severidad": "Moderate",
           "desde": "2026-10-17T12:00:00+02:00",
           "hasta": "2026-10-17T23:59:59+02:00",
-          "estado_tiempo": "proximo"
+          "estado_tiempo": "activo"
         },
         {
           "fenomeno": "Lluvias",
@@ -83,6 +83,24 @@
           "severidad": "Moderate",
           "desde": "2026-10-18T12:00:00+02:00",
           "hasta": "2026-10-18T17:59:59+02:00",
+          "estado_tiempo": "proximo"
+        },
+        {
+          "fenomeno": "Lluvias",
+          "nivel": "amarillo",
+          "evento": "Aviso de lluvias de nivel amarillo",
+          "severidad": "Moderate",
+          "desde": "2026-10-19T12:00:00+02:00",
+          "hasta": "2026-10-19T21:59:59+02:00",
+          "estado_tiempo": "proximo"
+        },
+        {
+          "fenomeno": "Tormentas",
+          "nivel": "amarillo",
+          "evento": "Aviso de tormentas de nivel amarillo",
+          "severidad": "Moderate",
+          "desde": "2026-10-19T12:00:00+02:00",
+          "hasta": "2026-10-19T21:59:59+02:00",
           "estado_tiempo": "proximo"
         }
       ]
@@ -90,7 +108,7 @@
     "612903": {
       "nombre": "Sol y Guadalhorce",
       "tipo": "interior",
-      "nivel": "verde",
+      "nivel": "amarillo",
       "avisos": [
         {
           "fenomeno": "Lluvias",
@@ -99,7 +117,7 @@
           "severidad": "Moderate",
           "desde": "2026-10-17T12:00:00+02:00",
           "hasta": "2026-10-17T23:59:59+02:00",
-          "estado_tiempo": "proximo"
+          "estado_tiempo": "activo"
         },
         {
           "fenomeno": "Tormentas",
@@ -108,7 +126,7 @@
           "severidad": "Moderate",
           "desde": "2026-10-17T12:00:00+02:00",
           "hasta": "2026-10-17T23:59:59+02:00",
-          "estado_tiempo": "proximo"
+          "estado_tiempo": "activo"
         },
         {
           "fenomeno": "Lluvias",
@@ -139,7 +157,7 @@
     "612904": {
       "nombre": "Axarquía",
       "tipo": "interior",
-      "nivel": "verde",
+      "nivel": "amarillo",
       "avisos": [
         {
           "fenomeno": "Lluvias",
@@ -148,7 +166,7 @@
           "severidad": "Moderate",
           "desde": "2026-10-17T12:00:00+02:00",
           "hasta": "2026-10-17T23:59:59+02:00",
-          "estado_tiempo": "proximo"
+          "estado_tiempo": "activo"
         },
         {
           "fenomeno": "Tormentas",
@@ -157,7 +175,7 @@
           "severidad": "Moderate",
           "desde": "2026-10-17T12:00:00+02:00",
           "hasta": "2026-10-17T23:59:59+02:00",
-          "estado_tiempo": "proximo"
+          "estado_tiempo": "activo"
         },
         {
           "fenomeno": "Lluvias",
@@ -192,8 +210,40 @@
       "id": "29067",
       "nombre": "Málaga capital",
       "referencia": "Costa",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-10-17",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "S",
+          "tempMax": 27,
+          "tempMin": 19
+        },
+        {
+          "fecha": "2026-10-18",
+          "probPrecipitacion": 100,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "O",
+          "tempMax": 24,
+          "tempMin": 17
+        },
+        {
+          "fecha": "2026-10-19",
+          "probPrecipitacion": 100,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "O",
+          "tempMax": 23,
+          "tempMin": 16
+        },
+        {
+          "fecha": "2026-10-20",
+          "probPrecipitacion": 70,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "SO",
+          "tempMax": 25,
+          "tempMin": 14
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 8,
@@ -1453,6 +1503,20 @@
     }
   ],
   "historial": [
+    {
+      "zona": "Ronda",
+      "fenomeno": "Lluvias",
+      "nivel": "amarillo",
+      "desde": "2026-10-19T12:00:00+02:00",
+      "hasta": "2026-10-19T21:59:59+02:00"
+    },
+    {
+      "zona": "Ronda",
+      "fenomeno": "Tormentas",
+      "nivel": "amarillo",
+      "desde": "2026-10-19T12:00:00+02:00",
+      "hasta": "2026-10-19T21:59:59+02:00"
+    },
     {
       "zona": "Antequera",
       "fenomeno": "Lluvias",
