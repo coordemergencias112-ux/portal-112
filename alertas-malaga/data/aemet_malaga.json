@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-17T17:02:09Z",
+  "generated_at": "2026-10-17T17:21:37Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -40,6 +40,24 @@
           "severidad": "Moderate",
           "desde": "2026-10-18T12:00:00+02:00",
           "hasta": "2026-10-18T17:59:59+02:00",
+          "estado_tiempo": "proximo"
+        },
+        {
+          "fenomeno": "Lluvias",
+          "nivel": "amarillo",
+          "evento": "Aviso de lluvias de nivel amarillo",
+          "severidad": "Moderate",
+          "desde": "2026-10-19T16:00:00+02:00",
+          "hasta": "2026-10-19T21:59:59+02:00",
+          "estado_tiempo": "proximo"
+        },
+        {
+          "fenomeno": "Tormentas",
+          "nivel": "amarillo",
+          "evento": "Aviso de tormentas de nivel amarillo",
+          "severidad": "Moderate",
+          "desde": "2026-10-19T16:00:00+02:00",
+          "hasta": "2026-10-19T21:59:59+02:00",
           "estado_tiempo": "proximo"
         }
       ]
@@ -86,18 +104,18 @@
           "estado_tiempo": "proximo"
         },
         {
-          "fenomeno": "Lluvias",
+          "fenomeno": "Tormentas",
           "nivel": "amarillo",
-          "evento": "Aviso de lluvias de nivel amarillo",
+          "evento": "Aviso de tormentas de nivel amarillo",
           "severidad": "Moderate",
           "desde": "2026-10-19T12:00:00+02:00",
           "hasta": "2026-10-19T21:59:59+02:00",
           "estado_tiempo": "proximo"
         },
         {
-          "fenomeno": "Tormentas",
+          "fenomeno": "Lluvias",
           "nivel": "amarillo",
-          "evento": "Aviso de tormentas de nivel amarillo",
+          "evento": "Aviso de lluvias de nivel amarillo",
           "severidad": "Moderate",
           "desde": "2026-10-19T12:00:00+02:00",
           "hasta": "2026-10-19T21:59:59+02:00",
@@ -145,6 +163,24 @@
           "desde": "2026-10-18T06:00:00+02:00",
           "hasta": "2026-10-18T17:59:59+02:00",
           "estado_tiempo": "proximo"
+        },
+        {
+          "fenomeno": "Lluvias",
+          "nivel": "amarillo",
+          "evento": "Aviso de lluvias de nivel amarillo",
+          "severidad": "Moderate",
+          "desde": "2026-10-19T08:00:00+02:00",
+          "hasta": "2026-10-19T17:59:59+02:00",
+          "estado_tiempo": "proximo"
+        },
+        {
+          "fenomeno": "Tormentas",
+          "nivel": "amarillo",
+          "evento": "Aviso de tormentas de nivel amarillo",
+          "severidad": "Moderate",
+          "desde": "2026-10-19T08:00:00+02:00",
+          "hasta": "2026-10-19T17:59:59+02:00",
+          "estado_tiempo": "proximo"
         }
       ]
     },
@@ -176,6 +212,24 @@
           "desde": "2026-10-17T18:00:00+02:00",
           "hasta": "2026-10-18T17:59:59+02:00",
           "estado_tiempo": "activo"
+        },
+        {
+          "fenomeno": "Lluvias",
+          "nivel": "amarillo",
+          "evento": "Aviso de lluvias de nivel amarillo",
+          "severidad": "Moderate",
+          "desde": "2026-10-19T08:00:00+02:00",
+          "hasta": "2026-10-19T17:59:59+02:00",
+          "estado_tiempo": "proximo"
+        },
+        {
+          "fenomeno": "Tormentas",
+          "nivel": "amarillo",
+          "evento": "Aviso de tormentas de nivel amarillo",
+          "severidad": "Moderate",
+          "desde": "2026-10-19T08:00:00+02:00",
+          "hasta": "2026-10-19T17:59:59+02:00",
+          "estado_tiempo": "proximo"
         }
       ]
     },
@@ -966,7 +1020,152 @@
           "tempMin": 15
         }
       ],
-      "horas_hoy": []
+      "horas_hoy": [
+        {
+          "hora": 8,
+          "temp": null,
+          "precip": 0.1,
+          "probPrecipitacion": 85,
+          "estadoCielo": "43n",
+          "vientoVelocidad": null,
+          "vientoDireccion": null
+        },
+        {
+          "hora": 9,
+          "temp": 22,
+          "precip": 0.1,
+          "probPrecipitacion": 85,
+          "estadoCielo": "43",
+          "vientoVelocidad": 3,
+          "vientoDireccion": "N"
+        },
+        {
+          "hora": 10,
+          "temp": 23,
+          "precip": 0.1,
+          "probPrecipitacion": 85,
+          "estadoCielo": "46",
+          "vientoVelocidad": 6,
+          "vientoDireccion": "O"
+        },
+        {
+          "hora": 11,
+          "temp": 24,
+          "precip": 0.1,
+          "probPrecipitacion": 85,
+          "estadoCielo": "46",
+          "vientoVelocidad": 10,
+          "vientoDireccion": "SO"
+        },
+        {
+          "hora": 12,
+          "temp": 24,
+          "precip": 0.1,
+          "probPrecipitacion": 85,
+          "estadoCielo": "45",
+          "vientoVelocidad": 12,
+          "vientoDireccion": "SO"
+        },
+        {
+          "hora": 13,
+          "temp": 24,
+          "precip": 0.1,
+          "probPrecipitacion": 85,
+          "estadoCielo": "43",
+          "vientoVelocidad": 10,
+          "vientoDireccion": "S"
+        },
+        {
+          "hora": 14,
+          "temp": 25,
+          "precip": 0.1,
+          "probPrecipitacion": 100,
+          "estadoCielo": "45",
+          "vientoVelocidad": 11,
+          "vientoDireccion": "S"
+        },
+        {
+          "hora": 15,
+          "temp": 25,
+          "precip": 0.1,
+          "probPrecipitacion": 100,
+          "estadoCielo": "46",
+          "vientoVelocidad": 11,
+          "vientoDireccion": "S"
+        },
+        {
+          "hora": 16,
+          "temp": 25,
+          "precip": 0.1,
+          "probPrecipitacion": 100,
+          "estadoCielo": "43",
+          "vientoVelocidad": 8,
+          "vientoDireccion": "S"
+        },
+        {
+          "hora": 17,
+          "temp": 25,
+          "precip": 0.1,
+          "probPrecipitacion": 100,
+          "estadoCielo": "43",
+          "vientoVelocidad": 4,
+          "vientoDireccion": "S"
+        },
+        {
+          "hora": 18,
+          "temp": 24,
+          "precip": 0.1,
+          "probPrecipitacion": 100,
+          "estadoCielo": "43",
+          "vientoVelocidad": 7,
+          "vientoDireccion": "S"
+        },
+        {
+          "hora": 19,
+          "temp": 23,
+          "precip": 0.1,
+          "probPrecipitacion": 100,
+          "estadoCielo": "43",
+          "vientoVelocidad": 10,
+          "vientoDireccion": "SE"
+        },
+        {
+          "hora": 20,
+          "temp": 22,
+          "precip": 0.1,
+          "probPrecipitacion": 85,
+          "estadoCielo": "43n",
+          "vientoVelocidad": 8,
+          "vientoDireccion": "E"
+        },
+        {
+          "hora": 21,
+          "temp": 22,
+          "precip": 0.1,
+          "probPrecipitacion": 85,
+          "estadoCielo": "43n",
+          "vientoVelocidad": 3,
+          "vientoDireccion": "NO"
+        },
+        {
+          "hora": 22,
+          "temp": 21,
+          "precip": 0.1,
+          "probPrecipitacion": 85,
+          "estadoCielo": "43n",
+          "vientoVelocidad": 2,
+          "vientoDireccion": "NE"
+        },
+        {
+          "hora": 23,
+          "temp": 21,
+          "precip": 0.1,
+          "probPrecipitacion": 85,
+          "estadoCielo": "43n",
+          "vientoVelocidad": 5,
+          "vientoDireccion": "N"
+        }
+      ]
     },
     {
       "id": "29094",
@@ -1341,6 +1540,20 @@
   ],
   "historial": [
     {
+      "zona": "Antequera",
+      "fenomeno": "Lluvias",
+      "nivel": "amarillo",
+      "desde": "2026-10-19T16:00:00+02:00",
+      "hasta": "2026-10-19T21:59:59+02:00"
+    },
+    {
+      "zona": "Antequera",
+      "fenomeno": "Tormentas",
+      "nivel": "amarillo",
+      "desde": "2026-10-19T16:00:00+02:00",
+      "hasta": "2026-10-19T21:59:59+02:00"
+    },
+    {
       "zona": "Ronda",
       "fenomeno": "Lluvias",
       "nivel": "amarillo",
@@ -1353,6 +1566,34 @@
       "nivel": "amarillo",
       "desde": "2026-10-19T12:00:00+02:00",
       "hasta": "2026-10-19T21:59:59+02:00"
+    },
+    {
+      "zona": "Sol y Guadalhorce",
+      "fenomeno": "Lluvias",
+      "nivel": "amarillo",
+      "desde": "2026-10-19T08:00:00+02:00",
+      "hasta": "2026-10-19T17:59:59+02:00"
+    },
+    {
+      "zona": "Sol y Guadalhorce",
+      "fenomeno": "Tormentas",
+      "nivel": "amarillo",
+      "desde": "2026-10-19T08:00:00+02:00",
+      "hasta": "2026-10-19T17:59:59+02:00"
+    },
+    {
+      "zona": "Axarquía",
+      "fenomeno": "Lluvias",
+      "nivel": "amarillo",
+      "desde": "2026-10-19T08:00:00+02:00",
+      "hasta": "2026-10-19T17:59:59+02:00"
+    },
+    {
+      "zona": "Axarquía",
+      "fenomeno": "Tormentas",
+      "nivel": "amarillo",
+      "desde": "2026-10-19T08:00:00+02:00",
+      "hasta": "2026-10-19T17:59:59+02:00"
     },
     {
       "zona": "Antequera",
