@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-17T22:41:32Z",
+  "generated_at": "2026-10-17T23:01:47Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -90,22 +90,22 @@
     "612903": {
       "nombre": "Sol y Guadalhorce",
       "tipo": "interior",
-      "nivel": "amarillo",
+      "nivel": "naranja",
       "avisos": [
         {
-          "fenomeno": "Lluvias",
+          "fenomeno": "Tormentas",
           "nivel": "amarillo",
-          "evento": "Aviso de lluvias de nivel amarillo",
+          "evento": "Aviso de tormentas de nivel amarillo",
           "severidad": "Moderate",
           "desde": "2026-10-18T00:00:00+02:00",
           "hasta": "2026-10-18T02:59:59+02:00",
           "estado_tiempo": "activo"
         },
         {
-          "fenomeno": "Tormentas",
-          "nivel": "amarillo",
-          "evento": "Aviso de tormentas de nivel amarillo",
-          "severidad": "Moderate",
+          "fenomeno": "Lluvias",
+          "nivel": "naranja",
+          "evento": "Aviso de lluvias de nivel naranja",
+          "severidad": "Severe",
           "desde": "2026-10-18T00:00:00+02:00",
           "hasta": "2026-10-18T02:59:59+02:00",
           "estado_tiempo": "activo"
@@ -157,7 +157,7 @@
     "612904": {
       "nombre": "Axarquía",
       "tipo": "interior",
-      "nivel": "amarillo",
+      "nivel": "rojo",
       "avisos": [
         {
           "fenomeno": "Tormentas",
@@ -170,12 +170,21 @@
         },
         {
           "fenomeno": "Lluvias",
+          "nivel": "rojo",
+          "evento": "Aviso de lluvias de nivel rojo",
+          "severidad": "Extreme",
+          "desde": "2026-10-18T00:00:00+02:00",
+          "hasta": "2026-10-18T02:59:59+02:00",
+          "estado_tiempo": "activo"
+        },
+        {
+          "fenomeno": "Lluvias",
           "nivel": "amarillo",
           "evento": "Aviso de lluvias de nivel amarillo",
           "severidad": "Moderate",
-          "desde": "2026-10-18T00:00:00+02:00",
+          "desde": "2026-10-18T03:00:00+02:00",
           "hasta": "2026-10-18T17:59:59+02:00",
-          "estado_tiempo": "activo"
+          "estado_tiempo": "proximo"
         },
         {
           "fenomeno": "Lluvias",
@@ -518,8 +527,40 @@
       "id": "29069",
       "nombre": "Marbella",
       "referencia": "Costa del Sol",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-10-17",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "SE",
+          "tempMax": 26,
+          "tempMin": 19
+        },
+        {
+          "fecha": "2026-10-18",
+          "probPrecipitacion": 100,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "E",
+          "tempMax": 24,
+          "tempMin": 18
+        },
+        {
+          "fecha": "2026-10-19",
+          "probPrecipitacion": 100,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "SE",
+          "tempMax": 23,
+          "tempMin": 16
+        },
+        {
+          "fecha": "2026-10-20",
+          "probPrecipitacion": 85,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "SO",
+          "tempMax": 26,
+          "tempMin": 15
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 20,
@@ -835,6 +876,13 @@
       "hasta": "2026-10-18T17:59:59+02:00"
     },
     {
+      "zona": "Axarquía",
+      "fenomeno": "Lluvias",
+      "nivel": "amarillo",
+      "desde": "2026-10-18T03:00:00+02:00",
+      "hasta": "2026-10-18T17:59:59+02:00"
+    },
+    {
       "zona": "Sol y Guadalhorce",
       "fenomeno": "Lluvias",
       "nivel": "amarillo",
@@ -852,6 +900,20 @@
       "zona": "Sol y Guadalhorce",
       "fenomeno": "Tormentas",
       "nivel": "amarillo",
+      "desde": "2026-10-18T00:00:00+02:00",
+      "hasta": "2026-10-18T02:59:59+02:00"
+    },
+    {
+      "zona": "Sol y Guadalhorce",
+      "fenomeno": "Lluvias",
+      "nivel": "naranja",
+      "desde": "2026-10-18T00:00:00+02:00",
+      "hasta": "2026-10-18T02:59:59+02:00"
+    },
+    {
+      "zona": "Axarquía",
+      "fenomeno": "Lluvias",
+      "nivel": "rojo",
       "desde": "2026-10-18T00:00:00+02:00",
       "hasta": "2026-10-18T02:59:59+02:00"
     },
