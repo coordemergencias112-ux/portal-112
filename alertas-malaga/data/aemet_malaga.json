@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-18T00:41:49Z",
+  "generated_at": "2026-10-18T01:01:48Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -90,26 +90,8 @@
     "612903": {
       "nombre": "Sol y Guadalhorce",
       "tipo": "interior",
-      "nivel": "naranja",
+      "nivel": "verde",
       "avisos": [
-        {
-          "fenomeno": "Tormentas",
-          "nivel": "amarillo",
-          "evento": "Aviso de tormentas de nivel amarillo",
-          "severidad": "Moderate",
-          "desde": "2026-10-18T00:00:00+02:00",
-          "hasta": "2026-10-18T02:59:59+02:00",
-          "estado_tiempo": "activo"
-        },
-        {
-          "fenomeno": "Lluvias",
-          "nivel": "naranja",
-          "evento": "Aviso de lluvias de nivel naranja",
-          "severidad": "Severe",
-          "desde": "2026-10-18T00:00:00+02:00",
-          "hasta": "2026-10-18T02:59:59+02:00",
-          "estado_tiempo": "activo"
-        },
         {
           "fenomeno": "Lluvias",
           "nivel": "amarillo",
@@ -157,7 +139,7 @@
     "612904": {
       "nombre": "Axarquía",
       "tipo": "interior",
-      "nivel": "rojo",
+      "nivel": "amarillo",
       "avisos": [
         {
           "fenomeno": "Tormentas",
@@ -170,21 +152,12 @@
         },
         {
           "fenomeno": "Lluvias",
-          "nivel": "rojo",
-          "evento": "Aviso de lluvias de nivel rojo",
-          "severidad": "Extreme",
-          "desde": "2026-10-18T00:00:00+02:00",
-          "hasta": "2026-10-18T02:59:59+02:00",
-          "estado_tiempo": "activo"
-        },
-        {
-          "fenomeno": "Lluvias",
           "nivel": "amarillo",
           "evento": "Aviso de lluvias de nivel amarillo",
           "severidad": "Moderate",
           "desde": "2026-10-18T03:00:00+02:00",
           "hasta": "2026-10-18T17:59:59+02:00",
-          "estado_tiempo": "proximo"
+          "estado_tiempo": "activo"
         },
         {
           "fenomeno": "Lluvias",
