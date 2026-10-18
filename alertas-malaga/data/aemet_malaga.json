@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-18T07:02:15Z",
+  "generated_at": "2026-10-18T07:21:46Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -12,7 +12,7 @@
           "evento": "Aviso de lluvias de nivel amarillo",
           "severidad": "Moderate",
           "desde": "2026-10-18T12:00:00+02:00",
-          "hasta": "2026-10-18T17:59:59+02:00",
+          "hasta": "2026-10-18T21:59:59+02:00",
           "estado_tiempo": "proximo"
         },
         {
@@ -21,7 +21,7 @@
           "evento": "Aviso de tormentas de nivel amarillo",
           "severidad": "Moderate",
           "desde": "2026-10-18T12:00:00+02:00",
-          "hasta": "2026-10-18T17:59:59+02:00",
+          "hasta": "2026-10-18T21:59:59+02:00",
           "estado_tiempo": "proximo"
         },
         {
@@ -55,7 +55,7 @@
           "evento": "Aviso de lluvias de nivel naranja",
           "severidad": "Severe",
           "desde": "2026-10-18T12:00:00+02:00",
-          "hasta": "2026-10-18T17:59:59+02:00",
+          "hasta": "2026-10-18T21:59:59+02:00",
           "estado_tiempo": "proximo"
         },
         {
@@ -64,7 +64,7 @@
           "evento": "Aviso de tormentas de nivel amarillo",
           "severidad": "Moderate",
           "desde": "2026-10-18T12:00:00+02:00",
-          "hasta": "2026-10-18T17:59:59+02:00",
+          "hasta": "2026-10-18T21:59:59+02:00",
           "estado_tiempo": "proximo"
         },
         {
@@ -97,8 +97,8 @@
           "nivel": "amarillo",
           "evento": "Aviso de lluvias de nivel amarillo",
           "severidad": "Moderate",
-          "desde": "2026-10-18T06:00:00+02:00",
-          "hasta": "2026-10-18T17:59:59+02:00",
+          "desde": "2026-10-18T08:00:00+02:00",
+          "hasta": "2026-10-18T21:59:59+02:00",
           "estado_tiempo": "activo"
         },
         {
@@ -106,8 +106,8 @@
           "nivel": "amarillo",
           "evento": "Aviso de tormentas de nivel amarillo",
           "severidad": "Moderate",
-          "desde": "2026-10-18T06:00:00+02:00",
-          "hasta": "2026-10-18T17:59:59+02:00",
+          "desde": "2026-10-18T08:00:00+02:00",
+          "hasta": "2026-10-18T21:59:59+02:00",
           "estado_tiempo": "activo"
         },
         {
@@ -142,21 +142,21 @@
       "nivel": "amarillo",
       "avisos": [
         {
-          "fenomeno": "Tormentas",
-          "nivel": "amarillo",
-          "evento": "Aviso de tormentas de nivel amarillo",
-          "severidad": "Moderate",
-          "desde": "2026-10-17T18:00:00+02:00",
-          "hasta": "2026-10-18T17:59:59+02:00",
-          "estado_tiempo": "activo"
-        },
-        {
           "fenomeno": "Lluvias",
           "nivel": "amarillo",
           "evento": "Aviso de lluvias de nivel amarillo",
           "severidad": "Moderate",
-          "desde": "2026-10-18T03:00:00+02:00",
-          "hasta": "2026-10-18T17:59:59+02:00",
+          "desde": "2026-10-18T08:00:00+02:00",
+          "hasta": "2026-10-18T21:59:59+02:00",
+          "estado_tiempo": "activo"
+        },
+        {
+          "fenomeno": "Tormentas",
+          "nivel": "amarillo",
+          "evento": "Aviso de tormentas de nivel amarillo",
+          "severidad": "Moderate",
+          "desde": "2026-10-18T08:00:00+02:00",
+          "hasta": "2026-10-18T21:59:59+02:00",
           "estado_tiempo": "activo"
         },
         {
@@ -194,14 +194,6 @@
       "referencia": "Costa",
       "dias": [
         {
-          "fecha": "2026-10-17",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "O",
-          "tempMax": 27,
-          "tempMin": 19
-        },
-        {
           "fecha": "2026-10-18",
           "probPrecipitacion": 100,
           "vientoVelocidad": 10,
@@ -212,18 +204,26 @@
         {
           "fecha": "2026-10-19",
           "probPrecipitacion": 100,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "E",
+          "vientoVelocidad": 15,
+          "vientoDireccion": "NO",
           "tempMax": 23,
           "tempMin": 16
         },
         {
           "fecha": "2026-10-20",
-          "probPrecipitacion": 65,
+          "probPrecipitacion": 25,
           "vientoVelocidad": 10,
           "vientoDireccion": "SO",
-          "tempMax": 26,
+          "tempMax": 25,
           "tempMin": 15
+        },
+        {
+          "fecha": "2026-10-21",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "NO",
+          "tempMax": 26,
+          "tempMin": 14
         }
       ],
       "horas_hoy": [
@@ -965,35 +965,35 @@
       "referencia": "Valle del Guadalhorce",
       "dias": [
         {
-          "fecha": "2026-10-17",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "E",
-          "tempMax": 29,
-          "tempMin": 18
-        },
-        {
           "fecha": "2026-10-18",
           "probPrecipitacion": 100,
           "vientoVelocidad": 5,
-          "vientoDireccion": "O",
+          "vientoDireccion": "NE",
           "tempMax": 25,
           "tempMin": 16
         },
         {
           "fecha": "2026-10-19",
           "probPrecipitacion": 100,
-          "vientoVelocidad": 5,
+          "vientoVelocidad": 10,
           "vientoDireccion": "E",
-          "tempMax": 25,
-          "tempMin": 14
+          "tempMax": 24,
+          "tempMin": 15
         },
         {
           "fecha": "2026-10-20",
-          "probPrecipitacion": 80,
+          "probPrecipitacion": 35,
           "vientoVelocidad": null,
           "vientoDireccion": null,
           "tempMax": 27,
+          "tempMin": 12
+        },
+        {
+          "fecha": "2026-10-21",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "NO",
+          "tempMax": 26,
           "tempMin": 12
         }
       ],
@@ -1736,36 +1736,36 @@
       "referencia": "Costa - Axarquía",
       "dias": [
         {
-          "fecha": "2026-10-17",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 5,
-          "vientoDireccion": "N",
-          "tempMax": 25,
-          "tempMin": 18
-        },
-        {
           "fecha": "2026-10-18",
           "probPrecipitacion": 100,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "E",
+          "vientoVelocidad": 20,
+          "vientoDireccion": "SE",
           "tempMax": 22,
-          "tempMin": 17
+          "tempMin": 16
         },
         {
           "fecha": "2026-10-19",
           "probPrecipitacion": 100,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "E",
-          "tempMax": 22,
-          "tempMin": 16
+          "vientoVelocidad": 5,
+          "vientoDireccion": "NO",
+          "tempMax": 21,
+          "tempMin": 17
         },
         {
           "fecha": "2026-10-20",
-          "probPrecipitacion": 85,
+          "probPrecipitacion": 60,
           "vientoVelocidad": 25,
-          "vientoDireccion": "O",
-          "tempMax": 24,
+          "vientoDireccion": "SO",
+          "tempMax": 23,
           "tempMin": 16
+        },
+        {
+          "fecha": "2026-10-21",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 25,
+          "vientoDireccion": "SO",
+          "tempMax": 24,
+          "tempMin": 15
         }
       ],
       "horas_hoy": [
@@ -2050,7 +2050,7 @@
       "fenomeno": "Lluvias",
       "nivel": "amarillo",
       "desde": "2026-10-18T12:00:00+02:00",
-      "hasta": "2026-10-18T17:59:59+02:00"
+      "hasta": "2026-10-18T21:59:59+02:00"
     },
     {
       "zona": "Ronda",
@@ -2064,21 +2064,49 @@
       "fenomeno": "Tormentas",
       "nivel": "amarillo",
       "desde": "2026-10-18T12:00:00+02:00",
-      "hasta": "2026-10-18T17:59:59+02:00"
+      "hasta": "2026-10-18T21:59:59+02:00"
     },
     {
       "zona": "Ronda",
       "fenomeno": "Tormentas",
       "nivel": "amarillo",
       "desde": "2026-10-18T12:00:00+02:00",
-      "hasta": "2026-10-18T17:59:59+02:00"
+      "hasta": "2026-10-18T21:59:59+02:00"
     },
     {
       "zona": "Ronda",
       "fenomeno": "Lluvias",
       "nivel": "naranja",
       "desde": "2026-10-18T12:00:00+02:00",
-      "hasta": "2026-10-18T17:59:59+02:00"
+      "hasta": "2026-10-18T21:59:59+02:00"
+    },
+    {
+      "zona": "Sol y Guadalhorce",
+      "fenomeno": "Lluvias",
+      "nivel": "amarillo",
+      "desde": "2026-10-18T08:00:00+02:00",
+      "hasta": "2026-10-18T21:59:59+02:00"
+    },
+    {
+      "zona": "Axarquía",
+      "fenomeno": "Lluvias",
+      "nivel": "amarillo",
+      "desde": "2026-10-18T08:00:00+02:00",
+      "hasta": "2026-10-18T21:59:59+02:00"
+    },
+    {
+      "zona": "Sol y Guadalhorce",
+      "fenomeno": "Tormentas",
+      "nivel": "amarillo",
+      "desde": "2026-10-18T08:00:00+02:00",
+      "hasta": "2026-10-18T21:59:59+02:00"
+    },
+    {
+      "zona": "Axarquía",
+      "fenomeno": "Tormentas",
+      "nivel": "amarillo",
+      "desde": "2026-10-18T08:00:00+02:00",
+      "hasta": "2026-10-18T21:59:59+02:00"
     },
     {
       "zona": "Sol y Guadalhorce",
