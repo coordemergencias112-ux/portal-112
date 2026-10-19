@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-19T00:41:39Z",
+  "generated_at": "2026-10-19T01:01:44Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -54,7 +54,7 @@
     "612903": {
       "nombre": "Sol y Guadalhorce",
       "tipo": "interior",
-      "nivel": "verde",
+      "nivel": "amarillo",
       "avisos": [
         {
           "fenomeno": "Lluvias",
@@ -63,7 +63,7 @@
           "severidad": "Moderate",
           "desde": "2026-10-19T03:00:00+02:00",
           "hasta": "2026-10-19T17:59:59+02:00",
-          "estado_tiempo": "proximo"
+          "estado_tiempo": "activo"
         },
         {
           "fenomeno": "Tormentas",
@@ -72,7 +72,7 @@
           "severidad": "Moderate",
           "desde": "2026-10-19T03:00:00+02:00",
           "hasta": "2026-10-19T17:59:59+02:00",
-          "estado_tiempo": "proximo"
+          "estado_tiempo": "activo"
         }
       ]
     },
@@ -377,8 +377,40 @@
       "id": "29084",
       "nombre": "Ronda",
       "referencia": "Interior / Serranía",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-10-18",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": null,
+          "vientoDireccion": null,
+          "tempMax": 22,
+          "tempMin": 12
+        },
+        {
+          "fecha": "2026-10-19",
+          "probPrecipitacion": 100,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "NO",
+          "tempMax": 21,
+          "tempMin": 12
+        },
+        {
+          "fecha": "2026-10-20",
+          "probPrecipitacion": 60,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "O",
+          "tempMax": 20,
+          "tempMin": 10
+        },
+        {
+          "fecha": "2026-10-21",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "NO",
+          "tempMax": 20,
+          "tempMin": 9
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 0,
