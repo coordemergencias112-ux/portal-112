@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-19T14:21:52Z",
+  "generated_at": "2026-10-19T14:41:32Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -20,7 +20,7 @@
           "nivel": "amarillo",
           "evento": "Aviso de tormentas de nivel amarillo",
           "severidad": "Moderate",
-          "desde": "2026-10-19T14:00:00+02:00",
+          "desde": "2026-10-19T16:00:00+02:00",
           "hasta": "2026-10-19T21:59:59+02:00",
           "estado_tiempo": "activo"
         }
@@ -54,15 +54,15 @@
     "612903": {
       "nombre": "Sol y Guadalhorce",
       "tipo": "interior",
-      "nivel": "amarillo",
+      "nivel": "naranja",
       "avisos": [
         {
           "fenomeno": "Lluvias",
-          "nivel": "amarillo",
-          "evento": "Aviso de lluvias de nivel amarillo",
-          "severidad": "Moderate",
-          "desde": "2026-10-19T03:00:00+02:00",
-          "hasta": "2026-10-19T17:59:59+02:00",
+          "nivel": "naranja",
+          "evento": "Aviso de lluvias de nivel naranja",
+          "severidad": "Severe",
+          "desde": "2026-10-19T16:00:00+02:00",
+          "hasta": "2026-10-19T21:59:59+02:00",
           "estado_tiempo": "activo"
         },
         {
@@ -70,8 +70,8 @@
           "nivel": "amarillo",
           "evento": "Aviso de tormentas de nivel amarillo",
           "severidad": "Moderate",
-          "desde": "2026-10-19T03:00:00+02:00",
-          "hasta": "2026-10-19T17:59:59+02:00",
+          "desde": "2026-10-19T16:00:00+02:00",
+          "hasta": "2026-10-19T21:59:59+02:00",
           "estado_tiempo": "activo"
         }
       ]
@@ -860,40 +860,8 @@
       "id": "29069",
       "nombre": "Marbella",
       "referencia": "Costa del Sol",
-      "dias": [
-        {
-          "fecha": "2026-10-19",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "NO",
-          "tempMax": 23,
-          "tempMin": 20
-        },
-        {
-          "fecha": "2026-10-20",
-          "probPrecipitacion": 45,
-          "vientoVelocidad": 20,
-          "vientoDireccion": "O",
-          "tempMax": 26,
-          "tempMin": 15
-        },
-        {
-          "fecha": "2026-10-21",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "S",
-          "tempMax": 25,
-          "tempMin": 14
-        },
-        {
-          "fecha": "2026-10-22",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "S",
-          "tempMax": 25,
-          "tempMin": 15
-        }
-      ],
+      "error": "HTTP Error 500: Internal Server Error",
+      "dias": [],
       "horas_hoy": [
         {
           "hora": 8,
@@ -1422,6 +1390,20 @@
     },
     {
       "zona": "Antequera",
+      "fenomeno": "Tormentas",
+      "nivel": "amarillo",
+      "desde": "2026-10-19T16:00:00+02:00",
+      "hasta": "2026-10-19T21:59:59+02:00"
+    },
+    {
+      "zona": "Sol y Guadalhorce",
+      "fenomeno": "Lluvias",
+      "nivel": "naranja",
+      "desde": "2026-10-19T16:00:00+02:00",
+      "hasta": "2026-10-19T21:59:59+02:00"
+    },
+    {
+      "zona": "Sol y Guadalhorce",
       "fenomeno": "Tormentas",
       "nivel": "amarillo",
       "desde": "2026-10-19T16:00:00+02:00",
