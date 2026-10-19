@@ -1,80 +1,23 @@
 {
-  "generated_at": "2026-10-19T19:41:31Z",
+  "generated_at": "2026-10-19T20:02:06Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
       "tipo": "interior",
-      "nivel": "amarillo",
-      "avisos": [
-        {
-          "fenomeno": "Lluvias",
-          "nivel": "amarillo",
-          "evento": "Aviso de lluvias de nivel amarillo",
-          "severidad": "Moderate",
-          "desde": "2026-10-19T14:00:00+02:00",
-          "hasta": "2026-10-19T21:59:59+02:00",
-          "estado_tiempo": "activo"
-        },
-        {
-          "fenomeno": "Tormentas",
-          "nivel": "amarillo",
-          "evento": "Aviso de tormentas de nivel amarillo",
-          "severidad": "Moderate",
-          "desde": "2026-10-19T16:00:00+02:00",
-          "hasta": "2026-10-19T21:59:59+02:00",
-          "estado_tiempo": "activo"
-        }
-      ]
+      "nivel": "verde",
+      "avisos": []
     },
     "612902": {
       "nombre": "Ronda",
       "tipo": "interior",
-      "nivel": "amarillo",
-      "avisos": [
-        {
-          "fenomeno": "Tormentas",
-          "nivel": "amarillo",
-          "evento": "Aviso de tormentas de nivel amarillo",
-          "severidad": "Moderate",
-          "desde": "2026-10-19T12:00:00+02:00",
-          "hasta": "2026-10-19T21:59:59+02:00",
-          "estado_tiempo": "activo"
-        },
-        {
-          "fenomeno": "Lluvias",
-          "nivel": "amarillo",
-          "evento": "Aviso de lluvias de nivel amarillo",
-          "severidad": "Moderate",
-          "desde": "2026-10-19T18:00:00+02:00",
-          "hasta": "2026-10-19T21:59:59+02:00",
-          "estado_tiempo": "activo"
-        }
-      ]
+      "nivel": "verde",
+      "avisos": []
     },
     "612903": {
       "nombre": "Sol y Guadalhorce",
       "tipo": "interior",
-      "nivel": "amarillo",
-      "avisos": [
-        {
-          "fenomeno": "Tormentas",
-          "nivel": "amarillo",
-          "evento": "Aviso de tormentas de nivel amarillo",
-          "severidad": "Moderate",
-          "desde": "2026-10-19T16:00:00+02:00",
-          "hasta": "2026-10-19T21:59:59+02:00",
-          "estado_tiempo": "activo"
-        },
-        {
-          "fenomeno": "Lluvias",
-          "nivel": "amarillo",
-          "evento": "Aviso de lluvias de nivel amarillo",
-          "severidad": "Moderate",
-          "desde": "2026-10-19T18:00:00+02:00",
-          "hasta": "2026-10-19T21:59:59+02:00",
-          "estado_tiempo": "activo"
-        }
-      ]
+      "nivel": "verde",
+      "avisos": []
     },
     "612903C": {
       "nombre": "Costa - Sol y Guadalhorce",
@@ -790,98 +733,7 @@
           "tempMin": 14
         }
       ],
-      "horas_hoy": [
-        {
-          "hora": 14,
-          "temp": null,
-          "precip": 0,
-          "probPrecipitacion": 100,
-          "estadoCielo": "17",
-          "vientoVelocidad": null,
-          "vientoDireccion": null
-        },
-        {
-          "hora": 15,
-          "temp": 24,
-          "precip": 0,
-          "probPrecipitacion": 100,
-          "estadoCielo": "14",
-          "vientoVelocidad": 13,
-          "vientoDireccion": "S"
-        },
-        {
-          "hora": 16,
-          "temp": 22,
-          "precip": 0,
-          "probPrecipitacion": 100,
-          "estadoCielo": "12",
-          "vientoVelocidad": 11,
-          "vientoDireccion": "S"
-        },
-        {
-          "hora": 17,
-          "temp": 23,
-          "precip": 0,
-          "probPrecipitacion": 100,
-          "estadoCielo": "16",
-          "vientoVelocidad": 10,
-          "vientoDireccion": "S"
-        },
-        {
-          "hora": 18,
-          "temp": 23,
-          "precip": 0.1,
-          "probPrecipitacion": 100,
-          "estadoCielo": "44",
-          "vientoVelocidad": 12,
-          "vientoDireccion": "S"
-        },
-        {
-          "hora": 19,
-          "temp": 21,
-          "precip": 0,
-          "probPrecipitacion": 100,
-          "estadoCielo": "11",
-          "vientoVelocidad": 13,
-          "vientoDireccion": "N"
-        },
-        {
-          "hora": 20,
-          "temp": 20,
-          "precip": 0,
-          "probPrecipitacion": 10,
-          "estadoCielo": "13n",
-          "vientoVelocidad": 3,
-          "vientoDireccion": "NO"
-        },
-        {
-          "hora": 21,
-          "temp": 19,
-          "precip": 0,
-          "probPrecipitacion": 10,
-          "estadoCielo": "13n",
-          "vientoVelocidad": 8,
-          "vientoDireccion": "NE"
-        },
-        {
-          "hora": 22,
-          "temp": 18,
-          "precip": 0,
-          "probPrecipitacion": 10,
-          "estadoCielo": "13n",
-          "vientoVelocidad": 2,
-          "vientoDireccion": "N"
-        },
-        {
-          "hora": 23,
-          "temp": 17,
-          "precip": 0,
-          "probPrecipitacion": 10,
-          "estadoCielo": "13n",
-          "vientoVelocidad": 7,
-          "vientoDireccion": "N"
-        }
-      ]
+      "horas_hoy": []
     },
     {
       "id": "29075",
