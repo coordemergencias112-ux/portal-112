@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-21T09:41:25Z",
+  "generated_at": "2026-10-21T10:01:47Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -969,8 +969,40 @@
       "id": "29094",
       "nombre": "Vélez-Málaga",
       "referencia": "Axarquía",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-10-21",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 5,
+          "vientoDireccion": "S",
+          "tempMax": 27,
+          "tempMin": 14
+        },
+        {
+          "fecha": "2026-10-22",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "S",
+          "tempMax": 25,
+          "tempMin": 14
+        },
+        {
+          "fecha": "2026-10-23",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "N",
+          "tempMax": 29,
+          "tempMin": 14
+        },
+        {
+          "fecha": "2026-10-24",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "S",
+          "tempMax": 25,
+          "tempMin": 13
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 8,
