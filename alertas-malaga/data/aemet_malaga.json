@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-22T09:21:50Z",
+  "generated_at": "2026-10-22T09:41:49Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -48,16 +48,16 @@
         {
           "fecha": "2026-10-22",
           "probPrecipitacion": 0,
-          "vientoVelocidad": 20,
+          "vientoVelocidad": 15,
           "vientoDireccion": "O",
           "tempMax": 25,
           "tempMin": 13
         },
         {
           "fecha": "2026-10-23",
-          "probPrecipitacion": 5,
+          "probPrecipitacion": 0,
           "vientoVelocidad": 25,
-          "vientoDireccion": "NO",
+          "vientoDireccion": "O",
           "tempMax": 26,
           "tempMin": 15
         },
@@ -229,8 +229,40 @@
       "id": "29084",
       "nombre": "Ronda",
       "referencia": "Interior / Serranía",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-10-22",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 5,
+          "vientoDireccion": "O",
+          "tempMax": 23,
+          "tempMin": 10
+        },
+        {
+          "fecha": "2026-10-23",
+          "probPrecipitacion": 5,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "N",
+          "tempMax": 20,
+          "tempMin": 10
+        },
+        {
+          "fecha": "2026-10-24",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "E",
+          "tempMax": 23,
+          "tempMin": 10
+        },
+        {
+          "fecha": "2026-10-25",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "N",
+          "tempMax": 24,
+          "tempMin": 11
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 8,
@@ -763,7 +795,7 @@
         },
         {
           "fecha": "2026-10-23",
-          "probPrecipitacion": 15,
+          "probPrecipitacion": 10,
           "vientoVelocidad": 10,
           "vientoDireccion": "S",
           "tempMax": 26,
