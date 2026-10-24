@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-24T10:21:26Z",
+  "generated_at": "2026-10-24T10:41:31Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -784,40 +784,8 @@
       "id": "29069",
       "nombre": "Marbella",
       "referencia": "Costa del Sol",
-      "dias": [
-        {
-          "fecha": "2026-10-24",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 20,
-          "vientoDireccion": "E",
-          "tempMax": 25,
-          "tempMin": 19
-        },
-        {
-          "fecha": "2026-10-25",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "SO",
-          "tempMax": 25,
-          "tempMin": 16
-        },
-        {
-          "fecha": "2026-10-26",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "SE",
-          "tempMax": 27,
-          "tempMin": 18
-        },
-        {
-          "fecha": "2026-10-27",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "S",
-          "tempMax": 25,
-          "tempMin": 17
-        }
-      ],
+      "error": "HTTP Error 500: Internal Server Error",
+      "dias": [],
       "horas_hoy": [
         {
           "hora": 8,
@@ -969,8 +937,40 @@
       "id": "29094",
       "nombre": "Vélez-Málaga",
       "referencia": "Axarquía",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-10-24",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "S",
+          "tempMax": 26,
+          "tempMin": 14
+        },
+        {
+          "fecha": "2026-10-25",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "S",
+          "tempMax": 26,
+          "tempMin": 14
+        },
+        {
+          "fecha": "2026-10-26",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "S",
+          "tempMax": 27,
+          "tempMin": 16
+        },
+        {
+          "fecha": "2026-10-27",
+          "probPrecipitacion": 5,
+          "vientoVelocidad": 5,
+          "vientoDireccion": "S",
+          "tempMax": 27,
+          "tempMin": 16
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 8,
