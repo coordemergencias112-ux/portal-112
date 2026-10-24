@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-24T09:41:34Z",
+  "generated_at": "2026-10-24T10:01:56Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -599,8 +599,40 @@
       "id": "29042",
       "nombre": "Coín",
       "referencia": "Valle del Guadalhorce",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-10-24",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 5,
+          "vientoDireccion": "E",
+          "tempMax": 26,
+          "tempMin": 13
+        },
+        {
+          "fecha": "2026-10-25",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "E",
+          "tempMax": 30,
+          "tempMin": 14
+        },
+        {
+          "fecha": "2026-10-26",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 5,
+          "vientoDireccion": "E",
+          "tempMax": 29,
+          "tempMin": 15
+        },
+        {
+          "fecha": "2026-10-27",
+          "probPrecipitacion": 5,
+          "vientoVelocidad": 5,
+          "vientoDireccion": "E",
+          "tempMax": 28,
+          "tempMin": 15
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 8,
@@ -1156,152 +1188,7 @@
           "tempMin": 18
         }
       ],
-      "horas_hoy": [
-        {
-          "hora": 8,
-          "temp": null,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11n",
-          "vientoVelocidad": null,
-          "vientoDireccion": null
-        },
-        {
-          "hora": 9,
-          "temp": 19,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 8,
-          "vientoDireccion": "N"
-        },
-        {
-          "hora": 10,
-          "temp": 20,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 8,
-          "vientoDireccion": "N"
-        },
-        {
-          "hora": 11,
-          "temp": 21,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 4,
-          "vientoDireccion": "N"
-        },
-        {
-          "hora": 12,
-          "temp": 20,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 7,
-          "vientoDireccion": "SE"
-        },
-        {
-          "hora": 13,
-          "temp": 22,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 10,
-          "vientoDireccion": "SE"
-        },
-        {
-          "hora": 14,
-          "temp": 22,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 12,
-          "vientoDireccion": "SE"
-        },
-        {
-          "hora": 15,
-          "temp": 22,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 10,
-          "vientoDireccion": "SE"
-        },
-        {
-          "hora": 16,
-          "temp": 22,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "17",
-          "vientoVelocidad": 8,
-          "vientoDireccion": "SE"
-        },
-        {
-          "hora": 17,
-          "temp": 22,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 7,
-          "vientoDireccion": "SE"
-        },
-        {
-          "hora": 18,
-          "temp": 21,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 5,
-          "vientoDireccion": "SE"
-        },
-        {
-          "hora": 19,
-          "temp": 20,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "12",
-          "vientoVelocidad": 3,
-          "vientoDireccion": "SE"
-        },
-        {
-          "hora": 20,
-          "temp": 19,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "17n",
-          "vientoVelocidad": 6,
-          "vientoDireccion": "N"
-        },
-        {
-          "hora": 21,
-          "temp": 19,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "17n",
-          "vientoVelocidad": 10,
-          "vientoDireccion": "N"
-        },
-        {
-          "hora": 22,
-          "temp": 19,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "17n",
-          "vientoVelocidad": 8,
-          "vientoDireccion": "NO"
-        },
-        {
-          "hora": 23,
-          "temp": 18,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "17n",
-          "vientoVelocidad": 5,
-          "vientoDireccion": "N"
-        }
-      ]
+      "horas_hoy": []
     }
   ],
   "historial": [
@@ -1576,62 +1463,6 @@
       "fenomeno": "Lluvias",
       "nivel": "naranja",
       "desde": "2026-10-17T16:00:00+02:00",
-      "hasta": "2026-10-17T23:59:59+02:00"
-    },
-    {
-      "zona": "Antequera",
-      "fenomeno": "Lluvias",
-      "nivel": "amarillo",
-      "desde": "2026-10-17T12:00:00+02:00",
-      "hasta": "2026-10-17T23:59:59+02:00"
-    },
-    {
-      "zona": "Antequera",
-      "fenomeno": "Tormentas",
-      "nivel": "amarillo",
-      "desde": "2026-10-17T12:00:00+02:00",
-      "hasta": "2026-10-17T23:59:59+02:00"
-    },
-    {
-      "zona": "Ronda",
-      "fenomeno": "Lluvias",
-      "nivel": "amarillo",
-      "desde": "2026-10-17T12:00:00+02:00",
-      "hasta": "2026-10-17T23:59:59+02:00"
-    },
-    {
-      "zona": "Ronda",
-      "fenomeno": "Tormentas",
-      "nivel": "amarillo",
-      "desde": "2026-10-17T12:00:00+02:00",
-      "hasta": "2026-10-17T23:59:59+02:00"
-    },
-    {
-      "zona": "Sol y Guadalhorce",
-      "fenomeno": "Lluvias",
-      "nivel": "amarillo",
-      "desde": "2026-10-17T12:00:00+02:00",
-      "hasta": "2026-10-17T23:59:59+02:00"
-    },
-    {
-      "zona": "Axarquía",
-      "fenomeno": "Lluvias",
-      "nivel": "amarillo",
-      "desde": "2026-10-17T12:00:00+02:00",
-      "hasta": "2026-10-17T23:59:59+02:00"
-    },
-    {
-      "zona": "Sol y Guadalhorce",
-      "fenomeno": "Tormentas",
-      "nivel": "amarillo",
-      "desde": "2026-10-17T12:00:00+02:00",
-      "hasta": "2026-10-17T23:59:59+02:00"
-    },
-    {
-      "zona": "Axarquía",
-      "fenomeno": "Tormentas",
-      "nivel": "amarillo",
-      "desde": "2026-10-17T12:00:00+02:00",
       "hasta": "2026-10-17T23:59:59+02:00"
     }
   ]
