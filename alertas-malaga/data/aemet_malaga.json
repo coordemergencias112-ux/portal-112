@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-25T19:21:21Z",
+  "generated_at": "2026-10-25T19:41:19Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -48,99 +48,45 @@
         {
           "fecha": "2026-10-25",
           "probPrecipitacion": 0,
-          "vientoVelocidad": 20,
-          "vientoDireccion": "E",
+          "vientoVelocidad": 15,
+          "vientoDireccion": "O",
           "tempMax": 29,
           "tempMin": 13
         },
         {
           "fecha": "2026-10-26",
           "probPrecipitacion": 0,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "E",
+          "vientoVelocidad": 10,
+          "vientoDireccion": "SE",
           "tempMax": 27,
           "tempMin": 15
         },
         {
           "fecha": "2026-10-27",
           "probPrecipitacion": 10,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "O",
+          "vientoVelocidad": 15,
+          "vientoDireccion": "S",
           "tempMax": 27,
           "tempMin": 16
         },
         {
           "fecha": "2026-10-28",
-          "probPrecipitacion": 40,
+          "probPrecipitacion": 30,
           "vientoVelocidad": 15,
           "vientoDireccion": "E",
           "tempMax": 26,
-          "tempMin": 15
+          "tempMin": 16
         }
       ],
       "horas_hoy": [
         {
-          "hora": 7,
+          "hora": 13,
           "temp": null,
           "precip": 0,
           "probPrecipitacion": 0,
-          "estadoCielo": "11n",
+          "estadoCielo": "11",
           "vientoVelocidad": null,
           "vientoDireccion": null
-        },
-        {
-          "hora": 8,
-          "temp": 16,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 12,
-          "vientoDireccion": "O"
-        },
-        {
-          "hora": 9,
-          "temp": 18,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 13,
-          "vientoDireccion": "NO"
-        },
-        {
-          "hora": 10,
-          "temp": 21,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 16,
-          "vientoDireccion": "O"
-        },
-        {
-          "hora": 11,
-          "temp": 23,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 15,
-          "vientoDireccion": "O"
-        },
-        {
-          "hora": 12,
-          "temp": 25,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 17,
-          "vientoDireccion": "O"
-        },
-        {
-          "hora": 13,
-          "temp": 28,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 16,
-          "vientoDireccion": "O"
         },
         {
           "hora": 14,
@@ -148,16 +94,16 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11",
-          "vientoVelocidad": 12,
+          "vientoVelocidad": 15,
           "vientoDireccion": "O"
         },
         {
           "hora": 15,
-          "temp": 29,
+          "temp": 28,
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11",
-          "vientoVelocidad": 17,
+          "vientoVelocidad": 14,
           "vientoDireccion": "NO"
         },
         {
@@ -166,7 +112,7 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11",
-          "vientoVelocidad": 18,
+          "vientoVelocidad": 13,
           "vientoDireccion": "NO"
         },
         {
@@ -175,16 +121,16 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11",
-          "vientoVelocidad": 18,
-          "vientoDireccion": "NO"
+          "vientoVelocidad": 14,
+          "vientoDireccion": "N"
         },
         {
           "hora": 18,
-          "temp": 24,
+          "temp": 25,
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11",
-          "vientoVelocidad": 23,
+          "vientoVelocidad": 20,
           "vientoDireccion": "E"
         },
         {
@@ -192,8 +138,8 @@
           "temp": 23,
           "precip": 0,
           "probPrecipitacion": 0,
-          "estadoCielo": "11n",
-          "vientoVelocidad": 21,
+          "estadoCielo": "12n",
+          "vientoVelocidad": 15,
           "vientoDireccion": "E"
         },
         {
@@ -202,7 +148,7 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11n",
-          "vientoVelocidad": 16,
+          "vientoVelocidad": 8,
           "vientoDireccion": "E"
         },
         {
@@ -211,8 +157,8 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11n",
-          "vientoVelocidad": 6,
-          "vientoDireccion": "E"
+          "vientoVelocidad": 2,
+          "vientoDireccion": "NE"
         },
         {
           "hora": 22,
@@ -220,7 +166,7 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11n",
-          "vientoVelocidad": 8,
+          "vientoVelocidad": 2,
           "vientoDireccion": "NO"
         },
         {
@@ -229,8 +175,8 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11n",
-          "vientoVelocidad": 12,
-          "vientoDireccion": "NO"
+          "vientoVelocidad": 4,
+          "vientoDireccion": "E"
         }
       ]
     },
@@ -243,14 +189,14 @@
           "fecha": "2026-10-25",
           "probPrecipitacion": 0,
           "vientoVelocidad": 5,
-          "vientoDireccion": "N",
+          "vientoDireccion": "NO",
           "tempMax": 25,
           "tempMin": 11
         },
         {
           "fecha": "2026-10-26",
           "probPrecipitacion": 0,
-          "vientoVelocidad": 15,
+          "vientoVelocidad": 10,
           "vientoDireccion": "SE",
           "tempMax": 26,
           "tempMin": 13
@@ -265,8 +211,8 @@
         },
         {
           "fecha": "2026-10-28",
-          "probPrecipitacion": 25,
-          "vientoVelocidad": 10,
+          "probPrecipitacion": 10,
+          "vientoVelocidad": 15,
           "vientoDireccion": "SE",
           "tempMax": 25,
           "tempMin": 13
@@ -274,67 +220,13 @@
       ],
       "horas_hoy": [
         {
-          "hora": 7,
+          "hora": 13,
           "temp": null,
           "precip": 0,
           "probPrecipitacion": 0,
-          "estadoCielo": "11n",
+          "estadoCielo": "11",
           "vientoVelocidad": null,
           "vientoDireccion": null
-        },
-        {
-          "hora": 8,
-          "temp": 14,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 3,
-          "vientoDireccion": "SE"
-        },
-        {
-          "hora": 9,
-          "temp": 16,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 2,
-          "vientoDireccion": "E"
-        },
-        {
-          "hora": 10,
-          "temp": 18,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 1,
-          "vientoDireccion": "N"
-        },
-        {
-          "hora": 11,
-          "temp": 20,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 2,
-          "vientoDireccion": "NO"
-        },
-        {
-          "hora": 12,
-          "temp": 22,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 6,
-          "vientoDireccion": "NO"
-        },
-        {
-          "hora": 13,
-          "temp": 23,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 5,
-          "vientoDireccion": "N"
         },
         {
           "hora": 14,
@@ -342,7 +234,7 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11",
-          "vientoVelocidad": 7,
+          "vientoVelocidad": 10,
           "vientoDireccion": "N"
         },
         {
@@ -360,7 +252,7 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11",
-          "vientoVelocidad": 12,
+          "vientoVelocidad": 11,
           "vientoDireccion": "N"
         },
         {
@@ -378,7 +270,7 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11",
-          "vientoVelocidad": 10,
+          "vientoVelocidad": 11,
           "vientoDireccion": "N"
         },
         {
@@ -387,7 +279,7 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11n",
-          "vientoVelocidad": 7,
+          "vientoVelocidad": 6,
           "vientoDireccion": "N"
         },
         {
@@ -396,16 +288,16 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11n",
-          "vientoVelocidad": 4,
-          "vientoDireccion": "E"
+          "vientoVelocidad": 2,
+          "vientoDireccion": "SE"
         },
         {
           "hora": 21,
           "temp": 16,
           "precip": 0,
           "probPrecipitacion": 0,
-          "estadoCielo": "12n",
-          "vientoVelocidad": 4,
+          "estadoCielo": "11n",
+          "vientoVelocidad": 5,
           "vientoDireccion": "S"
         },
         {
@@ -415,7 +307,7 @@
           "probPrecipitacion": 0,
           "estadoCielo": "11n",
           "vientoVelocidad": 6,
-          "vientoDireccion": "S"
+          "vientoDireccion": "SE"
         },
         {
           "hora": 23,
@@ -468,75 +360,21 @@
       ],
       "horas_hoy": [
         {
-          "hora": 7,
+          "hora": 13,
           "temp": null,
           "precip": 0,
           "probPrecipitacion": 0,
-          "estadoCielo": "11n",
+          "estadoCielo": "11",
           "vientoVelocidad": null,
           "vientoDireccion": null
         },
         {
-          "hora": 8,
-          "temp": 14,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 8,
-          "vientoDireccion": "S"
-        },
-        {
-          "hora": 9,
-          "temp": 16,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 6,
-          "vientoDireccion": "S"
-        },
-        {
-          "hora": 10,
-          "temp": 18,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 1,
-          "vientoDireccion": "SO"
-        },
-        {
-          "hora": 11,
-          "temp": 20,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 5,
-          "vientoDireccion": "N"
-        },
-        {
-          "hora": 12,
-          "temp": 21,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 8,
-          "vientoDireccion": "N"
-        },
-        {
-          "hora": 13,
-          "temp": 23,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 10,
-          "vientoDireccion": "N"
-        },
-        {
           "hora": 14,
-          "temp": 23,
+          "temp": 24,
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11",
-          "vientoVelocidad": 11,
+          "vientoVelocidad": 13,
           "vientoDireccion": "N"
         },
         {
@@ -563,7 +401,7 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11",
-          "vientoVelocidad": 13,
+          "vientoVelocidad": 14,
           "vientoDireccion": "N"
         },
         {
@@ -572,7 +410,7 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11",
-          "vientoVelocidad": 12,
+          "vientoVelocidad": 13,
           "vientoDireccion": "N"
         },
         {
@@ -581,8 +419,8 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11n",
-          "vientoVelocidad": 7,
-          "vientoDireccion": "N"
+          "vientoVelocidad": 6,
+          "vientoDireccion": "NO"
         },
         {
           "hora": 20,
@@ -590,7 +428,7 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11n",
-          "vientoVelocidad": 3,
+          "vientoVelocidad": 4,
           "vientoDireccion": "SO"
         },
         {
@@ -617,8 +455,8 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11n",
-          "vientoVelocidad": 7,
-          "vientoDireccion": "S"
+          "vientoVelocidad": 8,
+          "vientoDireccion": "SE"
         }
       ]
     },
@@ -662,67 +500,13 @@
       ],
       "horas_hoy": [
         {
-          "hora": 7,
+          "hora": 13,
           "temp": null,
           "precip": 0,
           "probPrecipitacion": 0,
-          "estadoCielo": "11n",
+          "estadoCielo": "11",
           "vientoVelocidad": null,
           "vientoDireccion": null
-        },
-        {
-          "hora": 8,
-          "temp": 17,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 3,
-          "vientoDireccion": "SO"
-        },
-        {
-          "hora": 9,
-          "temp": 19,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 4,
-          "vientoDireccion": "O"
-        },
-        {
-          "hora": 10,
-          "temp": 22,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 1,
-          "vientoDireccion": "O"
-        },
-        {
-          "hora": 11,
-          "temp": 24,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 3,
-          "vientoDireccion": "E"
-        },
-        {
-          "hora": 12,
-          "temp": 26,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 4,
-          "vientoDireccion": "E"
-        },
-        {
-          "hora": 13,
-          "temp": 28,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 4,
-          "vientoDireccion": "E"
         },
         {
           "hora": 14,
@@ -730,7 +514,7 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11",
-          "vientoVelocidad": 6,
+          "vientoVelocidad": 3,
           "vientoDireccion": "NE"
         },
         {
@@ -744,7 +528,7 @@
         },
         {
           "hora": 16,
-          "temp": 29,
+          "temp": 28,
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11",
@@ -757,7 +541,7 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11",
-          "vientoVelocidad": 14,
+          "vientoVelocidad": 15,
           "vientoDireccion": "N"
         },
         {
@@ -766,17 +550,17 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11",
-          "vientoVelocidad": 9,
+          "vientoVelocidad": 10,
           "vientoDireccion": "NE"
         },
         {
           "hora": 19,
-          "temp": 22,
+          "temp": 21,
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11n",
           "vientoVelocidad": 8,
-          "vientoDireccion": "N"
+          "vientoDireccion": "NE"
         },
         {
           "hora": 20,
@@ -784,16 +568,16 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11n",
-          "vientoVelocidad": 1,
-          "vientoDireccion": "O"
+          "vientoVelocidad": 2,
+          "vientoDireccion": "N"
         },
         {
           "hora": 21,
-          "temp": 19,
+          "temp": 18,
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11n",
-          "vientoVelocidad": 7,
+          "vientoVelocidad": 8,
           "vientoDireccion": "S"
         },
         {
@@ -802,8 +586,8 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11n",
-          "vientoVelocidad": 6,
-          "vientoDireccion": "SO"
+          "vientoVelocidad": 7,
+          "vientoDireccion": "S"
         },
         {
           "hora": 23,
@@ -811,8 +595,8 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11n",
-          "vientoVelocidad": 5,
-          "vientoDireccion": "O"
+          "vientoVelocidad": 2,
+          "vientoDireccion": "NO"
         }
       ]
     },
@@ -825,14 +609,14 @@
           "fecha": "2026-10-25",
           "probPrecipitacion": 0,
           "vientoVelocidad": 10,
-          "vientoDireccion": "S",
+          "vientoDireccion": "SO",
           "tempMax": 25,
           "tempMin": 16
         },
         {
           "fecha": "2026-10-26",
           "probPrecipitacion": 0,
-          "vientoVelocidad": 15,
+          "vientoVelocidad": 20,
           "vientoDireccion": "SE",
           "tempMax": 27,
           "tempMin": 18
@@ -841,76 +625,31 @@
           "fecha": "2026-10-27",
           "probPrecipitacion": 5,
           "vientoVelocidad": 5,
-          "vientoDireccion": "S",
+          "vientoDireccion": "SO",
           "tempMax": 25,
           "tempMin": 17
         },
         {
           "fecha": "2026-10-28",
-          "probPrecipitacion": 25,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "E",
+          "probPrecipitacion": 10,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "NE",
           "tempMax": 27,
-          "tempMin": 17
+          "tempMin": 18
         }
       ],
       "horas_hoy": [
         {
-          "hora": 7,
+          "hora": 13,
           "temp": null,
           "precip": 0,
           "probPrecipitacion": 0,
-          "estadoCielo": "11n",
+          "estadoCielo": "11",
           "vientoVelocidad": null,
           "vientoDireccion": null
         },
         {
-          "hora": 8,
-          "temp": 19,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 2,
-          "vientoDireccion": "N"
-        },
-        {
-          "hora": 9,
-          "temp": 20,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 2,
-          "vientoDireccion": "NE"
-        },
-        {
-          "hora": 10,
-          "temp": 22,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 3,
-          "vientoDireccion": "S"
-        },
-        {
-          "hora": 11,
-          "temp": 21,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 7,
-          "vientoDireccion": "SO"
-        },
-        {
-          "hora": 12,
-          "temp": 24,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 10,
-          "vientoDireccion": "S"
-        },
-        {
-          "hora": 13,
+          "hora": 14,
           "temp": 24,
           "precip": 0,
           "probPrecipitacion": 0,
@@ -919,21 +658,12 @@
           "vientoDireccion": "S"
         },
         {
-          "hora": 14,
-          "temp": 24,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 8,
-          "vientoDireccion": "S"
-        },
-        {
           "hora": 15,
           "temp": 24,
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11",
-          "vientoVelocidad": 10,
+          "vientoVelocidad": 12,
           "vientoDireccion": "SO"
         },
         {
@@ -942,20 +672,11 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11",
-          "vientoVelocidad": 13,
+          "vientoVelocidad": 11,
           "vientoDireccion": "SO"
         },
         {
           "hora": 17,
-          "temp": 25,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 10,
-          "vientoDireccion": "SO"
-        },
-        {
-          "hora": 18,
           "temp": 24,
           "precip": 0,
           "probPrecipitacion": 0,
@@ -964,12 +685,21 @@
           "vientoDireccion": "SO"
         },
         {
+          "hora": 18,
+          "temp": 23,
+          "precip": 0,
+          "probPrecipitacion": 0,
+          "estadoCielo": "11",
+          "vientoVelocidad": 3,
+          "vientoDireccion": "SE"
+        },
+        {
           "hora": 19,
           "temp": 23,
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11n",
-          "vientoVelocidad": 1,
+          "vientoVelocidad": 5,
           "vientoDireccion": "E"
         },
         {
@@ -978,17 +708,17 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11n",
-          "vientoVelocidad": 4,
-          "vientoDireccion": "NE"
+          "vientoVelocidad": 5,
+          "vientoDireccion": "E"
         },
         {
           "hora": 21,
           "temp": 20,
           "precip": 0,
           "probPrecipitacion": 0,
-          "estadoCielo": "12n",
+          "estadoCielo": "11n",
           "vientoVelocidad": 4,
-          "vientoDireccion": "NE"
+          "vientoDireccion": "N"
         },
         {
           "hora": 22,
@@ -997,7 +727,7 @@
           "probPrecipitacion": 0,
           "estadoCielo": "11n",
           "vientoVelocidad": 3,
-          "vientoDireccion": "NE"
+          "vientoDireccion": "N"
         },
         {
           "hora": 23,
@@ -1006,7 +736,7 @@
           "probPrecipitacion": 0,
           "estadoCielo": "11n",
           "vientoVelocidad": 4,
-          "vientoDireccion": "SE"
+          "vientoDireccion": "NE"
         }
       ]
     },
@@ -1019,15 +749,15 @@
           "fecha": "2026-10-25",
           "probPrecipitacion": 0,
           "vientoVelocidad": 10,
-          "vientoDireccion": "SE",
+          "vientoDireccion": "S",
           "tempMax": 26,
           "tempMin": 14
         },
         {
           "fecha": "2026-10-26",
           "probPrecipitacion": 0,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "S",
+          "vientoVelocidad": 15,
+          "vientoDireccion": "SE",
           "tempMax": 27,
           "tempMin": 16
         },
@@ -1035,17 +765,17 @@
           "fecha": "2026-10-27",
           "probPrecipitacion": 5,
           "vientoVelocidad": 10,
-          "vientoDireccion": "NE",
+          "vientoDireccion": "S",
           "tempMax": 27,
           "tempMin": 16
         },
         {
           "fecha": "2026-10-28",
-          "probPrecipitacion": 45,
+          "probPrecipitacion": 25,
           "vientoVelocidad": 15,
           "vientoDireccion": "SE",
           "tempMax": 26,
-          "tempMin": 16
+          "tempMin": 18
         }
       ],
       "horas_hoy": [
@@ -1244,67 +974,13 @@
       ],
       "horas_hoy": [
         {
-          "hora": 7,
+          "hora": 13,
           "temp": null,
           "precip": 0,
           "probPrecipitacion": 0,
-          "estadoCielo": "11n",
+          "estadoCielo": "11",
           "vientoVelocidad": null,
           "vientoDireccion": null
-        },
-        {
-          "hora": 8,
-          "temp": 16,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 7,
-          "vientoDireccion": "N"
-        },
-        {
-          "hora": 9,
-          "temp": 18,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 5,
-          "vientoDireccion": "N"
-        },
-        {
-          "hora": 10,
-          "temp": 21,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "12",
-          "vientoVelocidad": 4,
-          "vientoDireccion": "O"
-        },
-        {
-          "hora": 11,
-          "temp": 21,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 6,
-          "vientoDireccion": "S"
-        },
-        {
-          "hora": 12,
-          "temp": 21,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 8,
-          "vientoDireccion": "S"
-        },
-        {
-          "hora": 13,
-          "temp": 22,
-          "precip": 0,
-          "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 10,
-          "vientoDireccion": "SO"
         },
         {
           "hora": 14,
@@ -1312,7 +988,7 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11",
-          "vientoVelocidad": 10,
+          "vientoVelocidad": 9,
           "vientoDireccion": "S"
         },
         {
@@ -1339,7 +1015,7 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11",
-          "vientoVelocidad": 7,
+          "vientoVelocidad": 5,
           "vientoDireccion": "S"
         },
         {
@@ -1347,16 +1023,16 @@
           "temp": 20,
           "precip": 0,
           "probPrecipitacion": 0,
-          "estadoCielo": "11",
-          "vientoVelocidad": 5,
-          "vientoDireccion": "SE"
+          "estadoCielo": "12",
+          "vientoVelocidad": 4,
+          "vientoDireccion": "S"
         },
         {
           "hora": 19,
-          "temp": 20,
+          "temp": 21,
           "precip": 0,
           "probPrecipitacion": 0,
-          "estadoCielo": "11n",
+          "estadoCielo": "17n",
           "vientoVelocidad": 3,
           "vientoDireccion": "E"
         },
@@ -1365,8 +1041,8 @@
           "temp": 20,
           "precip": 0,
           "probPrecipitacion": 0,
-          "estadoCielo": "11n",
-          "vientoVelocidad": 5,
+          "estadoCielo": "12n",
+          "vientoVelocidad": 4,
           "vientoDireccion": "N"
         },
         {
@@ -1375,8 +1051,8 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11n",
-          "vientoVelocidad": 4,
-          "vientoDireccion": "NO"
+          "vientoVelocidad": 5,
+          "vientoDireccion": "N"
         },
         {
           "hora": 22,
@@ -1393,8 +1069,8 @@
           "precip": 0,
           "probPrecipitacion": 0,
           "estadoCielo": "11n",
-          "vientoVelocidad": 4,
-          "vientoDireccion": "NE"
+          "vientoVelocidad": 6,
+          "vientoDireccion": "N"
         }
       ]
     }
