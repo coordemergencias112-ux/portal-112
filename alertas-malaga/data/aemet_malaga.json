@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-26T03:01:46Z",
+  "generated_at": "2026-10-26T03:21:30Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -1072,40 +1072,8 @@
       "id": "29069",
       "nombre": "Marbella",
       "referencia": "Costa del Sol",
-      "dias": [
-        {
-          "fecha": "2026-10-25",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": null,
-          "vientoDireccion": null,
-          "tempMax": 25,
-          "tempMin": 16
-        },
-        {
-          "fecha": "2026-10-26",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 20,
-          "vientoDireccion": "SE",
-          "tempMax": 27,
-          "tempMin": 17
-        },
-        {
-          "fecha": "2026-10-27",
-          "probPrecipitacion": 5,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "SO",
-          "tempMax": 25,
-          "tempMin": 18
-        },
-        {
-          "fecha": "2026-10-28",
-          "probPrecipitacion": 10,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "NE",
-          "tempMax": 27,
-          "tempMin": 18
-        }
-      ],
+      "error": "HTTP Error 500: Internal Server Error",
+      "dias": [],
       "horas_hoy": [
         {
           "hora": 0,
