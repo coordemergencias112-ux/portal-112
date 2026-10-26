@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-26T09:21:31Z",
+  "generated_at": "2026-10-26T09:41:53Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -626,8 +626,40 @@
       "id": "29042",
       "nombre": "Coín",
       "referencia": "Valle del Guadalhorce",
-      "error": "HTTP Error 500: Internal Server Error",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-10-26",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 5,
+          "vientoDireccion": "E",
+          "tempMax": 29,
+          "tempMin": 15
+        },
+        {
+          "fecha": "2026-10-27",
+          "probPrecipitacion": 5,
+          "vientoVelocidad": 5,
+          "vientoDireccion": "SO",
+          "tempMax": 28,
+          "tempMin": 15
+        },
+        {
+          "fecha": "2026-10-28",
+          "probPrecipitacion": 20,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "E",
+          "tempMax": 28,
+          "tempMin": 16
+        },
+        {
+          "fecha": "2026-10-29",
+          "probPrecipitacion": 95,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "SE",
+          "tempMax": 26,
+          "tempMin": 18
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 7,
@@ -988,8 +1020,8 @@
           "probPrecipitacion": 0,
           "vientoVelocidad": 10,
           "vientoDireccion": "S",
-          "tempMax": 27,
-          "tempMin": 16
+          "tempMax": 26,
+          "tempMin": 14
         },
         {
           "fecha": "2026-10-27",
@@ -1001,7 +1033,7 @@
         },
         {
           "fecha": "2026-10-28",
-          "probPrecipitacion": 15,
+          "probPrecipitacion": 20,
           "vientoVelocidad": 10,
           "vientoDireccion": "SE",
           "tempMax": 27,
@@ -1187,9 +1219,9 @@
         },
         {
           "fecha": "2026-10-27",
-          "probPrecipitacion": 10,
+          "probPrecipitacion": 0,
           "vientoVelocidad": 10,
-          "vientoDireccion": "S",
+          "vientoDireccion": "SO",
           "tempMax": 24,
           "tempMin": 18
         },
