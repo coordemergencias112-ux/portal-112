@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-27T09:21:45Z",
+  "generated_at": "2026-10-27T09:41:36Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -241,9 +241,9 @@
       "dias": [
         {
           "fecha": "2026-10-27",
-          "probPrecipitacion": 10,
-          "vientoVelocidad": 5,
-          "vientoDireccion": "O",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "SE",
           "tempMax": 23,
           "tempMin": 13
         },
@@ -257,7 +257,7 @@
         },
         {
           "fecha": "2026-10-29",
-          "probPrecipitacion": 25,
+          "probPrecipitacion": 30,
           "vientoVelocidad": 20,
           "vientoDireccion": "SE",
           "tempMax": 23,
@@ -626,40 +626,8 @@
       "id": "29042",
       "nombre": "Coín",
       "referencia": "Valle del Guadalhorce",
-      "dias": [
-        {
-          "fecha": "2026-10-27",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "SO",
-          "tempMax": 27,
-          "tempMin": 14
-        },
-        {
-          "fecha": "2026-10-28",
-          "probPrecipitacion": 5,
-          "vientoVelocidad": 5,
-          "vientoDireccion": "E",
-          "tempMax": 28,
-          "tempMin": 14
-        },
-        {
-          "fecha": "2026-10-29",
-          "probPrecipitacion": 90,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "SE",
-          "tempMax": 26,
-          "tempMin": 17
-        },
-        {
-          "fecha": "2026-10-30",
-          "probPrecipitacion": 15,
-          "vientoVelocidad": 5,
-          "vientoDireccion": "SE",
-          "tempMax": 26,
-          "tempMin": 15
-        }
-      ],
+      "error": "HTTP Error 500: Internal Server Error",
+      "dias": [],
       "horas_hoy": [
         {
           "hora": 7,
