@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-30T07:01:46Z",
+  "generated_at": "2026-10-30T07:21:17Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -303,24 +303,16 @@
       "referencia": "Interior / Serranía",
       "dias": [
         {
-          "fecha": "2026-10-29",
+          "fecha": "2026-10-30",
           "probPrecipitacion": 0,
           "vientoVelocidad": 10,
           "vientoDireccion": "S",
-          "tempMax": 23,
-          "tempMin": 12
-        },
-        {
-          "fecha": "2026-10-30",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "S",
           "tempMax": 25,
-          "tempMin": 12
+          "tempMin": 14
         },
         {
           "fecha": "2026-10-31",
-          "probPrecipitacion": 15,
+          "probPrecipitacion": 10,
           "vientoVelocidad": 20,
           "vientoDireccion": "S",
           "tempMax": 23,
@@ -331,8 +323,16 @@
           "probPrecipitacion": 45,
           "vientoVelocidad": 10,
           "vientoDireccion": "SE",
-          "tempMax": 23,
+          "tempMax": 21,
           "tempMin": 12
+        },
+        {
+          "fecha": "2026-11-02",
+          "probPrecipitacion": 40,
+          "vientoVelocidad": null,
+          "vientoDireccion": null,
+          "tempMax": 24,
+          "tempMin": 11
         }
       ],
       "horas_hoy": [
@@ -560,18 +560,10 @@
       "referencia": "Comarca de Antequera",
       "dias": [
         {
-          "fecha": "2026-10-29",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 25,
-          "vientoDireccion": "S",
-          "tempMax": 24,
-          "tempMin": 12
-        },
-        {
           "fecha": "2026-10-30",
           "probPrecipitacion": 0,
-          "vientoVelocidad": 25,
-          "vientoDireccion": "S",
+          "vientoVelocidad": 20,
+          "vientoDireccion": "SE",
           "tempMax": 24,
           "tempMin": 12
         },
@@ -586,10 +578,18 @@
         {
           "fecha": "2026-11-01",
           "probPrecipitacion": 0,
-          "vientoVelocidad": 10,
+          "vientoVelocidad": 25,
           "vientoDireccion": "S",
-          "tempMax": 23,
+          "tempMax": 22,
           "tempMin": 12
+        },
+        {
+          "fecha": "2026-11-02",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 5,
+          "vientoDireccion": "SO",
+          "tempMax": 24,
+          "tempMin": 11
         }
       ],
       "horas_hoy": [
@@ -817,36 +817,36 @@
       "referencia": "Valle del Guadalhorce",
       "dias": [
         {
-          "fecha": "2026-10-29",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "E",
-          "tempMax": 26,
-          "tempMin": 16
-        },
-        {
           "fecha": "2026-10-30",
           "probPrecipitacion": 0,
           "vientoVelocidad": 10,
           "vientoDireccion": "SO",
           "tempMax": 27,
-          "tempMin": 15
+          "tempMin": 14
         },
         {
           "fecha": "2026-10-31",
           "probPrecipitacion": 20,
-          "vientoVelocidad": 5,
-          "vientoDireccion": "NO",
+          "vientoVelocidad": 10,
+          "vientoDireccion": "E",
           "tempMax": 26,
-          "tempMin": 15
+          "tempMin": 14
         },
         {
           "fecha": "2026-11-01",
           "probPrecipitacion": 65,
           "vientoVelocidad": 10,
           "vientoDireccion": "SE",
-          "tempMax": 25,
-          "tempMin": 15
+          "tempMax": 24,
+          "tempMin": 14
+        },
+        {
+          "fecha": "2026-11-02",
+          "probPrecipitacion": 40,
+          "vientoVelocidad": 5,
+          "vientoDireccion": "E",
+          "tempMax": 26,
+          "tempMin": 13
         }
       ],
       "horas_hoy": [
@@ -1588,24 +1588,16 @@
       "referencia": "Costa - Axarquía",
       "dias": [
         {
-          "fecha": "2026-10-29",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "SE",
-          "tempMax": 23,
-          "tempMin": 17
-        },
-        {
           "fecha": "2026-10-30",
           "probPrecipitacion": 0,
           "vientoVelocidad": 10,
-          "vientoDireccion": "N",
+          "vientoDireccion": "S",
           "tempMax": 23,
           "tempMin": 17
         },
         {
           "fecha": "2026-10-31",
-          "probPrecipitacion": 25,
+          "probPrecipitacion": 35,
           "vientoVelocidad": 10,
           "vientoDireccion": "SE",
           "tempMax": 23,
@@ -1613,9 +1605,17 @@
         },
         {
           "fecha": "2026-11-01",
-          "probPrecipitacion": 20,
+          "probPrecipitacion": 25,
           "vientoVelocidad": 10,
-          "vientoDireccion": "S",
+          "vientoDireccion": "SE",
+          "tempMax": 22,
+          "tempMin": 16
+        },
+        {
+          "fecha": "2026-11-02",
+          "probPrecipitacion": 15,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "E",
           "tempMax": 22,
           "tempMin": 16
         }
