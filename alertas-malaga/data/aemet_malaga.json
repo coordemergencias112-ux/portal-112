@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-02T07:01:47Z",
+  "generated_at": "2026-11-02T07:21:19Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -560,17 +560,9 @@
       "referencia": "Comarca de Antequera",
       "dias": [
         {
-          "fecha": "2026-11-01",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "S",
-          "tempMax": 23,
-          "tempMin": 12
-        },
-        {
           "fecha": "2026-11-02",
           "probPrecipitacion": 0,
-          "vientoVelocidad": 20,
+          "vientoVelocidad": 25,
           "vientoDireccion": "S",
           "tempMax": 24,
           "tempMin": 11
@@ -578,18 +570,26 @@
         {
           "fecha": "2026-11-03",
           "probPrecipitacion": 55,
-          "vientoVelocidad": 20,
+          "vientoVelocidad": 25,
           "vientoDireccion": "S",
           "tempMax": 22,
           "tempMin": 10
         },
         {
           "fecha": "2026-11-04",
-          "probPrecipitacion": 90,
+          "probPrecipitacion": 95,
           "vientoVelocidad": 10,
           "vientoDireccion": "S",
-          "tempMax": 19,
+          "tempMax": 20,
           "tempMin": 11
+        },
+        {
+          "fecha": "2026-11-05",
+          "probPrecipitacion": 45,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "SO",
+          "tempMax": 21,
+          "tempMin": 10
         }
       ],
       "horas_hoy": [
@@ -817,17 +817,9 @@
       "referencia": "Valle del Guadalhorce",
       "dias": [
         {
-          "fecha": "2026-11-01",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 5,
-          "vientoDireccion": "O",
-          "tempMax": 24,
-          "tempMin": 14
-        },
-        {
           "fecha": "2026-11-02",
           "probPrecipitacion": 0,
-          "vientoVelocidad": 10,
+          "vientoVelocidad": 5,
           "vientoDireccion": "E",
           "tempMax": 27,
           "tempMin": 14
@@ -837,16 +829,24 @@
           "probPrecipitacion": 90,
           "vientoVelocidad": 5,
           "vientoDireccion": "E",
-          "tempMax": 24,
+          "tempMax": 25,
           "tempMin": 13
         },
         {
           "fecha": "2026-11-04",
-          "probPrecipitacion": 95,
-          "vientoVelocidad": null,
-          "vientoDireccion": null,
+          "probPrecipitacion": 90,
+          "vientoVelocidad": 5,
+          "vientoDireccion": "SE",
           "tempMax": 23,
-          "tempMin": 12
+          "tempMin": 14
+        },
+        {
+          "fecha": "2026-11-05",
+          "probPrecipitacion": 65,
+          "vientoVelocidad": 5,
+          "vientoDireccion": "SE",
+          "tempMax": 24,
+          "tempMin": 13
         }
       ],
       "horas_hoy": [
@@ -1588,14 +1588,6 @@
       "referencia": "Costa - Axarquía",
       "dias": [
         {
-          "fecha": "2026-11-01",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "N",
-          "tempMax": 22,
-          "tempMin": 16
-        },
-        {
           "fecha": "2026-11-02",
           "probPrecipitacion": 0,
           "vientoVelocidad": 10,
@@ -1607,17 +1599,25 @@
           "fecha": "2026-11-03",
           "probPrecipitacion": 90,
           "vientoVelocidad": 10,
-          "vientoDireccion": "SO",
-          "tempMax": 21,
-          "tempMin": 15
+          "vientoDireccion": "S",
+          "tempMax": 22,
+          "tempMin": 16
         },
         {
           "fecha": "2026-11-04",
-          "probPrecipitacion": 95,
-          "vientoVelocidad": 20,
+          "probPrecipitacion": 100,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "E",
+          "tempMax": 20,
+          "tempMin": 14
+        },
+        {
+          "fecha": "2026-11-05",
+          "probPrecipitacion": 50,
+          "vientoVelocidad": 5,
           "vientoDireccion": "SE",
-          "tempMax": 19,
-          "tempMin": 15
+          "tempMax": 20,
+          "tempMin": 14
         }
       ],
       "horas_hoy": [
