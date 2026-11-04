@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-04T16:01:52Z",
+  "generated_at": "2026-11-04T16:22:41Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -1218,40 +1218,8 @@
       "id": "29075",
       "nombre": "Nerja",
       "referencia": "Costa - Axarquía",
-      "dias": [
-        {
-          "fecha": "2026-11-04",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "SE",
-          "tempMax": 21,
-          "tempMin": 15
-        },
-        {
-          "fecha": "2026-11-05",
-          "probPrecipitacion": 70,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "SO",
-          "tempMax": 21,
-          "tempMin": 14
-        },
-        {
-          "fecha": "2026-11-06",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "N",
-          "tempMax": 21,
-          "tempMin": 16
-        },
-        {
-          "fecha": "2026-11-07",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "SE",
-          "tempMax": 21,
-          "tempMin": 16
-        }
-      ],
+      "error": "HTTP Error 429: Too Many Requests",
+      "dias": [],
       "horas_hoy": [
         {
           "hora": 7,
