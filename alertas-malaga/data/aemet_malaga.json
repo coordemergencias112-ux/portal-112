@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-04T11:41:24Z",
+  "generated_at": "2026-11-04T12:01:55Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -28,16 +28,16 @@
     "612904": {
       "nombre": "Axarquía",
       "tipo": "interior",
-      "nivel": "verde",
+      "nivel": "amarillo",
       "avisos": [
         {
           "fenomeno": "Lluvias",
           "nivel": "amarillo",
           "evento": "Aviso de lluvias de nivel amarillo",
           "severidad": "Moderate",
-          "desde": "2026-11-04T15:00:00+01:00",
+          "desde": "2026-11-04T12:00:00+01:00",
           "hasta": "2026-11-04T20:59:59+01:00",
-          "estado_tiempo": "proximo"
+          "estado_tiempo": "activo"
         }
       ]
     },
@@ -1415,6 +1415,13 @@
       "fenomeno": "Lluvias",
       "nivel": "amarillo",
       "desde": "2026-11-04T15:00:00+01:00",
+      "hasta": "2026-11-04T20:59:59+01:00"
+    },
+    {
+      "zona": "Axarquía",
+      "fenomeno": "Lluvias",
+      "nivel": "amarillo",
+      "desde": "2026-11-04T12:00:00+01:00",
       "hasta": "2026-11-04T20:59:59+01:00"
     }
   ]
