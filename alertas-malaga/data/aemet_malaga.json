@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-08T07:55:14Z",
+  "generated_at": "2026-11-08T08:02:57Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -302,40 +302,8 @@
       "id": "29084",
       "nombre": "Ronda",
       "referencia": "Interior / Serranía",
-      "dias": [
-        {
-          "fecha": "2026-11-08",
-          "probPrecipitacion": 100,
-          "vientoVelocidad": 35,
-          "vientoDireccion": "SE",
-          "tempMax": 19,
-          "tempMin": 16
-        },
-        {
-          "fecha": "2026-11-09",
-          "probPrecipitacion": 100,
-          "vientoVelocidad": 35,
-          "vientoDireccion": "SE",
-          "tempMax": 18,
-          "tempMin": 14
-        },
-        {
-          "fecha": "2026-11-10",
-          "probPrecipitacion": 100,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "S",
-          "tempMax": 19,
-          "tempMin": 14
-        },
-        {
-          "fecha": "2026-11-11",
-          "probPrecipitacion": 100,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "SE",
-          "tempMax": 17,
-          "tempMin": 14
-        }
-      ],
+      "error": "HTTP Error 429: Too Many Requests",
+      "dias": [],
       "horas_hoy": [
         {
           "hora": 1,
