@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-09T14:21:27Z",
+  "generated_at": "2026-11-09T14:41:19Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -53,6 +53,15 @@
           "evento": "Aviso de lluvias de nivel amarillo",
           "severidad": "Moderate",
           "desde": "2026-11-09T08:00:00+01:00",
+          "hasta": "2026-11-09T18:59:59+01:00",
+          "estado_tiempo": "activo"
+        },
+        {
+          "fenomeno": "Lluvias",
+          "nivel": "amarillo",
+          "evento": "Aviso de lluvias de nivel amarillo",
+          "severidad": "Moderate",
+          "desde": "2026-11-09T15:00:00+01:00",
           "hasta": "2026-11-09T18:59:59+01:00",
           "estado_tiempo": "activo"
         },
@@ -1471,6 +1480,13 @@
       "nivel": "amarillo",
       "desde": "2026-11-11T00:00:00+01:00",
       "hasta": "2026-11-11T23:59:59+01:00"
+    },
+    {
+      "zona": "Sol y Guadalhorce",
+      "fenomeno": "Lluvias",
+      "nivel": "amarillo",
+      "desde": "2026-11-09T15:00:00+01:00",
+      "hasta": "2026-11-09T18:59:59+01:00"
     },
     {
       "zona": "Antequera",
