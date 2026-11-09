@@ -1,11 +1,21 @@
 {
-  "generated_at": "2026-11-09T08:02:59Z",
+  "generated_at": "2026-11-09T08:21:24Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
       "tipo": "interior",
-      "nivel": "verde",
-      "avisos": []
+      "nivel": "amarillo",
+      "avisos": [
+        {
+          "fenomeno": "Lluvias",
+          "nivel": "amarillo",
+          "evento": "Aviso de lluvias de nivel amarillo",
+          "severidad": "Moderate",
+          "desde": "2026-11-09T08:00:00+01:00",
+          "hasta": "2026-11-09T18:59:59+01:00",
+          "estado_tiempo": "activo"
+        }
+      ]
     },
     "612902": {
       "nombre": "Ronda",
@@ -26,8 +36,18 @@
     "612903": {
       "nombre": "Sol y Guadalhorce",
       "tipo": "interior",
-      "nivel": "verde",
-      "avisos": []
+      "nivel": "amarillo",
+      "avisos": [
+        {
+          "fenomeno": "Lluvias",
+          "nivel": "amarillo",
+          "evento": "Aviso de lluvias de nivel amarillo",
+          "severidad": "Moderate",
+          "desde": "2026-11-09T08:00:00+01:00",
+          "hasta": "2026-11-09T18:59:59+01:00",
+          "estado_tiempo": "activo"
+        }
+      ]
     },
     "612903C": {
       "nombre": "Costa - Sol y Guadalhorce",
@@ -38,8 +58,18 @@
     "612904": {
       "nombre": "Axarquía",
       "tipo": "interior",
-      "nivel": "verde",
-      "avisos": []
+      "nivel": "amarillo",
+      "avisos": [
+        {
+          "fenomeno": "Lluvias",
+          "nivel": "amarillo",
+          "evento": "Aviso de lluvias de nivel amarillo",
+          "severidad": "Moderate",
+          "desde": "2026-11-09T08:00:00+01:00",
+          "hasta": "2026-11-09T18:59:59+01:00",
+          "estado_tiempo": "activo"
+        }
+      ]
     },
     "612904C": {
       "nombre": "Costa - Axarquía",
@@ -54,8 +84,40 @@
       "id": "29067",
       "nombre": "Málaga capital",
       "referencia": "Costa",
-      "error": "HTTP Error 429: Too Many Requests",
-      "dias": [],
+      "dias": [
+        {
+          "fecha": "2026-11-09",
+          "probPrecipitacion": 100,
+          "vientoVelocidad": 35,
+          "vientoDireccion": "SE",
+          "tempMax": 22,
+          "tempMin": 17
+        },
+        {
+          "fecha": "2026-11-10",
+          "probPrecipitacion": 95,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "SE",
+          "tempMax": 23,
+          "tempMin": 16
+        },
+        {
+          "fecha": "2026-11-11",
+          "probPrecipitacion": 100,
+          "vientoVelocidad": 25,
+          "vientoDireccion": "E",
+          "tempMax": 21,
+          "tempMin": 16
+        },
+        {
+          "fecha": "2026-11-12",
+          "probPrecipitacion": 95,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "SO",
+          "tempMax": 24,
+          "tempMin": 16
+        }
+      ],
       "horas_hoy": [
         {
           "hora": 1,
@@ -1756,6 +1818,27 @@
     }
   ],
   "historial": [
+    {
+      "zona": "Antequera",
+      "fenomeno": "Lluvias",
+      "nivel": "amarillo",
+      "desde": "2026-11-09T08:00:00+01:00",
+      "hasta": "2026-11-09T18:59:59+01:00"
+    },
+    {
+      "zona": "Sol y Guadalhorce",
+      "fenomeno": "Lluvias",
+      "nivel": "amarillo",
+      "desde": "2026-11-09T08:00:00+01:00",
+      "hasta": "2026-11-09T18:59:59+01:00"
+    },
+    {
+      "zona": "Axarquía",
+      "fenomeno": "Lluvias",
+      "nivel": "amarillo",
+      "desde": "2026-11-09T08:00:00+01:00",
+      "hasta": "2026-11-09T18:59:59+01:00"
+    },
     {
       "zona": "Ronda",
       "fenomeno": "Lluvias",
