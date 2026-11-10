@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-10T10:41:22Z",
+  "generated_at": "2026-11-10T11:01:52Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -8,10 +8,10 @@
       "avisos": [
         {
           "fenomeno": "Vientos",
-          "nivel": "amarillo",
-          "evento": "Aviso de vientos de nivel amarillo",
-          "severidad": "Moderate",
-          "desde": "2026-11-11T12:00:00+01:00",
+          "nivel": "naranja",
+          "evento": "Aviso de vientos de nivel naranja",
+          "severidad": "Severe",
+          "desde": "2026-11-11T15:00:00+01:00",
           "hasta": "2026-11-11T23:59:59+01:00",
           "estado_tiempo": "proximo"
         }
@@ -27,7 +27,41 @@
           "nivel": "naranja",
           "evento": "Aviso de lluvias de nivel naranja",
           "severidad": "Severe",
-          "desde": "2026-11-11T00:00:00+01:00",
+          "desde": "2026-11-11T12:00:00+01:00",
+          "hasta": "2026-11-11T23:59:59+01:00",
+          "estado_tiempo": "proximo"
+        },
+        {
+          "fenomeno": "Lluvias",
+          "nivel": "amarillo",
+          "evento": "Aviso de lluvias de nivel amarillo",
+          "severidad": "Moderate",
+          "desde": "2026-11-11T12:00:00+01:00",
+          "hasta": "2026-11-11T23:59:59+01:00",
+          "estado_tiempo": "proximo"
+        },
+        {
+          "fenomeno": "Vientos",
+          "nivel": "naranja",
+          "evento": "Aviso de vientos de nivel naranja",
+          "severidad": "Severe",
+          "desde": "2026-11-11T15:00:00+01:00",
+          "hasta": "2026-11-11T23:59:59+01:00",
+          "estado_tiempo": "proximo"
+        }
+      ]
+    },
+    "612903": {
+      "nombre": "Sol y Guadalhorce",
+      "tipo": "interior",
+      "nivel": "verde",
+      "avisos": [
+        {
+          "fenomeno": "Lluvias",
+          "nivel": "naranja",
+          "evento": "Aviso de lluvias de nivel naranja",
+          "severidad": "Severe",
+          "desde": "2026-11-11T12:00:00+01:00",
           "hasta": "2026-11-11T23:59:59+01:00",
           "estado_tiempo": "proximo"
         },
@@ -45,32 +79,7 @@
           "nivel": "amarillo",
           "evento": "Aviso de vientos de nivel amarillo",
           "severidad": "Moderate",
-          "desde": "2026-11-11T12:00:00+01:00",
-          "hasta": "2026-11-11T23:59:59+01:00",
-          "estado_tiempo": "proximo"
-        }
-      ]
-    },
-    "612903": {
-      "nombre": "Sol y Guadalhorce",
-      "tipo": "interior",
-      "nivel": "verde",
-      "avisos": [
-        {
-          "fenomeno": "Lluvias",
-          "nivel": "amarillo",
-          "evento": "Aviso de lluvias de nivel amarillo",
-          "severidad": "Moderate",
-          "desde": "2026-11-11T00:00:00+01:00",
-          "hasta": "2026-11-11T23:59:59+01:00",
-          "estado_tiempo": "proximo"
-        },
-        {
-          "fenomeno": "Lluvias",
-          "nivel": "amarillo",
-          "evento": "Aviso de lluvias de nivel amarillo",
-          "severidad": "Moderate",
-          "desde": "2026-11-11T12:00:00+01:00",
+          "desde": "2026-11-11T15:00:00+01:00",
           "hasta": "2026-11-11T23:59:59+01:00",
           "estado_tiempo": "proximo"
         }
@@ -86,13 +95,51 @@
       "nombre": "Axarquía",
       "tipo": "interior",
       "nivel": "verde",
-      "avisos": []
+      "avisos": [
+        {
+          "fenomeno": "Lluvias",
+          "nivel": "amarillo",
+          "evento": "Aviso de lluvias de nivel amarillo",
+          "severidad": "Moderate",
+          "desde": "2026-11-11T12:00:00+01:00",
+          "hasta": "2026-11-11T23:59:59+01:00",
+          "estado_tiempo": "proximo"
+        },
+        {
+          "fenomeno": "Lluvias",
+          "nivel": "amarillo",
+          "evento": "Aviso de lluvias de nivel amarillo",
+          "severidad": "Moderate",
+          "desde": "2026-11-11T12:00:00+01:00",
+          "hasta": "2026-11-11T23:59:59+01:00",
+          "estado_tiempo": "proximo"
+        },
+        {
+          "fenomeno": "Vientos",
+          "nivel": "amarillo",
+          "evento": "Aviso de vientos de nivel amarillo",
+          "severidad": "Moderate",
+          "desde": "2026-11-11T15:00:00+01:00",
+          "hasta": "2026-11-11T23:59:59+01:00",
+          "estado_tiempo": "proximo"
+        }
+      ]
     },
     "612904C": {
       "nombre": "Costa - Axarquía",
       "tipo": "litoral",
       "nivel": "verde",
-      "avisos": []
+      "avisos": [
+        {
+          "fenomeno": "Costeros",
+          "nivel": "amarillo",
+          "evento": "Aviso de costeros de nivel amarillo",
+          "severidad": "Moderate",
+          "desde": "2026-11-12T00:00:00+01:00",
+          "hasta": "2026-11-12T17:59:59+01:00",
+          "estado_tiempo": "proximo"
+        }
+      ]
     }
   },
   "avisos_error": null,
@@ -1458,6 +1505,41 @@
   ],
   "historial": [
     {
+      "zona": "Costa - Axarquía",
+      "fenomeno": "Costeros",
+      "nivel": "amarillo",
+      "desde": "2026-11-12T00:00:00+01:00",
+      "hasta": "2026-11-12T17:59:59+01:00"
+    },
+    {
+      "zona": "Antequera",
+      "fenomeno": "Vientos",
+      "nivel": "naranja",
+      "desde": "2026-11-11T15:00:00+01:00",
+      "hasta": "2026-11-11T23:59:59+01:00"
+    },
+    {
+      "zona": "Ronda",
+      "fenomeno": "Vientos",
+      "nivel": "naranja",
+      "desde": "2026-11-11T15:00:00+01:00",
+      "hasta": "2026-11-11T23:59:59+01:00"
+    },
+    {
+      "zona": "Sol y Guadalhorce",
+      "fenomeno": "Vientos",
+      "nivel": "amarillo",
+      "desde": "2026-11-11T15:00:00+01:00",
+      "hasta": "2026-11-11T23:59:59+01:00"
+    },
+    {
+      "zona": "Axarquía",
+      "fenomeno": "Vientos",
+      "nivel": "amarillo",
+      "desde": "2026-11-11T15:00:00+01:00",
+      "hasta": "2026-11-11T23:59:59+01:00"
+    },
+    {
       "zona": "Ronda",
       "fenomeno": "Lluvias",
       "nivel": "amarillo",
@@ -1481,6 +1563,27 @@
     {
       "zona": "Ronda",
       "fenomeno": "Vientos",
+      "nivel": "amarillo",
+      "desde": "2026-11-11T12:00:00+01:00",
+      "hasta": "2026-11-11T23:59:59+01:00"
+    },
+    {
+      "zona": "Ronda",
+      "fenomeno": "Lluvias",
+      "nivel": "naranja",
+      "desde": "2026-11-11T12:00:00+01:00",
+      "hasta": "2026-11-11T23:59:59+01:00"
+    },
+    {
+      "zona": "Sol y Guadalhorce",
+      "fenomeno": "Lluvias",
+      "nivel": "naranja",
+      "desde": "2026-11-11T12:00:00+01:00",
+      "hasta": "2026-11-11T23:59:59+01:00"
+    },
+    {
+      "zona": "Axarquía",
+      "fenomeno": "Lluvias",
       "nivel": "amarillo",
       "desde": "2026-11-11T12:00:00+01:00",
       "hasta": "2026-11-11T23:59:59+01:00"
