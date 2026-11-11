@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-11-11T13:41:19Z",
+  "generated_at": "2026-11-11T14:01:57Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
       "tipo": "interior",
-      "nivel": "verde",
+      "nivel": "naranja",
       "avisos": [
         {
           "fenomeno": "Vientos",
@@ -13,7 +13,7 @@
           "severidad": "Severe",
           "desde": "2026-11-11T15:00:00+01:00",
           "hasta": "2026-11-11T23:59:59+01:00",
-          "estado_tiempo": "proximo"
+          "estado_tiempo": "activo"
         }
       ]
     },
@@ -47,7 +47,7 @@
           "severidad": "Severe",
           "desde": "2026-11-11T15:00:00+01:00",
           "hasta": "2026-11-11T23:59:59+01:00",
-          "estado_tiempo": "proximo"
+          "estado_tiempo": "activo"
         }
       ]
     },
@@ -81,7 +81,7 @@
           "severidad": "Moderate",
           "desde": "2026-11-11T15:00:00+01:00",
           "hasta": "2026-11-11T23:59:59+01:00",
-          "estado_tiempo": "proximo"
+          "estado_tiempo": "activo"
         }
       ]
     },
@@ -94,7 +94,7 @@
     "612904": {
       "nombre": "Axarquía",
       "tipo": "interior",
-      "nivel": "verde",
+      "nivel": "amarillo",
       "avisos": [
         {
           "fenomeno": "Vientos",
@@ -103,7 +103,7 @@
           "severidad": "Moderate",
           "desde": "2026-11-11T15:00:00+01:00",
           "hasta": "2026-11-11T23:59:59+01:00",
-          "estado_tiempo": "proximo"
+          "estado_tiempo": "activo"
         },
         {
           "fenomeno": "Lluvias",
@@ -112,7 +112,7 @@
           "severidad": "Moderate",
           "desde": "2026-11-11T15:00:00+01:00",
           "hasta": "2026-11-11T23:59:59+01:00",
-          "estado_tiempo": "proximo"
+          "estado_tiempo": "activo"
         },
         {
           "fenomeno": "Lluvias",
@@ -121,7 +121,7 @@
           "severidad": "Moderate",
           "desde": "2026-11-11T15:00:00+01:00",
           "hasta": "2026-11-11T23:59:59+01:00",
-          "estado_tiempo": "proximo"
+          "estado_tiempo": "activo"
         }
       ]
     },
@@ -1643,13 +1643,6 @@
       "nivel": "amarillo",
       "desde": "2026-11-09T00:00:00+01:00",
       "hasta": "2026-11-09T15:59:59+01:00"
-    },
-    {
-      "zona": "Axarquía",
-      "fenomeno": "Lluvias",
-      "nivel": "amarillo",
-      "desde": "2026-11-04T15:00:00+01:00",
-      "hasta": "2026-11-04T20:59:59+01:00"
     }
   ]
 }
