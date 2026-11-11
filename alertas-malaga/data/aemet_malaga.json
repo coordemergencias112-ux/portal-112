@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-11T10:41:21Z",
+  "generated_at": "2026-11-11T11:01:46Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -20,7 +20,7 @@
     "612902": {
       "nombre": "Ronda",
       "tipo": "interior",
-      "nivel": "verde",
+      "nivel": "naranja",
       "avisos": [
         {
           "fenomeno": "Lluvias",
@@ -29,7 +29,7 @@
           "severidad": "Severe",
           "desde": "2026-11-11T12:00:00+01:00",
           "hasta": "2026-11-11T23:59:59+01:00",
-          "estado_tiempo": "proximo"
+          "estado_tiempo": "activo"
         },
         {
           "fenomeno": "Lluvias",
@@ -38,7 +38,7 @@
           "severidad": "Moderate",
           "desde": "2026-11-11T12:00:00+01:00",
           "hasta": "2026-11-11T23:59:59+01:00",
-          "estado_tiempo": "proximo"
+          "estado_tiempo": "activo"
         },
         {
           "fenomeno": "Vientos",
@@ -54,7 +54,7 @@
     "612903": {
       "nombre": "Sol y Guadalhorce",
       "tipo": "interior",
-      "nivel": "verde",
+      "nivel": "naranja",
       "avisos": [
         {
           "fenomeno": "Lluvias",
@@ -63,7 +63,7 @@
           "severidad": "Severe",
           "desde": "2026-11-11T12:00:00+01:00",
           "hasta": "2026-11-11T23:59:59+01:00",
-          "estado_tiempo": "proximo"
+          "estado_tiempo": "activo"
         },
         {
           "fenomeno": "Lluvias",
@@ -72,7 +72,7 @@
           "severidad": "Moderate",
           "desde": "2026-11-11T12:00:00+01:00",
           "hasta": "2026-11-11T23:59:59+01:00",
-          "estado_tiempo": "proximo"
+          "estado_tiempo": "activo"
         },
         {
           "fenomeno": "Vientos",
@@ -1649,13 +1649,6 @@
       "fenomeno": "Lluvias",
       "nivel": "amarillo",
       "desde": "2026-11-04T15:00:00+01:00",
-      "hasta": "2026-11-04T20:59:59+01:00"
-    },
-    {
-      "zona": "Axarquía",
-      "fenomeno": "Lluvias",
-      "nivel": "amarillo",
-      "desde": "2026-11-04T12:00:00+01:00",
       "hasta": "2026-11-04T20:59:59+01:00"
     }
   ]
