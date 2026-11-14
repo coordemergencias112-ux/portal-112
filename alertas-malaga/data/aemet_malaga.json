@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-14T08:21:21Z",
+  "generated_at": "2026-11-14T08:41:24Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -1286,18 +1286,10 @@
       "referencia": "Axarquía",
       "dias": [
         {
-          "fecha": "2026-11-13",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 5,
-          "vientoDireccion": "E",
-          "tempMax": 23,
-          "tempMin": 15
-        },
-        {
           "fecha": "2026-11-14",
           "probPrecipitacion": 100,
           "vientoVelocidad": 15,
-          "vientoDireccion": "NO",
+          "vientoDireccion": "N",
           "tempMax": 22,
           "tempMin": 14
         },
@@ -1305,17 +1297,25 @@
           "fecha": "2026-11-15",
           "probPrecipitacion": 0,
           "vientoVelocidad": 15,
-          "vientoDireccion": "NO",
+          "vientoDireccion": "N",
           "tempMax": 24,
           "tempMin": 12
         },
         {
           "fecha": "2026-11-16",
-          "probPrecipitacion": 15,
+          "probPrecipitacion": 0,
           "vientoVelocidad": 5,
-          "vientoDireccion": "SE",
+          "vientoDireccion": "S",
           "tempMax": 22,
           "tempMin": 12
+        },
+        {
+          "fecha": "2026-11-17",
+          "probPrecipitacion": 35,
+          "vientoVelocidad": 5,
+          "vientoDireccion": "SO",
+          "tempMax": 24,
+          "tempMin": 13
         }
       ],
       "horas_hoy": [
