@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-17T07:21:37Z",
+  "generated_at": "2026-11-17T07:41:26Z",
   "avisos": {
     "612901": {
       "nombre": "Antequera",
@@ -46,17 +46,9 @@
       "referencia": "Costa",
       "dias": [
         {
-          "fecha": "2026-11-16",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 10,
-          "vientoDireccion": "O",
-          "tempMax": 22,
-          "tempMin": 12
-        },
-        {
           "fecha": "2026-11-17",
           "probPrecipitacion": 0,
-          "vientoVelocidad": 20,
+          "vientoVelocidad": 15,
           "vientoDireccion": "O",
           "tempMax": 24,
           "tempMin": 12
@@ -64,18 +56,26 @@
         {
           "fecha": "2026-11-18",
           "probPrecipitacion": 45,
-          "vientoVelocidad": 15,
-          "vientoDireccion": "NO",
+          "vientoVelocidad": 10,
+          "vientoDireccion": "S",
           "tempMax": 25,
           "tempMin": 18
         },
         {
           "fecha": "2026-11-19",
-          "probPrecipitacion": 35,
+          "probPrecipitacion": 45,
           "vientoVelocidad": 20,
           "vientoDireccion": "NO",
           "tempMax": 24,
           "tempMin": 15
+        },
+        {
+          "fecha": "2026-11-20",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 15,
+          "vientoDireccion": "NO",
+          "tempMax": 22,
+          "tempMin": 11
         }
       ],
       "horas_hoy": [
@@ -1286,14 +1286,6 @@
       "referencia": "Axarquía",
       "dias": [
         {
-          "fecha": "2026-11-16",
-          "probPrecipitacion": 0,
-          "vientoVelocidad": 5,
-          "vientoDireccion": "NE",
-          "tempMax": 22,
-          "tempMin": 12
-        },
-        {
           "fecha": "2026-11-17",
           "probPrecipitacion": 5,
           "vientoVelocidad": 15,
@@ -1304,18 +1296,26 @@
         {
           "fecha": "2026-11-18",
           "probPrecipitacion": 95,
-          "vientoVelocidad": 20,
-          "vientoDireccion": "NO",
+          "vientoVelocidad": 15,
+          "vientoDireccion": "SO",
           "tempMax": 24,
           "tempMin": 17
         },
         {
           "fecha": "2026-11-19",
-          "probPrecipitacion": 80,
-          "vientoVelocidad": 15,
+          "probPrecipitacion": 90,
+          "vientoVelocidad": 20,
           "vientoDireccion": "NO",
-          "tempMax": 25,
-          "tempMin": 14
+          "tempMax": 24,
+          "tempMin": 13
+        },
+        {
+          "fecha": "2026-11-20",
+          "probPrecipitacion": 0,
+          "vientoVelocidad": 10,
+          "vientoDireccion": "N",
+          "tempMax": 21,
+          "tempMin": 11
         }
       ],
       "horas_hoy": [
